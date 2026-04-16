@@ -825,20 +825,42 @@
                         <div class="lbl">Du bist frei im Jahr</div>
                     </div>
                     <div class="result-item">
-                        <div class="val green" id="resStackVal">—</div>
-                        <div class="lbl">Stackwert bei Rente</div>
-                    </div>
-                    <div class="result-item">
                         <div class="val blue" id="resMonthly">—</div>
                         <div class="lbl">Passives Einkommen/Monat</div>
                     </div>
-                    <div class="result-item">
-                        <div class="val orange" id="resTotalInvest">—</div>
-                        <div class="lbl">Total investiert</div>
+                </div>
+
+                <!-- Detaillierte Kapitalaufschlüsselung -->
+                <div style="margin-top:1.5rem; padding:1.5rem; background:var(--dark2); border:1px solid var(--dark4); border-radius:14px;">
+                    <div style="font-size:0.75rem; text-transform:uppercase; letter-spacing:2px; color:var(--text-dim); font-weight:700; margin-bottom:1rem;">Kapitalaufschlüsselung</div>
+                    <div class="result-row" style="margin-top:0;">
+                        <div class="result-item">
+                            <div class="val" style="color:var(--purple);" id="resExistingStack">—</div>
+                            <div class="lbl">Vorhandener Stack (heute)</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="val blue" id="resNewSavings">—</div>
+                            <div class="lbl">Neue Einzahlungen</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="val orange" id="resTotalInvest">—</div>
+                            <div class="lbl">Gesamtkapital eingesetzt</div>
+                        </div>
                     </div>
-                    <div class="result-item">
-                        <div class="val green" id="resROI">—</div>
-                        <div class="lbl">ROI (Rendite)</div>
+                    <div style="margin:1rem 0; height:1px; background:var(--dark4);"></div>
+                    <div class="result-row" style="margin-top:0;">
+                        <div class="result-item">
+                            <div class="val green" id="resStackVal">—</div>
+                            <div class="lbl">Stackwert bei Rente (Ziel)</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="val green" id="resCompoundGain">—</div>
+                            <div class="lbl">📈 Davon Kursgewinn (Zinseszins)</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="val green" id="resROI">—</div>
+                            <div class="lbl">ROI (Rendite)</div>
+                        </div>
                     </div>
                 </div>
 
@@ -1675,10 +1697,10 @@ function calculateRetirement() {
     }
 
     const years = months / 12;
-    const totalInvested = (existingBtc * btcPrice) + (monthlySaving * months);
+    const totalInvested = existingEur + (monthlySaving * months);
     const retireYear = new Date().getFullYear() + Math.ceil(years);
     const retireAgeActual = currentAge + years;
-    const roi = totalInvested > 0 ? ((stack / totalInvested - 1) * 100) : 0;
+    const roi = totalInvested > 0 ? ((neededEur / totalInvested - 1) * 100) : 0;
 
     // Progress bar (vorhandener Stack vs Ziel)
     const progressPct = Math.min(100, (existingEur / neededEur) * 100);
@@ -1708,9 +1730,20 @@ function calculateRetirement() {
         document.getElementById('resRetireYear').textContent = retireYear.toString();
     }
 
+    const newSavings = monthlySaving * months;
+    const totalCapitalIn = existingEur + newSavings;
+    const compoundGain = neededEur - totalCapitalIn;
+
     document.getElementById('resStackVal').textContent = '€' + Math.round(neededEur).toLocaleString('de');
     document.getElementById('resMonthly').textContent = '€' + monthlyExpense.toLocaleString('de') + '/mo';
-    document.getElementById('resTotalInvest').textContent = '€' + Math.round(monthlySaving * months).toLocaleString('de');
+
+    // Kapitalaufschlüsselung
+    document.getElementById('resExistingStack').textContent = existingBtc > 0
+        ? '€' + Math.round(existingEur).toLocaleString('de')
+        : '€0';
+    document.getElementById('resNewSavings').textContent = '€' + Math.round(newSavings).toLocaleString('de');
+    document.getElementById('resTotalInvest').textContent = '€' + Math.round(totalCapitalIn).toLocaleString('de');
+    document.getElementById('resCompoundGain').textContent = '+€' + Math.round(Math.max(0, compoundGain)).toLocaleString('de');
     document.getElementById('resROI').textContent = '+' + roi.toFixed(0) + '%';
 
     // Headstart-Nachricht (nur wenn Stack > 0)

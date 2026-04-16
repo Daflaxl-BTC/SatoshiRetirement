@@ -716,11 +716,30 @@
 <!-- ═══════ BITCOIN CALCULATOR ═══════ -->
 <section id="calculator">
     <div class="container">
-        <span class="section-label">Bitcoin-Rechner</span>
+        <span class="section-label">Bitcoin-Renten-Rechner</span>
         <h2 class="section-title">Berechne deine Freiheit</h2>
-        <p class="section-desc">Finde heraus, wie viel Bitcoin du brauchst, um von deinem Stack leben zu können — angepasst an dein Wunschland.</p>
+        <p class="section-desc">Finde heraus, wie viel Bitcoin du brauchst, um von deinem Stack leben zu können. Dein vorhandener Stack wird als Startwert einberechnet.</p>
 
         <div class="calc-wrapper">
+            <!-- Existing Stack Highlight -->
+            <div style="background: linear-gradient(135deg, rgba(247,147,26,0.12), rgba(247,147,26,0.03)); border:1px solid rgba(247,147,26,0.25); border-radius:14px; padding:1.5rem; margin-bottom:1.5rem;">
+                <div style="font-size:0.75rem; text-transform:uppercase; letter-spacing:2px; color:var(--orange); font-weight:700; margin-bottom:0.8rem;">Dein aktueller Stack</div>
+                <div class="calc-grid" style="margin:0;">
+                    <div class="input-group" style="margin-bottom:0;">
+                        <label>₿ Vorhandene Bitcoin</label>
+                        <input type="number" id="existingBtc" value="0" min="0" step="0.0001" oninput="syncStackFields('btc')">
+                    </div>
+                    <div class="input-group" style="margin-bottom:0;">
+                        <label>⚡ Oder in Satoshis</label>
+                        <input type="number" id="existingSats" value="0" min="0" step="1" oninput="syncStackFields('sats')">
+                    </div>
+                </div>
+                <div style="display:flex; gap:1.5rem; margin-top:0.8rem; flex-wrap:wrap;">
+                    <div style="font-size:0.85rem; color:var(--text-dim);">Aktueller Wert: <strong style="color:var(--orange);" id="existingValue">€0</strong></div>
+                    <div style="font-size:0.85rem; color:var(--text-dim);">Vorsprung: <strong style="color:var(--green);" id="existingAdvantage">0%</strong> deines Ziels</div>
+                </div>
+            </div>
+
             <div class="calc-grid">
                 <div>
                     <div class="input-group">
@@ -728,22 +747,22 @@
                         <input type="number" id="monthlyExpense" value="2000" min="500" max="50000">
                     </div>
                     <div class="input-group">
-                        <label>📅 Gewünschtes Rentenalter</label>
-                        <input type="number" id="retireAge" value="40" min="20" max="80">
-                    </div>
-                    <div class="input-group">
                         <label>🎂 Dein aktuelles Alter</label>
                         <input type="number" id="currentAge" value="25" min="16" max="80">
+                    </div>
+                    <div class="input-group">
+                        <label>📅 Gewünschtes Rentenalter</label>
+                        <input type="number" id="retireAge" value="40" min="20" max="80">
                     </div>
                 </div>
                 <div>
                     <div class="input-group">
-                        <label>📈 Erwartetes BTC CAGR (%)</label>
-                        <input type="number" id="btcGrowth" value="30" min="5" max="100">
-                    </div>
-                    <div class="input-group">
                         <label>💸 Monatliche Sparrate (€)</label>
                         <input type="number" id="monthlySaving" value="500" min="50" max="50000">
+                    </div>
+                    <div class="input-group">
+                        <label>📈 Erwartetes BTC CAGR (%)</label>
+                        <input type="number" id="btcGrowth" value="30" min="5" max="100">
                     </div>
                     <div class="input-group">
                         <label>₿ Aktueller Bitcoin-Preis (€)</label>
@@ -751,31 +770,71 @@
                     </div>
                 </div>
             </div>
+
+            <div class="input-group" style="margin-top:0.5rem;">
+                <label>🛡️ Safe Withdrawal Rate (% p.a.) — wie viel du jährlich entnimmst</label>
+                <div style="display:flex; align-items:center; gap:1rem;">
+                    <input type="range" id="withdrawalRate" min="2" max="6" step="0.5" value="3.5" style="flex:1;" oninput="document.getElementById('wrDisplay').textContent = this.value + '%'">
+                    <span id="wrDisplay" style="font-family:'Space Grotesk',sans-serif; font-weight:700; color:var(--orange); min-width:50px; text-align:right;">3.5%</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:var(--text-dim); margin-top:0.2rem;">
+                    <span>2% (konservativ)</span>
+                    <span>6% (aggressiv)</span>
+                </div>
+            </div>
+
             <div style="text-align:center; margin-top:1.5rem;">
                 <button class="btn" onclick="calculateRetirement()">₿ Berechnen</button>
             </div>
 
             <div class="result-card" id="calcResult" style="display:none;">
-                <div class="label">Du brauchst einen Stack von</div>
+                <div class="label">Ziel-Stack für deine Freiheit</div>
                 <div class="big-num" id="neededBtc">—</div>
                 <div class="label" id="neededSats">—</div>
+
+                <div id="stackProgress" style="margin:1.5rem auto; max-width:500px;">
+                    <div style="display:flex; justify-content:space-between; font-size:0.8rem; margin-bottom:0.4rem;">
+                        <span style="color:var(--green);" id="progLabel">Dein Stack</span>
+                        <span style="color:var(--text-dim);" id="progPct">0%</span>
+                    </div>
+                    <div class="halving-progress-bar" style="margin:0;">
+                        <div class="halving-progress-fill" id="stackProgressFill" style="width:0%;"></div>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; font-size:0.75rem; margin-top:0.3rem; color:var(--text-dim);">
+                        <span>0 BTC</span>
+                        <span id="progTarget">—</span>
+                    </div>
+                </div>
+
                 <div class="result-row">
                     <div class="result-item">
                         <div class="val orange" id="resYears">—</div>
                         <div class="lbl">Jahre bis zur Freiheit</div>
                     </div>
                     <div class="result-item">
+                        <div class="val green" id="resRetireYear">—</div>
+                        <div class="lbl">Du bist frei im Jahr</div>
+                    </div>
+                    <div class="result-item">
                         <div class="val green" id="resStackVal">—</div>
-                        <div class="lbl">Geschätzter Stackwert bei Rente</div>
+                        <div class="lbl">Stackwert bei Rente</div>
                     </div>
                     <div class="result-item">
                         <div class="val blue" id="resMonthly">—</div>
-                        <div class="lbl">Monatlich passives Einkommen</div>
+                        <div class="lbl">Passives Einkommen/Monat</div>
                     </div>
                     <div class="result-item">
                         <div class="val orange" id="resTotalInvest">—</div>
                         <div class="lbl">Total investiert</div>
                     </div>
+                    <div class="result-item">
+                        <div class="val green" id="resROI">—</div>
+                        <div class="lbl">ROI (Rendite)</div>
+                    </div>
+                </div>
+
+                <div id="stackHeadstart" style="display:none; margin-top:1.5rem; padding:1rem 1.5rem; background:rgba(63,185,80,0.08); border:1px solid rgba(63,185,80,0.2); border-radius:12px; text-align:left;">
+                    <div style="font-size:0.9rem; color:var(--green); font-weight:600;" id="headstartMsg">—</div>
                 </div>
             </div>
         </div>
@@ -1554,8 +1613,24 @@ async function renderWorldMap(highlight = null) {
 }
 
 // ═══════════════════════════════════════════════════
-// RETIREMENT CALCULATOR
+// RETIREMENT CALCULATOR (mit bestehendem Stack)
 // ═══════════════════════════════════════════════════
+
+// Sync BTC ↔ Sats Felder für vorhandenen Stack
+function syncStackFields(source) {
+    const btcPrice = +document.getElementById('btcPriceInput').value || 95000;
+    if (source === 'btc') {
+        const btc = +document.getElementById('existingBtc').value || 0;
+        document.getElementById('existingSats').value = Math.round(btc * 100000000);
+        document.getElementById('existingValue').textContent = '€' + Math.round(btc * btcPrice).toLocaleString('de');
+    } else {
+        const sats = +document.getElementById('existingSats').value || 0;
+        const btc = sats / 100000000;
+        document.getElementById('existingBtc').value = +btc.toFixed(8);
+        document.getElementById('existingValue').textContent = '€' + Math.round(btc * btcPrice).toLocaleString('de');
+    }
+}
+
 function calculateRetirement() {
     const monthlyExpense = +document.getElementById('monthlyExpense').value;
     const retireAge = +document.getElementById('retireAge').value;
@@ -1563,33 +1638,96 @@ function calculateRetirement() {
     const btcCagr = +document.getElementById('btcGrowth').value / 100;
     const monthlySaving = +document.getElementById('monthlySaving').value;
     const btcPrice = +document.getElementById('btcPriceInput').value;
+    const existingBtc = +document.getElementById('existingBtc').value || 0;
+    const withdrawalRate = +document.getElementById('withdrawalRate').value / 100;
 
     const annualExpense = monthlyExpense * 12;
-    const safeRate = 0.035;
-    const neededEur = annualExpense / safeRate;
+    const neededEur = annualExpense / withdrawalRate;
     const neededBtc = neededEur / btcPrice;
     const neededSats = Math.round(neededBtc * 100000000);
 
-    // Compound growth: how many years of saving to reach neededEur worth of BTC
-    // FV = PMT * [((1+r)^n - 1) / r] where r = monthly CAGR
+    // Startwert: vorhandener Stack in EUR
+    const existingEur = existingBtc * btcPrice;
+
+    // Compound growth: monatliche Simulation MIT bestehendem Stack als Startkapital
     const monthlyRate = Math.pow(1 + btcCagr, 1/12) - 1;
-    let stack = 0;
+    let stack = existingEur; // ← bestehender Stack als Startwert!
     let months = 0;
     const maxMonths = 600; // 50 years max
-    while (stack < neededEur && months < maxMonths) {
-        stack = stack * (1 + monthlyRate) + monthlySaving;
-        months++;
-    }
-    const years = (months / 12).toFixed(1);
-    const totalInvested = monthlySaving * months;
 
+    // Falls Stack bereits ausreicht
+    if (stack >= neededEur) {
+        months = 0;
+    } else {
+        while (stack < neededEur && months < maxMonths) {
+            stack = stack * (1 + monthlyRate) + monthlySaving;
+            months++;
+        }
+    }
+
+    const years = months / 12;
+    const totalInvested = (existingBtc * btcPrice) + (monthlySaving * months);
+    const retireYear = new Date().getFullYear() + Math.ceil(years);
+    const retireAgeActual = currentAge + years;
+    const roi = totalInvested > 0 ? ((stack / totalInvested - 1) * 100) : 0;
+
+    // Progress bar (vorhandener Stack vs Ziel)
+    const progressPct = Math.min(100, (existingEur / neededEur) * 100);
+
+    // Update Vorsprung-Anzeige
+    document.getElementById('existingValue').textContent = '€' + Math.round(existingEur).toLocaleString('de');
+    document.getElementById('existingAdvantage').textContent = progressPct.toFixed(1) + '%';
+
+    // Ergebnisse anzeigen
     document.getElementById('calcResult').style.display = 'block';
     document.getElementById('neededBtc').textContent = neededBtc.toFixed(4) + ' BTC';
     document.getElementById('neededSats').textContent = neededSats.toLocaleString('de') + ' Satoshis';
-    document.getElementById('resYears').textContent = years + ' Jahre';
+
+    // Progress bar
+    document.getElementById('stackProgressFill').style.width = progressPct + '%';
+    document.getElementById('progPct').textContent = progressPct.toFixed(1) + '%';
+    document.getElementById('progTarget').textContent = neededBtc.toFixed(4) + ' BTC';
+    document.getElementById('progLabel').textContent = existingBtc > 0
+        ? `Dein Stack: ${existingBtc.toFixed(4)} BTC`
+        : 'Noch kein Stack';
+
+    if (months === 0 && existingEur >= neededEur) {
+        document.getElementById('resYears').textContent = 'JETZT! 🎉';
+        document.getElementById('resRetireYear').textContent = new Date().getFullYear().toString();
+    } else {
+        document.getElementById('resYears').textContent = years.toFixed(1) + ' Jahre';
+        document.getElementById('resRetireYear').textContent = retireYear.toString();
+    }
+
     document.getElementById('resStackVal').textContent = '€' + Math.round(neededEur).toLocaleString('de');
     document.getElementById('resMonthly').textContent = '€' + monthlyExpense.toLocaleString('de') + '/mo';
-    document.getElementById('resTotalInvest').textContent = '€' + Math.round(totalInvested).toLocaleString('de');
+    document.getElementById('resTotalInvest').textContent = '€' + Math.round(monthlySaving * months).toLocaleString('de');
+    document.getElementById('resROI').textContent = '+' + roi.toFixed(0) + '%';
+
+    // Headstart-Nachricht (nur wenn Stack > 0)
+    const headstart = document.getElementById('stackHeadstart');
+    if (existingBtc > 0) {
+        headstart.style.display = 'block';
+        // Berechne, wie viel schneller man ist dank bestehendem Stack
+        let monthsWithout = 0;
+        let stackWithout = 0;
+        while (stackWithout < neededEur && monthsWithout < maxMonths) {
+            stackWithout = stackWithout * (1 + monthlyRate) + monthlySaving;
+            monthsWithout++;
+        }
+        const savedMonths = monthsWithout - months;
+        const savedYears = (savedMonths / 12).toFixed(1);
+
+        if (months === 0) {
+            document.getElementById('headstartMsg').innerHTML =
+                `🚀 Glückwunsch! Dein bestehender Stack von <strong>${existingBtc.toFixed(4)} BTC</strong> (€${Math.round(existingEur).toLocaleString('de')}) reicht bereits aus! Du könntest theoretisch sofort in Rente gehen.`;
+        } else {
+            document.getElementById('headstartMsg').innerHTML =
+                `🚀 Dein bestehender Stack von <strong>${existingBtc.toFixed(4)} BTC</strong> gibt dir einen Vorsprung von <strong>${savedYears} Jahren</strong> (${savedMonths} Monate früher frei) gegenüber jemandem, der bei Null anfängt.`;
+        }
+    } else {
+        headstart.style.display = 'none';
+    }
 }
 
 // ═══════════════════════════════════════════════════

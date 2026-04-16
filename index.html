@@ -576,6 +576,15 @@
         }
         .blocktrainer-credit a { color: var(--orange); text-decoration: none; }
         .blocktrainer-credit a:hover { text-decoration: underline; }
+
+        /* ═══════ LIVE PRICE INDICATOR ═══════ */
+        .live-active { border-color: var(--green) !important; }
+        .live-active .dot { background: var(--green) !important; }
+        @keyframes priceFlash {
+            0% { color: var(--green); text-shadow: 0 0 20px rgba(63,185,80,0.5); }
+            100% { color: var(--orange); text-shadow: none; }
+        }
+        .price-flash { animation: priceFlash 1.5s ease-out; }
     </style>
 </head>
 <body>
@@ -599,9 +608,9 @@
 <!-- ═══════ HERO ═══════ -->
 <section class="hero">
     <div class="hero-content">
-        <div class="hero-badge">
+        <div class="hero-badge" id="liveBadge">
             <span class="dot"></span>
-            Bitcoin Netzwerk aktiv — Block <span id="blockHeight">894,217</span>
+            Bitcoin Live — Preis wird alle 60s aktualisiert · <span id="priceTimestamp">lädt...</span>
         </div>
         <h1>Hör auf zu arbeiten.<br><span class="highlight">Lebe von Satoshis.</span></h1>
         <p>Während Aktien, Immobilien und Anleihen gegen die Inflation verlieren, hat Bitcoin in den letzten 15 Jahren jede Anlageklasse geschlagen. Berechne hier, wann du in Rente gehen kannst.</p>
@@ -611,12 +620,12 @@
         </div>
         <div class="hero-stats">
             <div class="hero-stat">
-                <div class="num" id="btcPrice">$104,832</div>
-                <div class="label">Bitcoin Kurs (Live)</div>
+                <div class="num" id="btcPrice" style="transition: color 0.3s;">lädt...</div>
+                <div class="label">BTC/USD (Live · CoinGecko)</div>
             </div>
             <div class="hero-stat">
-                <div class="num">+31,000%</div>
-                <div class="label">Rendite seit 2013</div>
+                <div class="num" id="btcPriceEur" style="transition: color 0.3s;">lädt...</div>
+                <div class="label">BTC/EUR (Live)</div>
             </div>
             <div class="hero-stat">
                 <div class="num">21 Mio.</div>
@@ -765,8 +774,8 @@
                         <input type="number" id="btcGrowth" value="30" min="5" max="100">
                     </div>
                     <div class="input-group">
-                        <label>₿ Aktueller Bitcoin-Preis (€)</label>
-                        <input type="number" id="btcPriceInput" value="95000" min="1000">
+                        <label>₿ Bitcoin-Preis (€) — wird live aktualisiert</label>
+                        <input type="number" id="btcPriceInput" value="0" min="1000" placeholder="Wird geladen...">
                     </div>
                 </div>
             </div>
@@ -873,24 +882,24 @@
                 </div>
                 <div class="converter-field">
                     <div class="unit-label"><span class="symbol">€</span>Euro</div>
-                    <input type="number" id="convEur" value="95000" step="100" oninput="convertFrom('eur')">
-                    <div class="converter-fx" id="fxEur">Kurs: €95.000 / BTC</div>
+                    <input type="number" id="convEur" value="0" step="100" oninput="convertFrom('eur')">
+                    <div class="converter-fx" id="fxEur">Kurs wird geladen...</div>
                 </div>
                 <div class="converter-field">
                     <div class="unit-label"><span class="symbol">$</span>US-Dollar</div>
-                    <input type="number" id="convUsd" value="104500" step="100" oninput="convertFrom('usd')">
-                    <div class="converter-fx" id="fxUsd">Kurs: $104.500 / BTC</div>
+                    <input type="number" id="convUsd" value="0" step="100" oninput="convertFrom('usd')">
+                    <div class="converter-fx" id="fxUsd">Kurs wird geladen...</div>
                 </div>
             </div>
 
             <div style="margin-top: 1.5rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
                 <div class="input-group" style="margin-bottom: 0;">
-                    <label>BTC/EUR Kurs manuell anpassen</label>
-                    <input type="number" id="btcEurRate" value="95000" step="100" oninput="updateRates()">
+                    <label>BTC/EUR Kurs (Live — oder manuell anpassen)</label>
+                    <input type="number" id="btcEurRate" value="0" step="100" oninput="updateRates()">
                 </div>
                 <div class="input-group" style="margin-bottom: 0;">
-                    <label>BTC/USD Kurs manuell anpassen</label>
-                    <input type="number" id="btcUsdRate" value="104500" step="100" oninput="updateRates()">
+                    <label>BTC/USD Kurs (Live — oder manuell anpassen)</label>
+                    <input type="number" id="btcUsdRate" value="0" step="100" oninput="updateRates()">
                 </div>
             </div>
         </div>
@@ -924,8 +933,8 @@
                 </div>
                 <div>
                     <div class="input-group">
-                        <label>₿ Aktueller BTC-Preis (€)</label>
-                        <input type="number" id="dcaCurrentPrice" value="95000" min="1000">
+                        <label>₿ Aktueller BTC-Preis (€) — Live</label>
+                        <input type="number" id="dcaCurrentPrice" value="0" min="1000" placeholder="Wird geladen...">
                     </div>
                     <div class="input-group">
                         <label>📊 Intervall</label>
@@ -1845,9 +1854,16 @@ function switchTool(tool) {
 }
 
 // ── 1. Satoshi Konverter ──────────────────────────
+function getActiveRates() {
+    // Nutze immer die Rate-Felder (werden von Live-API befüllt, oder manuell vom User)
+    return {
+        eur: +document.getElementById('btcEurRate').value || liveBtcEur,
+        usd: +document.getElementById('btcUsdRate').value || liveBtcUsd
+    };
+}
+
 function convertFrom(source) {
-    const btcEur = +document.getElementById('btcEurRate').value || 95000;
-    const btcUsd = +document.getElementById('btcUsdRate').value || 104500;
+    const rates = getActiveRates();
     let btc = 0;
 
     if (source === 'btc') {
@@ -1855,23 +1871,23 @@ function convertFrom(source) {
     } else if (source === 'sats') {
         btc = (+document.getElementById('convSats').value || 0) / 100000000;
     } else if (source === 'eur') {
-        btc = (+document.getElementById('convEur').value || 0) / btcEur;
+        btc = (+document.getElementById('convEur').value || 0) / rates.eur;
     } else if (source === 'usd') {
-        btc = (+document.getElementById('convUsd').value || 0) / btcUsd;
+        btc = (+document.getElementById('convUsd').value || 0) / rates.usd;
     }
 
-    // Update alle Felder außer dem Source-Feld
-    if (source !== 'btc') document.getElementById('convBtc').value = +btc.toFixed(8);
+    if (source !== 'btc') document.getElementById('convBtc').value = btc > 0 ? +btc.toFixed(8) : 0;
     if (source !== 'sats') document.getElementById('convSats').value = Math.round(btc * 100000000);
-    if (source !== 'eur') document.getElementById('convEur').value = +(btc * btcEur).toFixed(2);
-    if (source !== 'usd') document.getElementById('convUsd').value = +(btc * btcUsd).toFixed(2);
+    if (source !== 'eur') document.getElementById('convEur').value = btc > 0 ? +(btc * rates.eur).toFixed(2) : 0;
+    if (source !== 'usd') document.getElementById('convUsd').value = btc > 0 ? +(btc * rates.usd).toFixed(2) : 0;
+
+    // Rate-Display aktualisieren
+    document.getElementById('fxEur').textContent = `Kurs: €${Math.round(rates.eur).toLocaleString('de')} / BTC`;
+    document.getElementById('fxUsd').textContent = `Kurs: $${Math.round(rates.usd).toLocaleString('en-US')} / BTC`;
 }
 
 function updateRates() {
-    const btcEur = +document.getElementById('btcEurRate').value || 95000;
-    const btcUsd = +document.getElementById('btcUsdRate').value || 104500;
-    document.getElementById('fxEur').textContent = `Kurs: €${btcEur.toLocaleString('de')} / BTC`;
-    document.getElementById('fxUsd').textContent = `Kurs: $${btcUsd.toLocaleString('de')} / BTC`;
+    // Wenn User manuell Rate ändert → Konverter neu berechnen
     convertFrom('btc');
 }
 
@@ -2052,6 +2068,100 @@ function calcDust() {
 }
 
 // ═══════════════════════════════════════════════════
+// LIVE BITCOIN PREIS (CoinGecko API + Fallbacks)
+// ═══════════════════════════════════════════════════
+let liveBtcEur = 95000;
+let liveBtcUsd = 104500;
+let priceLastUpdated = null;
+
+async function fetchLivePrice() {
+    const apis = [
+        {
+            url: 'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=eur,usd',
+            parse: (d) => ({ eur: d.bitcoin.eur, usd: d.bitcoin.usd })
+        },
+        {
+            url: 'https://api.coinbase.com/v2/exchange-rates?currency=BTC',
+            parse: (d) => ({ eur: +d.data.rates.EUR, usd: +d.data.rates.USD })
+        },
+        {
+            url: 'https://blockchain.info/ticker',
+            parse: (d) => ({ eur: d.EUR.last, usd: d.USD.last })
+        }
+    ];
+
+    for (const api of apis) {
+        try {
+            const res = await fetch(api.url);
+            if (!res.ok) continue;
+            const data = await res.json();
+            const prices = api.parse(data);
+            if (prices.eur > 0 && prices.usd > 0) {
+                liveBtcEur = prices.eur;
+                liveBtcUsd = prices.usd;
+                priceLastUpdated = new Date();
+                applyLivePrice();
+                return true;
+            }
+        } catch (e) {
+            continue; // Nächste API versuchen
+        }
+    }
+    console.warn('Alle Preis-APIs fehlgeschlagen, verwende letzten bekannten Preis');
+    return false;
+}
+
+function applyLivePrice() {
+    // ── Hero Section ──
+    const priceEl = document.getElementById('btcPrice');
+    const oldText = priceEl.textContent;
+    priceEl.textContent = '$' + Math.round(liveBtcUsd).toLocaleString('en-US');
+    // Flash-Effekt wenn Preis sich ändert
+    if (oldText !== priceEl.textContent && oldText !== 'lädt...') {
+        priceEl.classList.remove('price-flash');
+        void priceEl.offsetWidth; // Force reflow
+        priceEl.classList.add('price-flash');
+    }
+
+    // EUR-Preis in Hero
+    const eurEl = document.getElementById('btcPriceEur');
+    if (eurEl) eurEl.textContent = '€' + Math.round(liveBtcEur).toLocaleString('de');
+
+    // ── Timestamp Anzeige ──
+    const tsEl = document.getElementById('priceTimestamp');
+    if (tsEl && priceLastUpdated) {
+        tsEl.textContent = priceLastUpdated.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }) + ' Uhr';
+    }
+
+    // ── Renten-Rechner: Standardwert für BTC-Preis ──
+    const calcPriceEl = document.getElementById('btcPriceInput');
+    if (calcPriceEl && calcPriceEl === document.activeElement) {
+        // Nicht überschreiben wenn User gerade tippt
+    } else if (calcPriceEl) {
+        calcPriceEl.value = Math.round(liveBtcEur);
+    }
+
+    // ── Satoshi-Konverter: ZUERST Rate-Felder setzen, DANN konvertieren ──
+    const eurRateEl = document.getElementById('btcEurRate');
+    const usdRateEl = document.getElementById('btcUsdRate');
+    if (eurRateEl && eurRateEl !== document.activeElement) eurRateEl.value = Math.round(liveBtcEur);
+    if (usdRateEl && usdRateEl !== document.activeElement) usdRateEl.value = Math.round(liveBtcUsd);
+    // Konverter aktualisieren basierend auf aktuellem BTC-Feld
+    convertFrom('btc');
+
+    // ── DCA-Simulator: Aktuellen Preis aktualisieren ──
+    const dcaPriceEl = document.getElementById('dcaCurrentPrice');
+    if (dcaPriceEl && dcaPriceEl !== document.activeElement) dcaPriceEl.value = Math.round(liveBtcEur);
+
+    // ── Bestehender Stack Wert ──
+    syncStackFields('btc');
+
+    // ── Live-Badge Styling ──
+    const badge = document.getElementById('liveBadge');
+    if (badge) badge.classList.add('live-active');
+}
+
+// ═══════════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════════
 document.addEventListener('DOMContentLoaded', async () => {
@@ -2063,6 +2173,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     updateHalving();
     setInterval(updateHalving, 1000);
     calcDust();
+
+    // Live-Preis holen (sofort + alle 60 Sekunden)
+    await fetchLivePrice();
+    setInterval(fetchLivePrice, 60000);
+
+    // DCA erst nach Live-Preis starten
     simulateDca();
 });
 </script>

@@ -417,6 +417,165 @@
             display: flex; justify-content: space-between;
             font-size: 0.8rem; color: var(--text-dim); margin-top: 0.3rem;
         }
+
+        /* ═══════ TOOLS SECTION ═══════ */
+        .tools-section { background: var(--dark2); }
+        .tool-tabs {
+            display: flex; gap: 0.75rem; margin: 2rem 0 1.5rem;
+            flex-wrap: wrap; justify-content: center;
+        }
+        .tool-tab {
+            padding: 0.8rem 1.5rem; border-radius: 10px;
+            background: var(--dark3); border: 1px solid var(--dark4);
+            color: var(--text-dim); font-size: 0.9rem; cursor: pointer;
+            font-family: 'Inter', sans-serif; font-weight: 600;
+            transition: all 0.2s; display: flex; align-items: center; gap: 0.5rem;
+        }
+        .tool-tab:hover { color: var(--orange); border-color: rgba(247,147,26,0.4); }
+        .tool-tab.active {
+            background: linear-gradient(135deg, rgba(247,147,26,0.2), rgba(247,147,26,0.05));
+            color: var(--orange); border-color: var(--orange);
+        }
+        .tool-panel {
+            display: none; background: var(--dark3); border: 1px solid var(--dark4);
+            border-radius: 20px; padding: 2.5rem; margin-top: 1rem;
+        }
+        .tool-panel.active { display: block; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+        .tool-title {
+            display: flex; align-items: center; gap: 0.75rem;
+            font-size: 1.3rem; margin-bottom: 0.3rem;
+        }
+        .tool-desc { color: var(--text-dim); font-size: 0.9rem; margin-bottom: 1.5rem; }
+
+        /* Converter Grid */
+        .converter-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1rem; margin-top: 1rem;
+        }
+        .converter-field {
+            background: var(--dark); border: 1px solid var(--dark4);
+            border-radius: 12px; padding: 1.2rem;
+            transition: border-color 0.2s;
+        }
+        .converter-field:focus-within { border-color: var(--orange); }
+        .converter-field .unit-label {
+            font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px;
+            color: var(--text-dim); margin-bottom: 0.4rem; font-weight: 700;
+        }
+        .converter-field .unit-label .symbol { color: var(--orange); margin-right: 0.4rem; }
+        .converter-field input {
+            width: 100%; background: transparent; border: none; outline: none;
+            color: var(--text); font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.4rem; font-weight: 600;
+        }
+        .converter-field input::placeholder { color: var(--dark4); }
+        .converter-fx {
+            font-size: 0.75rem; color: var(--text-dim); margin-top: 0.4rem;
+        }
+
+        /* Halving Countdown */
+        .halving-container {
+            display: grid; grid-template-columns: 1fr; gap: 2rem; align-items: center;
+        }
+        .halving-clock {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        .halving-unit {
+            background: linear-gradient(180deg, var(--dark), var(--dark2));
+            border: 1px solid var(--dark4);
+            border-radius: 16px; padding: 1.5rem 1rem; text-align: center;
+            position: relative; overflow: hidden;
+        }
+        .halving-unit::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--orange), transparent);
+            animation: scan 3s linear infinite;
+        }
+        @keyframes scan {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        .halving-unit .num {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(2rem, 5vw, 3rem); font-weight: 800;
+            color: var(--orange); line-height: 1;
+        }
+        .halving-unit .lbl {
+            font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px;
+            color: var(--text-dim); margin-top: 0.5rem; font-weight: 600;
+        }
+        .halving-info {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+            gap: 1rem; margin-top: 1.5rem;
+        }
+        .halving-info-item {
+            background: var(--dark); border-radius: 10px; padding: 1rem; text-align: center;
+        }
+        .halving-info-item .val {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.2rem; font-weight: 700; color: var(--text);
+        }
+        .halving-info-item .lbl { font-size: 0.75rem; color: var(--text-dim); margin-top: 0.3rem; }
+        .halving-progress-bar {
+            background: var(--dark); border-radius: 100px; height: 12px;
+            overflow: hidden; margin-top: 1.5rem; position: relative;
+        }
+        .halving-progress-fill {
+            height: 100%; background: linear-gradient(90deg, var(--orange), var(--orange-light));
+            border-radius: 100px; transition: width 1s ease;
+            box-shadow: 0 0 20px rgba(247,147,26,0.5);
+        }
+
+        /* Dust Calculator */
+        .dust-result {
+            margin-top: 1.5rem; padding: 1.5rem;
+            border-radius: 12px; border: 1px solid;
+            text-align: center; font-weight: 600;
+        }
+        .dust-result.ok {
+            background: rgba(63,185,80,0.08);
+            border-color: rgba(63,185,80,0.3); color: var(--green);
+        }
+        .dust-result.warning {
+            background: rgba(212,167,44,0.08);
+            border-color: rgba(212,167,44,0.3); color: #d4a72c;
+        }
+        .dust-result.danger {
+            background: rgba(248,81,73,0.08);
+            border-color: rgba(248,81,73,0.3); color: var(--red);
+        }
+        .dust-result .big {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2rem; font-weight: 800; margin: 0.3rem 0;
+        }
+
+        /* DCA Simulator */
+        .dca-summary {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 1rem; margin-top: 1.5rem;
+        }
+        .dca-stat {
+            background: var(--dark); border-radius: 12px; padding: 1.3rem; text-align: center;
+            border: 1px solid var(--dark4);
+        }
+        .dca-stat .val {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.6rem; font-weight: 800;
+        }
+        .dca-stat .val.green { color: var(--green); }
+        .dca-stat .val.orange { color: var(--orange); }
+        .dca-stat .val.blue { color: var(--blue); }
+        .dca-stat .lbl { font-size: 0.75rem; color: var(--text-dim); margin-top: 0.3rem; }
+
+        .blocktrainer-credit {
+            margin-top: 1.5rem; text-align: center;
+            color: var(--text-dim); font-size: 0.8rem;
+        }
+        .blocktrainer-credit a { color: var(--orange); text-decoration: none; }
+        .blocktrainer-credit a:hover { text-decoration: underline; }
     </style>
 </head>
 <body>
@@ -427,7 +586,8 @@
         <div class="logo">₿ Satoshi<span>Retirement</span></div>
         <ul>
             <li><a href="#compare">Vergleich</a></li>
-            <li><a href="#calculator">Rechner</a></li>
+            <li><a href="#calculator">Renten-Rechner</a></li>
+            <li><a href="#tools">Tools</a></li>
             <li><a href="#map">Weltkarte</a></li>
             <li><a href="#strategy">Strategie</a></li>
             <li><a href="#plan">Businessplan</a></li>
@@ -618,6 +778,250 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════ BITCOIN TOOLS (Blocktrainer-inspiriert) ═══════ -->
+<section id="tools" class="tools-section">
+    <div class="container">
+        <span class="section-label">Bitcoin-Tools</span>
+        <h2 class="section-title">Praktische Rechner für jeden Bitcoiner</h2>
+        <p class="section-desc">Die wichtigsten Tools auf einen Blick — Satoshi-Konverter, DCA-Simulator, Halving-Countdown und UTXO-Dust-Rechner. Inspiriert von <a href="https://www.blocktrainer.de/tools-services" target="_blank" rel="noopener" style="color:var(--orange);">Blocktrainer.de</a>, direkt im Browser nutzbar.</p>
+
+        <div class="tool-tabs">
+            <button class="tool-tab active" data-tool="satoshi" onclick="switchTool('satoshi')">🔄 Satoshi-Rechner</button>
+            <button class="tool-tab" data-tool="dca" onclick="switchTool('dca')">📅 DCA-Sparplan</button>
+            <button class="tool-tab" data-tool="halving" onclick="switchTool('halving')">⏳ Halving-Countdown</button>
+            <button class="tool-tab" data-tool="dust" onclick="switchTool('dust')">🧹 UTXO-Dust</button>
+        </div>
+
+        <!-- ══ SATOSHI KONVERTER ══ -->
+        <div id="tool-satoshi" class="tool-panel active">
+            <div class="tool-title">🔄 Satoshi ↔ BTC ↔ EUR ↔ USD</div>
+            <div class="tool-desc">Rechne nahtlos zwischen allen Bitcoin-Einheiten und Fiat-Währungen um. Ändere ein Feld — alle anderen passen sich automatisch an.</div>
+
+            <div class="converter-grid">
+                <div class="converter-field">
+                    <div class="unit-label"><span class="symbol">₿</span>Bitcoin</div>
+                    <input type="number" id="convBtc" value="1" step="0.0001" oninput="convertFrom('btc')">
+                    <div class="converter-fx">1 BTC = 100.000.000 Sats</div>
+                </div>
+                <div class="converter-field">
+                    <div class="unit-label"><span class="symbol">⚡</span>Satoshi</div>
+                    <input type="number" id="convSats" value="100000000" step="1" oninput="convertFrom('sats')">
+                    <div class="converter-fx">1 Sat = 1/100.000.000 BTC</div>
+                </div>
+                <div class="converter-field">
+                    <div class="unit-label"><span class="symbol">€</span>Euro</div>
+                    <input type="number" id="convEur" value="95000" step="100" oninput="convertFrom('eur')">
+                    <div class="converter-fx" id="fxEur">Kurs: €95.000 / BTC</div>
+                </div>
+                <div class="converter-field">
+                    <div class="unit-label"><span class="symbol">$</span>US-Dollar</div>
+                    <input type="number" id="convUsd" value="104500" step="100" oninput="convertFrom('usd')">
+                    <div class="converter-fx" id="fxUsd">Kurs: $104.500 / BTC</div>
+                </div>
+            </div>
+
+            <div style="margin-top: 1.5rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div class="input-group" style="margin-bottom: 0;">
+                    <label>BTC/EUR Kurs manuell anpassen</label>
+                    <input type="number" id="btcEurRate" value="95000" step="100" oninput="updateRates()">
+                </div>
+                <div class="input-group" style="margin-bottom: 0;">
+                    <label>BTC/USD Kurs manuell anpassen</label>
+                    <input type="number" id="btcUsdRate" value="104500" step="100" oninput="updateRates()">
+                </div>
+            </div>
+        </div>
+
+        <!-- ══ DCA SIMULATOR ══ -->
+        <div id="tool-dca" class="tool-panel">
+            <div class="tool-title">📅 DCA Sparplan-Simulator</div>
+            <div class="tool-desc">Dollar-Cost-Averaging: Simuliere, was eine regelmäßige Bitcoin-Sparrate seit einem beliebigen Startdatum erwirtschaftet hätte. Der ruhige Weg zum Bitcoin-Stack.</div>
+
+            <div class="calc-grid">
+                <div>
+                    <div class="input-group">
+                        <label>💸 Monatliche Sparrate (€)</label>
+                        <input type="number" id="dcaAmount" value="100" min="10" max="100000">
+                    </div>
+                    <div class="input-group">
+                        <label>📆 Start-Jahr</label>
+                        <select id="dcaStartYear">
+                            <option value="2015">2015</option>
+                            <option value="2016">2016</option>
+                            <option value="2017">2017</option>
+                            <option value="2018" selected>2018</option>
+                            <option value="2019">2019</option>
+                            <option value="2020">2020</option>
+                            <option value="2021">2021</option>
+                            <option value="2022">2022</option>
+                            <option value="2023">2023</option>
+                            <option value="2024">2024</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <div class="input-group">
+                        <label>₿ Aktueller BTC-Preis (€)</label>
+                        <input type="number" id="dcaCurrentPrice" value="95000" min="1000">
+                    </div>
+                    <div class="input-group">
+                        <label>📊 Intervall</label>
+                        <select id="dcaInterval">
+                            <option value="monthly" selected>Monatlich</option>
+                            <option value="weekly">Wöchentlich</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div style="text-align:center; margin-top:1rem;">
+                <button class="btn" onclick="simulateDca()">📊 Simulation starten</button>
+            </div>
+
+            <div class="dca-summary" id="dcaResult" style="display:none;">
+                <div class="dca-stat">
+                    <div class="val blue" id="dcaInvested">—</div>
+                    <div class="lbl">Total investiert</div>
+                </div>
+                <div class="dca-stat">
+                    <div class="val orange" id="dcaStack">—</div>
+                    <div class="lbl">Dein Stack heute</div>
+                </div>
+                <div class="dca-stat">
+                    <div class="val green" id="dcaValue">—</div>
+                    <div class="lbl">Heutiger Wert (€)</div>
+                </div>
+                <div class="dca-stat">
+                    <div class="val green" id="dcaReturn">—</div>
+                    <div class="lbl">Gesamt-Rendite</div>
+                </div>
+                <div class="dca-stat">
+                    <div class="val orange" id="dcaCagr">—</div>
+                    <div class="lbl">Jährliche Rendite (CAGR)</div>
+                </div>
+                <div class="dca-stat">
+                    <div class="val blue" id="dcaAvgPrice">—</div>
+                    <div class="lbl">Ø Kaufpreis</div>
+                </div>
+            </div>
+
+            <div style="margin-top:1.5rem; height:280px;">
+                <canvas id="dcaChart"></canvas>
+            </div>
+        </div>
+
+        <!-- ══ HALVING COUNTDOWN ══ -->
+        <div id="tool-halving" class="tool-panel">
+            <div class="tool-title">⏳ Halving-Countdown</div>
+            <div class="tool-desc">Alle ca. 4 Jahre halbiert sich die Block-Belohnung — der fundamentale Knappheits-Mechanismus von Bitcoin. Nächstes Halving: Block 1.050.000.</div>
+
+            <div class="halving-clock">
+                <div class="halving-unit"><div class="num" id="hvDays">—</div><div class="lbl">Tage</div></div>
+                <div class="halving-unit"><div class="num" id="hvHours">—</div><div class="lbl">Stunden</div></div>
+                <div class="halving-unit"><div class="num" id="hvMinutes">—</div><div class="lbl">Minuten</div></div>
+                <div class="halving-unit"><div class="num" id="hvSeconds">—</div><div class="lbl">Sekunden</div></div>
+            </div>
+
+            <div class="halving-progress-bar">
+                <div class="halving-progress-fill" id="hvProgressFill" style="width: 0%;"></div>
+            </div>
+
+            <div class="halving-info">
+                <div class="halving-info-item">
+                    <div class="val" id="hvCurrentBlock">—</div>
+                    <div class="lbl">Aktueller Block</div>
+                </div>
+                <div class="halving-info-item">
+                    <div class="val" style="color:var(--orange);">1.050.000</div>
+                    <div class="lbl">Ziel-Block</div>
+                </div>
+                <div class="halving-info-item">
+                    <div class="val" id="hvRemaining">—</div>
+                    <div class="lbl">Blöcke verbleibend</div>
+                </div>
+                <div class="halving-info-item">
+                    <div class="val" id="hvDate">—</div>
+                    <div class="lbl">Geschätztes Datum</div>
+                </div>
+                <div class="halving-info-item">
+                    <div class="val" style="color:var(--green);">3,125 → 1,5625</div>
+                    <div class="lbl">Block-Reward (BTC)</div>
+                </div>
+                <div class="halving-info-item">
+                    <div class="val" style="color:var(--blue);">#5</div>
+                    <div class="lbl">Halving Nr.</div>
+                </div>
+            </div>
+
+            <div style="margin-top:1.5rem; padding:1.2rem; background:var(--dark); border-radius:12px; border-left:3px solid var(--orange);">
+                <div style="font-size:0.9rem; color:var(--text); line-height:1.7;">
+                    <strong style="color:var(--orange);">Was passiert beim Halving?</strong> Die Menge an neuen Bitcoin, die pro Block (ca. alle 10 Minuten) an Miner ausgegeben werden, halbiert sich. Das reduziert das Angebot und war historisch Treiber massiver Bullenmärkte. Von 2009 bis 2140 werden nur 21 Millionen Bitcoin existieren.
+                </div>
+            </div>
+        </div>
+
+        <!-- ══ UTXO DUST RECHNER ══ -->
+        <div id="tool-dust" class="tool-panel">
+            <div class="tool-title">🧹 UTXO-Dust-Rechner</div>
+            <div class="tool-desc">Kleine Bitcoin-Beträge (Dust) können bei hohen Gebühren mehr kosten als sie wert sind. Prüfe, ob dein UTXO wirtschaftlich sinnvoll zu bewegen ist.</div>
+
+            <div class="calc-grid">
+                <div>
+                    <div class="input-group">
+                        <label>💎 Dein UTXO-Betrag (Sats)</label>
+                        <input type="number" id="dustSats" value="50000" min="1" oninput="calcDust()">
+                    </div>
+                    <div class="input-group">
+                        <label>⚡ Fee-Rate (sat/vByte)</label>
+                        <input type="number" id="dustFeeRate" value="20" min="1" max="1000" oninput="calcDust()">
+                    </div>
+                </div>
+                <div>
+                    <div class="input-group">
+                        <label>📤 Anzahl Inputs</label>
+                        <input type="number" id="dustInputs" value="1" min="1" max="20" oninput="calcDust()">
+                    </div>
+                    <div class="input-group">
+                        <label>📥 Anzahl Outputs</label>
+                        <input type="number" id="dustOutputs" value="2" min="1" max="20" oninput="calcDust()">
+                    </div>
+                </div>
+            </div>
+
+            <div class="dca-summary" style="margin-top:1.5rem;">
+                <div class="dca-stat">
+                    <div class="val blue" id="dustTxSize">—</div>
+                    <div class="lbl">TX-Größe (vBytes)</div>
+                </div>
+                <div class="dca-stat">
+                    <div class="val orange" id="dustFeeTotal">—</div>
+                    <div class="lbl">Fee in Sats</div>
+                </div>
+                <div class="dca-stat">
+                    <div class="val orange" id="dustFeeEur">—</div>
+                    <div class="lbl">Fee in EUR</div>
+                </div>
+                <div class="dca-stat">
+                    <div class="val" id="dustPct">—</div>
+                    <div class="lbl">Fee / UTXO Ratio</div>
+                </div>
+            </div>
+
+            <div class="dust-result" id="dustVerdict">
+                Gib deinen UTXO-Betrag und die Fee-Rate ein
+            </div>
+
+            <div style="margin-top:1.5rem; padding:1.2rem; background:var(--dark); border-radius:12px; border-left:3px solid var(--blue); font-size:0.85rem; color:var(--text-dim); line-height:1.7;">
+                <strong style="color:var(--blue);">💡 Tipp:</strong> Für typische Lightning-Channel-Opens brauchst du mindestens ca. 20.000–50.000 Sats. Bei hohen Fees sammle kleine UTXOs, bis sich das Zusammenführen lohnt. Besonders in Bullenmärkten steigen die Fees — dann ist DCA-Accumulation in Form größerer Käufe oft effizienter.
+            </div>
+        </div>
+
+        <div class="blocktrainer-credit">
+            Tool-Konzepte inspiriert von <a href="https://www.blocktrainer.de/tools-services" target="_blank" rel="noopener">Blocktrainer.de</a> — der Bitcoin-Bildungsplattform im deutschsprachigen Raum.
         </div>
     </div>
 </section>
@@ -1291,12 +1695,237 @@ function initCharts() {
 }
 
 // ═══════════════════════════════════════════════════
+// BITCOIN TOOLS (Blocktrainer-inspiriert)
+// ═══════════════════════════════════════════════════
+
+// Tab-Switching
+function switchTool(tool) {
+    document.querySelectorAll('.tool-tab').forEach(b => b.classList.remove('active'));
+    document.querySelector(`.tool-tab[data-tool="${tool}"]`).classList.add('active');
+    document.querySelectorAll('.tool-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('tool-' + tool).classList.add('active');
+}
+
+// ── 1. Satoshi Konverter ──────────────────────────
+function convertFrom(source) {
+    const btcEur = +document.getElementById('btcEurRate').value || 95000;
+    const btcUsd = +document.getElementById('btcUsdRate').value || 104500;
+    let btc = 0;
+
+    if (source === 'btc') {
+        btc = +document.getElementById('convBtc').value || 0;
+    } else if (source === 'sats') {
+        btc = (+document.getElementById('convSats').value || 0) / 100000000;
+    } else if (source === 'eur') {
+        btc = (+document.getElementById('convEur').value || 0) / btcEur;
+    } else if (source === 'usd') {
+        btc = (+document.getElementById('convUsd').value || 0) / btcUsd;
+    }
+
+    // Update alle Felder außer dem Source-Feld
+    if (source !== 'btc') document.getElementById('convBtc').value = +btc.toFixed(8);
+    if (source !== 'sats') document.getElementById('convSats').value = Math.round(btc * 100000000);
+    if (source !== 'eur') document.getElementById('convEur').value = +(btc * btcEur).toFixed(2);
+    if (source !== 'usd') document.getElementById('convUsd').value = +(btc * btcUsd).toFixed(2);
+}
+
+function updateRates() {
+    const btcEur = +document.getElementById('btcEurRate').value || 95000;
+    const btcUsd = +document.getElementById('btcUsdRate').value || 104500;
+    document.getElementById('fxEur').textContent = `Kurs: €${btcEur.toLocaleString('de')} / BTC`;
+    document.getElementById('fxUsd').textContent = `Kurs: $${btcUsd.toLocaleString('de')} / BTC`;
+    convertFrom('btc');
+}
+
+// ── 2. DCA-Simulator ──────────────────────────────
+// Historische durchschnittliche BTC/EUR Monatspreise (vereinfacht — typische Werte)
+const btcPriceHistory = {
+    2015: 280, 2016: 500, 2017: 2500, 2018: 6800, 2019: 7200,
+    2020: 10500, 2021: 42000, 2022: 27000, 2023: 26000, 2024: 58000,
+    2025: 85000, 2026: 95000
+};
+
+function simulateDca() {
+    const monthlyAmount = +document.getElementById('dcaAmount').value;
+    const startYear = +document.getElementById('dcaStartYear').value;
+    const currentPrice = +document.getElementById('dcaCurrentPrice').value;
+    const interval = document.getElementById('dcaInterval').value;
+    const endYear = 2026;
+
+    // Monatliche Simulation
+    const labels = [];
+    const portfolioValue = [];
+    const invested = [];
+    let totalBtc = 0;
+    let totalInvested = 0;
+    const freqMultiplier = interval === 'weekly' ? 4.33 : 1;
+    const perPeriod = interval === 'weekly' ? monthlyAmount / 4.33 : monthlyAmount;
+
+    for (let y = startYear; y <= endYear; y++) {
+        const yearPrice = btcPriceHistory[y] || currentPrice;
+        for (let m = 0; m < 12; m++) {
+            if (y === endYear && m > 3) break; // Stop im April 2026
+            const monthLabel = `${String(m+1).padStart(2,'0')}/${y}`;
+            // Leichte Preis-Variation im Jahr (simuliert Volatilität durchschnittlich)
+            const monthPrice = yearPrice * (1 + (Math.sin(m * 0.8 + y) * 0.15));
+            const periodsPerMonth = interval === 'weekly' ? 4 : 1;
+            for (let p = 0; p < periodsPerMonth; p++) {
+                totalBtc += perPeriod / monthPrice;
+                totalInvested += perPeriod;
+            }
+            labels.push(monthLabel);
+            portfolioValue.push(totalBtc * currentPrice);
+            invested.push(totalInvested);
+        }
+    }
+
+    const avgPrice = totalInvested / totalBtc;
+    const currentValue = totalBtc * currentPrice;
+    const roi = (currentValue / totalInvested - 1) * 100;
+    const years = (endYear - startYear) + 0.3;
+    const cagr = (Math.pow(currentValue / totalInvested, 1/years) - 1) * 100;
+
+    document.getElementById('dcaResult').style.display = 'grid';
+    document.getElementById('dcaInvested').textContent = '€' + Math.round(totalInvested).toLocaleString('de');
+    document.getElementById('dcaStack').textContent = '₿ ' + totalBtc.toFixed(4);
+    document.getElementById('dcaValue').textContent = '€' + Math.round(currentValue).toLocaleString('de');
+    document.getElementById('dcaReturn').textContent = '+' + roi.toFixed(1) + '%';
+    document.getElementById('dcaCagr').textContent = cagr.toFixed(1) + '% p.a.';
+    document.getElementById('dcaAvgPrice').textContent = '€' + Math.round(avgPrice).toLocaleString('de');
+
+    // Chart rendern/updaten
+    if (window.dcaChartInstance) window.dcaChartInstance.destroy();
+    const ctx = document.getElementById('dcaChart').getContext('2d');
+    window.dcaChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [
+                {
+                    label: 'Portfolio-Wert heute (€)',
+                    data: portfolioValue,
+                    borderColor: '#f7931a',
+                    backgroundColor: 'rgba(247,147,26,0.15)',
+                    borderWidth: 2.5, fill: true, tension: 0.3,
+                    pointRadius: 0, pointHoverRadius: 5
+                },
+                {
+                    label: 'Eingezahlt (€)',
+                    data: invested,
+                    borderColor: '#8b949e',
+                    borderWidth: 2, fill: false, tension: 0.1,
+                    pointRadius: 0, pointHoverRadius: 5,
+                    borderDash: [5,5]
+                }
+            ]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: {
+                legend: { labels: { color: '#8b949e', usePointStyle: true, padding: 16 } },
+                tooltip: { callbacks: { label: ctx => ctx.dataset.label + ': €' + Math.round(ctx.parsed.y).toLocaleString('de') } }
+            },
+            scales: {
+                x: { ticks: { color: '#8b949e', maxTicksLimit: 8 }, grid: { color: 'rgba(139,148,158,0.08)' } },
+                y: { ticks: { color: '#8b949e', callback: v => '€' + (v/1000).toFixed(0) + 'k' }, grid: { color: 'rgba(139,148,158,0.08)' } }
+            }
+        }
+    });
+}
+
+// ── 3. Halving Countdown ──────────────────────────
+function updateHalving() {
+    // Nächstes Halving: Block 1.050.000
+    // Letztes Halving: Block 840.000 am 19./20. April 2024
+    // Seitdem ca. 2 Jahre vergangen → aktuelle Blockhöhe ≈ 944.000
+    // Zieldatum für Halving #5: ca. 20. April 2028 10:00 UTC
+    const halvingDate = new Date('2028-04-20T10:00:00Z');
+    const prevHalvingDate = new Date('2024-04-20T00:00:00Z');
+    const now = new Date();
+    const diff = halvingDate - now;
+
+    if (diff <= 0) {
+        document.getElementById('hvDays').textContent = '0';
+        document.getElementById('hvHours').textContent = '00';
+        document.getElementById('hvMinutes').textContent = '00';
+        document.getElementById('hvSeconds').textContent = '00';
+        return;
+    }
+
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+    const minutes = Math.floor((diff / (1000 * 60)) % 60);
+    const seconds = Math.floor((diff / 1000) % 60);
+
+    document.getElementById('hvDays').textContent = days.toLocaleString('de');
+    document.getElementById('hvHours').textContent = String(hours).padStart(2, '0');
+    document.getElementById('hvMinutes').textContent = String(minutes).padStart(2, '0');
+    document.getElementById('hvSeconds').textContent = String(seconds).padStart(2, '0');
+
+    // Blockhöhe schätzen (ca. 144 Blöcke/Tag)
+    const daysSincePrev = (now - prevHalvingDate) / (1000 * 60 * 60 * 24);
+    const currentBlock = 840000 + Math.floor(daysSincePrev * 144);
+    const remaining = 1050000 - currentBlock;
+    document.getElementById('hvCurrentBlock').textContent = currentBlock.toLocaleString('de');
+    document.getElementById('hvRemaining').textContent = remaining.toLocaleString('de');
+    document.getElementById('hvDate').textContent = '20. Apr 2028';
+
+    // Progress (von Halving 4 zu 5 = 210.000 Blöcke)
+    const progress = ((currentBlock - 840000) / 210000) * 100;
+    document.getElementById('hvProgressFill').style.width = Math.min(100, Math.max(0, progress)) + '%';
+}
+
+// ── 4. UTXO Dust Rechner ──────────────────────────
+function calcDust() {
+    const sats = +document.getElementById('dustSats').value || 0;
+    const feeRate = +document.getElementById('dustFeeRate').value || 0;
+    const inputs = +document.getElementById('dustInputs').value || 1;
+    const outputs = +document.getElementById('dustOutputs').value || 2;
+
+    // SegWit TX-Größen-Schätzung (vBytes): 10.5 overhead + 68 pro Input + 31 pro Output
+    const txSize = Math.round(10.5 + inputs * 68 + outputs * 31);
+    const fee = txSize * feeRate;
+    const btcEur = +document.getElementById('btcEurRate').value || 95000;
+    const feeEur = (fee / 100000000) * btcEur;
+    const pct = sats > 0 ? (fee / sats) * 100 : 0;
+
+    document.getElementById('dustTxSize').textContent = txSize + ' vB';
+    document.getElementById('dustFeeTotal').textContent = fee.toLocaleString('de') + ' sat';
+    document.getElementById('dustFeeEur').textContent = '€' + feeEur.toFixed(2);
+    document.getElementById('dustPct').textContent = pct.toFixed(1) + '%';
+
+    const verdict = document.getElementById('dustVerdict');
+    if (sats === 0 || feeRate === 0) {
+        verdict.className = 'dust-result';
+        verdict.textContent = 'Gib deinen UTXO-Betrag und die Fee-Rate ein';
+    } else if (pct < 1) {
+        verdict.className = 'dust-result ok';
+        verdict.innerHTML = `<div>✅ Alles gut — Fees sind vernachlässigbar</div><div class="big">${pct.toFixed(2)}%</div><div style="font-weight:400; color:var(--text-dim);">Deine Transaktion ist wirtschaftlich</div>`;
+    } else if (pct < 10) {
+        verdict.className = 'dust-result warning';
+        verdict.innerHTML = `<div>⚠️ Moderate Fees — überlege gut</div><div class="big">${pct.toFixed(1)}%</div><div style="font-weight:400; color:var(--text-dim);">Fee frisst ${pct.toFixed(1)}% deines UTXOs — ggf. bei niedrigeren Fees warten</div>`;
+    } else if (pct < 50) {
+        verdict.className = 'dust-result danger';
+        verdict.innerHTML = `<div>🔥 Hohe Fees — nicht empfohlen</div><div class="big">${pct.toFixed(1)}%</div><div style="font-weight:400; color:var(--text-dim);">Warte auf ruhigere Zeiten im Mempool oder konsolidiere mehrere UTXOs</div>`;
+    } else {
+        verdict.className = 'dust-result danger';
+        verdict.innerHTML = `<div>💀 Das ist Dust — unbewegbar</div><div class="big">${pct.toFixed(0)}%</div><div style="font-weight:400; color:var(--text-dim);">Die Fee ist höher als der UTXO-Wert. Warten oder als verloren betrachten.</div>`;
+    }
+}
+
+// ═══════════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════════
 document.addEventListener('DOMContentLoaded', async () => {
     renderCityList();
     initCharts();
     await renderWorldMap();
+
+    // Tools init
+    updateHalving();
+    setInterval(updateHalving, 1000);
+    calcDust();
+    simulateDca();
 });
 </script>
 </body>

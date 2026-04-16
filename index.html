@@ -784,6 +784,7 @@
                 <div class="label">Du brauchst</div>
                 <div class="big-num" id="simpleNeededBtc">—</div>
                 <div class="label" id="simpleNeededSats">—</div>
+                <div class="label" id="simpleFutureBtcPrice" style="color:var(--green); margin-top:0.5rem; font-size:0.85rem;">—</div>
 
                 <div id="simpleProgress" style="margin:1.5rem auto; max-width:500px;">
                     <div style="display:flex; justify-content:space-between; font-size:0.8rem; margin-bottom:0.4rem;">
@@ -905,6 +906,7 @@
                 <div class="label">Ziel-Stack für deine Freiheit</div>
                 <div class="big-num" id="neededBtc">—</div>
                 <div class="label" id="neededSats">—</div>
+                <div class="label" id="futureBtcPriceDisplay" style="color:var(--green); margin-top:0.5rem; font-size:0.85rem;">—</div>
 
                 <div id="stackProgress" style="margin:1.5rem auto; max-width:500px;">
                     <div style="display:flex; justify-content:space-between; font-size:0.8rem; margin-bottom:0.4rem;">
@@ -1514,15 +1516,17 @@ function selectCity(name) {
     const btn = document.getElementById('btn-' + c.city.replace(/\s/g,'-'));
     if (btn) btn.classList.add('active');
 
-    const btcPrice = 95000;
+    const btcPrice = liveBtcEur || 95000;
     const annualCost = c.cost * 12;
     const safeWithdrawal = 0.035; // 3.5% rule
     const neededEur = annualCost / safeWithdrawal;
-    const neededBtc = neededEur / btcPrice;
-    const neededSats = Math.round(neededBtc * 100000000);
     const monthlySaving = 500;
     const btcCagr = 0.30;
-    const yearsToGoal = Math.log(neededEur / (monthlySaving * 12)) / Math.log(1 + btcCagr);
+    const yearsToGoal = Math.max(1, Math.log(neededEur / (monthlySaving * 12)) / Math.log(1 + btcCagr));
+    // Projizierter BTC-Preis nach yearsToGoal Jahren
+    const futureBtcPrice = btcPrice * Math.pow(1 + btcCagr, yearsToGoal);
+    const neededBtc = neededEur / futureBtcPrice;
+    const neededSats = Math.round(neededBtc * 100000000);
 
     document.getElementById('mapCity').textContent = c.city;
     document.getElementById('mapCountry').textContent = c.country + ' · ' + c.continent;
@@ -1776,9 +1780,8 @@ function calcSimpleRetirement() {
 
     const annualExpense = monthlyExpense * 12;
     const neededEur = annualExpense / WITHDRAWAL;
-    const neededBtc = neededEur / btcPrice;
-    const neededSats = Math.round(neededBtc * 100000000);
 
+    // Simulation: Stack wachsen lassen bis Ziel erreicht
     const existingEur = existingBtc * btcPrice;
     const monthlyRate = Math.pow(1 + CAGR, 1/12) - 1;
 
@@ -1795,12 +1798,22 @@ function calcSimpleRetirement() {
 
     const years = months / 12;
     const freeYear = new Date().getFullYear() + Math.ceil(years);
-    const progressPct = Math.min(100, (existingEur / neededEur) * 100);
+
+    // PROJIZIERTER BTC-Preis bei Rente (Preis wächst mit demselben CAGR)
+    const futureBtcPrice = btcPrice * Math.pow(1 + CAGR, years);
+    const neededBtcAtRetirement = neededEur / futureBtcPrice;
+    const neededSats = Math.round(neededBtcAtRetirement * 100000000);
+
+    // Progress: vorhandene BTC vs benötigte BTC bei Rente
+    const progressPct = neededBtcAtRetirement > 0
+        ? Math.min(100, (existingBtc / neededBtcAtRetirement) * 100)
+        : 0;
 
     // Ergebnis anzeigen
     document.getElementById('simpleResult').style.display = 'block';
-    document.getElementById('simpleNeededBtc').textContent = neededBtc.toFixed(2) + ' BTC';
+    document.getElementById('simpleNeededBtc').textContent = neededBtcAtRetirement.toFixed(2) + ' BTC';
     document.getElementById('simpleNeededSats').textContent = neededSats.toLocaleString('de') + ' Satoshis';
+    document.getElementById('simpleFutureBtcPrice').textContent = '📈 Proj. BTC-Preis bei Rente: €' + Math.round(futureBtcPrice).toLocaleString('de');
 
     // Progress
     document.getElementById('simpleProgressFill').style.width = progressPct + '%';
@@ -1866,8 +1879,6 @@ function calculateRetirement() {
 
     const annualExpense = monthlyExpense * 12;
     const neededEur = annualExpense / withdrawalRate;
-    const neededBtc = neededEur / btcPrice;
-    const neededSats = Math.round(neededBtc * 100000000);
 
     // Startwert: vorhandener Stack in EUR
     const existingEur = existingBtc * btcPrice;
@@ -1894,6 +1905,11 @@ function calculateRetirement() {
     const retireAgeActual = currentAge + years;
     const roi = totalInvested > 0 ? ((neededEur / totalInvested - 1) * 100) : 0;
 
+    // PROJIZIERTER BTC-Preis bei Rente (Preis wächst mit demselben CAGR)
+    const futureBtcPrice = btcPrice * Math.pow(1 + btcCagr, years);
+    const neededBtc = neededEur / futureBtcPrice;
+    const neededSats = Math.round(neededBtc * 100000000);
+
     // Progress bar (vorhandener Stack vs Ziel)
     const progressPct = Math.min(100, (existingEur / neededEur) * 100);
 
@@ -1905,6 +1921,7 @@ function calculateRetirement() {
     document.getElementById('calcResult').style.display = 'block';
     document.getElementById('neededBtc').textContent = neededBtc.toFixed(4) + ' BTC';
     document.getElementById('neededSats').textContent = neededSats.toLocaleString('de') + ' Satoshis';
+    document.getElementById('futureBtcPriceDisplay').textContent = '📈 Proj. BTC-Preis bei Rente: €' + Math.round(futureBtcPrice).toLocaleString('de');
 
     // Progress bar
     document.getElementById('stackProgressFill').style.width = progressPct + '%';

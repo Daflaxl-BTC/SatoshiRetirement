@@ -91,7 +91,7 @@
             transform: translate(-50%, -50%);
             width: 500px; height: 500px;
             z-index: 0; pointer-events: none;
-            opacity: 0.45;
+            opacity: 0.55;
         }
         #btcPlanetWrap canvas { display: block; width: 100%; height: 100%; }
         @media (max-width: 768px) {
@@ -2498,8 +2498,8 @@ function initBtcPlanet() {
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     wrap.appendChild(renderer.domElement);
 
-    // === Sphere of particles ===
-    const particleCount = 3000;
+    // === Sphere of particles (sparse, visible dots) ===
+    const particleCount = 1200;
     const positions = new Float32Array(particleCount * 3);
     const colors = new Float32Array(particleCount * 3);
     const sizes = new Float32Array(particleCount);
@@ -2520,7 +2520,7 @@ function initBtcPlanet() {
         colors[i * 3 + 1] = 0.58 + t * 0.25;        // G (orange to yellow)
         colors[i * 3 + 2] = 0.1 + t * 0.15;         // B
 
-        sizes[i] = 1.5 + Math.random() * 1.5;
+        sizes[i] = 1.2 + Math.random() * 1.0;
     }
 
     const sphereGeo = new THREE.BufferGeometry();
@@ -2537,9 +2537,12 @@ function initBtcPlanet() {
             void main() {
                 vColor = color;
                 vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
-                // Fade particles on back of sphere
-                vAlpha = smoothstep(-1.5, 0.5, position.z * 0.5 + 0.5);
-                gl_PointSize = size * (200.0 / -mvPosition.z);
+                // Only show front-facing particles, fade at edges
+                vec3 viewDir = normalize(-mvPosition.xyz);
+                vec3 normal = normalize(normalMatrix * normalize(position));
+                float facing = dot(viewDir, normal);
+                vAlpha = smoothstep(0.0, 0.4, facing);
+                gl_PointSize = size * (180.0 / -mvPosition.z);
                 gl_Position = projectionMatrix * mvPosition;
             }
         `,
@@ -2549,20 +2552,20 @@ function initBtcPlanet() {
             void main() {
                 float d = length(gl_PointCoord - 0.5) * 2.0;
                 if (d > 1.0) discard;
-                float glow = 1.0 - d * d;
-                gl_FragColor = vec4(vColor, glow * vAlpha * 0.7);
+                float glow = exp(-3.0 * d * d);
+                gl_FragColor = vec4(vColor, glow * vAlpha * 0.9);
             }
         `,
         transparent: true,
         depthWrite: false,
-        blending: THREE.NormalBlending
+        blending: THREE.AdditiveBlending
     });
 
     const sphere = new THREE.Points(sphereGeo, sphereMat);
     scene.add(sphere);
 
     // === Bitcoin "₿" shape in center (flat ring of brighter particles) ===
-    const btcCount = 600;
+    const btcCount = 300;
     const btcPos = new Float32Array(btcCount * 3);
     const btcCol = new Float32Array(btcCount * 3);
     const btcSizes = new Float32Array(btcCount);

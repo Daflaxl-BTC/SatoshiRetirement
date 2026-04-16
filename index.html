@@ -1,0 +1,1131 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Satoshi Retirement — Lebe von Bitcoin. Geh früh in Rente.</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+    <style>
+        :root {
+            --orange: #f7931a;
+            --orange-light: #fdb94d;
+            --orange-dark: #c77600;
+            --dark: #0d1117;
+            --dark2: #161b22;
+            --dark3: #1c2333;
+            --dark4: #252d3a;
+            --text: #e6edf3;
+            --text-dim: #8b949e;
+            --green: #3fb950;
+            --red: #f85149;
+            --blue: #58a6ff;
+            --purple: #bc8cff;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--dark);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        h1, h2, h3, h4 { font-family: 'Space Grotesk', sans-serif; }
+
+        /* ═══════ NAV ═══════ */
+        nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+            background: rgba(13,17,23,0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(247,147,26,0.15);
+            padding: 0 2rem;
+        }
+        nav .inner {
+            max-width: 1400px; margin: 0 auto;
+            display: flex; align-items: center; justify-content: space-between;
+            height: 64px;
+        }
+        nav .logo {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 800; font-size: 1.3rem;
+            background: linear-gradient(135deg, var(--orange), var(--orange-light));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        nav .logo span { -webkit-text-fill-color: var(--text); }
+        nav ul { list-style: none; display: flex; gap: 2rem; }
+        nav a {
+            color: var(--text-dim); text-decoration: none; font-size: 0.9rem;
+            font-weight: 500; transition: color 0.2s;
+        }
+        nav a:hover { color: var(--orange); }
+        .mobile-menu { display: none; background: none; border: none; color: var(--text); font-size: 1.5rem; cursor: pointer; }
+
+        /* ═══════ HERO ═══════ */
+        .hero {
+            min-height: 100vh; display: flex; align-items: center; justify-content: center;
+            text-align: center; padding: 8rem 2rem 4rem;
+            position: relative; overflow: hidden;
+        }
+        .hero::before {
+            content: ''; position: absolute; top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background: radial-gradient(ellipse at 50% 30%, rgba(247,147,26,0.08) 0%, transparent 60%);
+            animation: pulse 8s ease-in-out infinite alternate;
+        }
+        @keyframes pulse {
+            0% { opacity: 0.5; transform: scale(1); }
+            100% { opacity: 1; transform: scale(1.1); }
+        }
+        .hero-content { position: relative; max-width: 900px; }
+        .hero-badge {
+            display: inline-flex; align-items: center; gap: 0.5rem;
+            background: rgba(247,147,26,0.1); border: 1px solid rgba(247,147,26,0.3);
+            border-radius: 50px; padding: 0.5rem 1.2rem;
+            font-size: 0.85rem; color: var(--orange); margin-bottom: 2rem;
+        }
+        .hero-badge .dot {
+            width: 8px; height: 8px; border-radius: 50%;
+            background: var(--green); animation: blink 2s infinite;
+        }
+        @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+        .hero h1 {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 900; line-height: 1.1; margin-bottom: 1.5rem;
+        }
+        .hero h1 .highlight {
+            background: linear-gradient(135deg, var(--orange), var(--orange-light));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .hero p {
+            font-size: 1.2rem; color: var(--text-dim); max-width: 650px;
+            margin: 0 auto 2.5rem; line-height: 1.8;
+        }
+        .hero-stats {
+            display: flex; justify-content: center; gap: 3rem;
+            margin-top: 3rem; flex-wrap: wrap;
+        }
+        .hero-stat { text-align: center; }
+        .hero-stat .num {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2rem; font-weight: 800; color: var(--orange);
+        }
+        .hero-stat .label { font-size: 0.8rem; color: var(--text-dim); margin-top: 0.3rem; }
+
+        .btn {
+            display: inline-flex; align-items: center; gap: 0.5rem;
+            background: linear-gradient(135deg, var(--orange), var(--orange-dark));
+            color: #fff; padding: 1rem 2.5rem; border-radius: 12px;
+            text-decoration: none; font-weight: 700; font-size: 1rem;
+            border: none; cursor: pointer; transition: all 0.3s;
+            box-shadow: 0 4px 24px rgba(247,147,26,0.3);
+        }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(247,147,26,0.4); }
+        .btn-outline {
+            background: transparent; border: 2px solid var(--orange);
+            color: var(--orange); box-shadow: none; margin-left: 1rem;
+        }
+        .btn-outline:hover { background: rgba(247,147,26,0.1); }
+
+        /* ═══════ SECTIONS ═══════ */
+        section { padding: 6rem 2rem; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .section-label {
+            display: inline-block; font-size: 0.75rem; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 3px;
+            color: var(--orange); margin-bottom: 1rem;
+        }
+        .section-title {
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            font-weight: 800; margin-bottom: 1rem;
+        }
+        .section-desc {
+            color: var(--text-dim); font-size: 1.05rem;
+            max-width: 700px; margin-bottom: 3rem;
+        }
+
+        /* ═══════ COMPARISON SECTION ═══════ */
+        .comparison-grid {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 2rem; margin-top: 2rem;
+        }
+        .chart-card {
+            background: var(--dark2); border: 1px solid var(--dark4);
+            border-radius: 16px; padding: 2rem; position: relative; overflow: hidden;
+        }
+        .chart-card.full { grid-column: 1 / -1; }
+        .chart-card h3 {
+            font-size: 1.1rem; margin-bottom: 0.3rem;
+        }
+        .chart-card .subtitle { color: var(--text-dim); font-size: 0.85rem; margin-bottom: 1.5rem; }
+        .chart-card canvas { width: 100% !important; }
+
+        /* ═══════ CALCULATOR ═══════ */
+        .calc-wrapper {
+            background: var(--dark2); border: 1px solid var(--dark4);
+            border-radius: 20px; padding: 2.5rem; margin-top: 2rem;
+        }
+        .calc-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;
+        }
+        .input-group { margin-bottom: 1rem; }
+        .input-group label {
+            display: block; font-size: 0.85rem; font-weight: 600;
+            color: var(--text-dim); margin-bottom: 0.5rem;
+        }
+        .input-group input, .input-group select {
+            width: 100%; padding: 0.8rem 1rem;
+            background: var(--dark3); border: 1px solid var(--dark4);
+            border-radius: 10px; color: var(--text); font-size: 1rem;
+            outline: none; transition: border-color 0.2s;
+            font-family: 'Inter', sans-serif;
+        }
+        .input-group input:focus, .input-group select:focus {
+            border-color: var(--orange);
+        }
+        .input-group select option { background: var(--dark3); }
+
+        .result-card {
+            background: linear-gradient(135deg, rgba(247,147,26,0.1), rgba(247,147,26,0.02));
+            border: 1px solid rgba(247,147,26,0.2);
+            border-radius: 16px; padding: 2rem; margin-top: 2rem;
+            text-align: center;
+        }
+        .result-card .big-num {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 3rem; font-weight: 800; color: var(--orange);
+            margin: 0.5rem 0;
+        }
+        .result-card .label { color: var(--text-dim); font-size: 0.9rem; }
+        .result-row {
+            display: flex; justify-content: space-around; gap: 1rem;
+            margin-top: 1.5rem; flex-wrap: wrap;
+        }
+        .result-item { text-align: center; min-width: 120px; }
+        .result-item .val {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.4rem; font-weight: 700;
+        }
+        .result-item .val.green { color: var(--green); }
+        .result-item .val.orange { color: var(--orange); }
+        .result-item .val.blue { color: var(--blue); }
+        .result-item .lbl { font-size: 0.75rem; color: var(--text-dim); margin-top: 0.2rem; }
+
+        /* ═══════ MAP / RETIREMENT SECTION ═══════ */
+        .map-section { background: var(--dark2); }
+        .map-container {
+            display: grid; grid-template-columns: 350px 1fr; gap: 2rem;
+            margin-top: 2rem; min-height: 600px;
+        }
+        .map-sidebar {
+            background: var(--dark3); border-radius: 16px; padding: 1.5rem;
+            overflow-y: auto; max-height: 700px;
+        }
+        .map-search {
+            width: 100%; padding: 0.8rem 1rem;
+            background: var(--dark); border: 1px solid var(--dark4);
+            border-radius: 10px; color: var(--text); font-size: 0.9rem;
+            outline: none; margin-bottom: 1rem;
+            font-family: 'Inter', sans-serif;
+        }
+        .map-search:focus { border-color: var(--orange); }
+        .continent-group { margin-bottom: 1rem; }
+        .continent-title {
+            font-size: 0.75rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 2px; color: var(--orange); margin-bottom: 0.5rem;
+            padding-bottom: 0.3rem; border-bottom: 1px solid var(--dark4);
+        }
+        .city-btn {
+            width: 100%; padding: 0.7rem 0.8rem; margin-bottom: 0.3rem;
+            background: transparent; border: 1px solid transparent;
+            border-radius: 8px; color: var(--text); font-size: 0.85rem;
+            cursor: pointer; text-align: left; transition: all 0.2s;
+            display: flex; justify-content: space-between; align-items: center;
+            font-family: 'Inter', sans-serif;
+        }
+        .city-btn:hover { background: var(--dark4); }
+        .city-btn.active { background: rgba(247,147,26,0.1); border-color: var(--orange); }
+        .city-btn .cost { color: var(--orange); font-weight: 600; font-size: 0.8rem; }
+
+        .map-display {
+            background: var(--dark3); border-radius: 16px; padding: 2rem;
+            display: flex; flex-direction: column;
+        }
+        .map-svg-wrapper {
+            flex: 1; display: flex; align-items: center; justify-content: center;
+            min-height: 350px; position: relative;
+        }
+        .map-svg-wrapper svg { width: 100%; max-height: 400px; }
+        .map-info-panel {
+            background: var(--dark); border-radius: 12px; padding: 1.5rem; margin-top: 1.5rem;
+        }
+        .map-info-panel h3 { font-size: 1.5rem; margin-bottom: 0.3rem; }
+        .map-info-panel .country-name { color: var(--text-dim); margin-bottom: 1rem; }
+        .map-info-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 1rem;
+        }
+        .map-info-item {
+            background: var(--dark3); border-radius: 10px; padding: 1rem; text-align: center;
+        }
+        .map-info-item .val {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.3rem; font-weight: 700;
+        }
+        .map-info-item .lbl {
+            font-size: 0.75rem; color: var(--text-dim); margin-top: 0.2rem;
+        }
+
+        /* ═══════ STRATEGY SECTION (MicroStrategy) ═══════ */
+        .strategy-cards {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem; margin-top: 2rem;
+        }
+        .strat-card {
+            background: var(--dark2); border: 1px solid var(--dark4);
+            border-radius: 16px; padding: 2rem; transition: all 0.3s;
+        }
+        .strat-card:hover {
+            border-color: var(--orange);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+        .strat-card .icon {
+            width: 48px; height: 48px; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem; margin-bottom: 1rem;
+        }
+        .strat-card h4 { font-size: 1.1rem; margin-bottom: 0.5rem; }
+        .strat-card p { color: var(--text-dim); font-size: 0.9rem; line-height: 1.7; }
+        .strat-card .ticker {
+            display: inline-block; margin-top: 1rem; padding: 0.3rem 0.8rem;
+            background: rgba(247,147,26,0.1); border-radius: 6px;
+            color: var(--orange); font-weight: 700; font-size: 0.85rem;
+        }
+
+        /* ═══════ BUSINESS PLAN ═══════ */
+        .biz-plan {
+            background: var(--dark2); border: 1px solid var(--dark4);
+            border-radius: 20px; padding: 3rem; margin-top: 2rem;
+        }
+        .biz-step {
+            display: flex; gap: 2rem; margin-bottom: 2.5rem;
+            padding-bottom: 2.5rem; border-bottom: 1px solid var(--dark4);
+        }
+        .biz-step:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        .biz-step-num {
+            flex-shrink: 0; width: 56px; height: 56px;
+            background: linear-gradient(135deg, var(--orange), var(--orange-dark));
+            border-radius: 14px; display: flex; align-items: center; justify-content: center;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 800; font-size: 1.3rem;
+        }
+        .biz-step h4 { font-size: 1.15rem; margin-bottom: 0.4rem; }
+        .biz-step p { color: var(--text-dim); font-size: 0.95rem; line-height: 1.8; }
+
+        /* ═══════ FOOTER ═══════ */
+        footer {
+            text-align: center; padding: 3rem 2rem;
+            border-top: 1px solid var(--dark4);
+            color: var(--text-dim); font-size: 0.85rem;
+        }
+        footer .logo-foot {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 800; font-size: 1.2rem; color: var(--orange);
+            margin-bottom: 0.5rem;
+        }
+
+        /* ═══════ RESPONSIVE ═══════ */
+        @media (max-width: 900px) {
+            nav ul { display: none; }
+            .mobile-menu { display: block; }
+            .comparison-grid { grid-template-columns: 1fr; }
+            .calc-grid { grid-template-columns: 1fr; }
+            .map-container { grid-template-columns: 1fr; }
+            .map-sidebar { max-height: 300px; }
+            .hero-stats { gap: 1.5rem; }
+            .biz-step { flex-direction: column; gap: 1rem; }
+        }
+
+        /* ═══════ SCROLLBAR ═══════ */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--dark); }
+        ::-webkit-scrollbar-thumb { background: var(--dark4); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--orange); }
+
+        /* ═══════ ANIMATED COUNTER ═══════ */
+        .counter-section {
+            display: flex; justify-content: center; gap: 4rem;
+            padding: 4rem 2rem; flex-wrap: wrap;
+            background: linear-gradient(180deg, var(--dark) 0%, var(--dark2) 100%);
+        }
+        .counter-box { text-align: center; }
+        .counter-box .counter-val {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 3rem; font-weight: 800;
+        }
+        .counter-box .counter-label { font-size: 0.85rem; color: var(--text-dim); margin-top: 0.3rem; }
+        .counter-val.btc-color { color: var(--orange); }
+        .counter-val.red-color { color: var(--red); }
+        .counter-val.green-color { color: var(--green); }
+        .counter-val.blue-color { color: var(--blue); }
+
+        .glow-line {
+            height: 2px; background: linear-gradient(90deg, transparent, var(--orange), transparent);
+            margin: 0 auto; max-width: 600px;
+        }
+
+        /* ═══════ WHY BITCOIN GRID ═══════ */
+        .why-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 1.5rem; margin-top: 2rem;
+        }
+        .why-card {
+            background: var(--dark2); border: 1px solid var(--dark4);
+            border-radius: 14px; padding: 1.8rem; transition: all 0.3s;
+        }
+        .why-card:hover { border-color: rgba(247,147,26,0.4); }
+        .why-card .emoji { font-size: 2rem; margin-bottom: 0.8rem; }
+        .why-card h4 { margin-bottom: 0.4rem; }
+        .why-card p { color: var(--text-dim); font-size: 0.88rem; line-height: 1.7; }
+
+        .tab-bar {
+            display: flex; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap;
+        }
+        .tab-btn {
+            padding: 0.5rem 1.2rem; border-radius: 8px;
+            background: var(--dark3); border: 1px solid var(--dark4);
+            color: var(--text-dim); font-size: 0.85rem; cursor: pointer;
+            transition: all 0.2s; font-family: 'Inter', sans-serif; font-weight: 500;
+        }
+        .tab-btn.active, .tab-btn:hover {
+            background: rgba(247,147,26,0.15); border-color: var(--orange); color: var(--orange);
+        }
+
+        .slider-container { margin: 1rem 0; }
+        .slider-container input[type="range"] {
+            -webkit-appearance: none; width: 100%; height: 6px;
+            background: var(--dark4); border-radius: 3px; outline: none;
+        }
+        .slider-container input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none; width: 20px; height: 20px;
+            border-radius: 50%; background: var(--orange); cursor: pointer;
+        }
+        .slider-val {
+            display: flex; justify-content: space-between;
+            font-size: 0.8rem; color: var(--text-dim); margin-top: 0.3rem;
+        }
+    </style>
+</head>
+<body>
+
+<!-- ═══════ NAVIGATION ═══════ -->
+<nav>
+    <div class="inner">
+        <div class="logo">₿ Satoshi<span>Retirement</span></div>
+        <ul>
+            <li><a href="#compare">Vergleich</a></li>
+            <li><a href="#calculator">Rechner</a></li>
+            <li><a href="#map">Weltkarte</a></li>
+            <li><a href="#strategy">Strategie</a></li>
+            <li><a href="#plan">Businessplan</a></li>
+        </ul>
+        <button class="mobile-menu" onclick="document.querySelector('nav ul').style.display = document.querySelector('nav ul').style.display === 'flex' ? 'none' : 'flex'">☰</button>
+    </div>
+</nav>
+
+<!-- ═══════ HERO ═══════ -->
+<section class="hero">
+    <div class="hero-content">
+        <div class="hero-badge">
+            <span class="dot"></span>
+            Bitcoin Netzwerk aktiv — Block <span id="blockHeight">894,217</span>
+        </div>
+        <h1>Hör auf zu arbeiten.<br><span class="highlight">Lebe von Satoshis.</span></h1>
+        <p>Während Aktien, Immobilien und Anleihen gegen die Inflation verlieren, hat Bitcoin in den letzten 15 Jahren jede Anlageklasse geschlagen. Berechne hier, wann du in Rente gehen kannst.</p>
+        <div>
+            <a href="#calculator" class="btn">₿ Renten-Rechner starten</a>
+            <a href="#compare" class="btn btn-outline">Vergleich ansehen</a>
+        </div>
+        <div class="hero-stats">
+            <div class="hero-stat">
+                <div class="num" id="btcPrice">$104,832</div>
+                <div class="label">Bitcoin Kurs (Live)</div>
+            </div>
+            <div class="hero-stat">
+                <div class="num">+31,000%</div>
+                <div class="label">Rendite seit 2013</div>
+            </div>
+            <div class="hero-stat">
+                <div class="num">21 Mio.</div>
+                <div class="label">Max. Supply (fix)</div>
+            </div>
+            <div class="hero-stat">
+                <div class="num">4 Jahre</div>
+                <div class="label">Halving Zyklus</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════ COUNTER STRIP ═══════ -->
+<div class="glow-line"></div>
+<div class="counter-section">
+    <div class="counter-box">
+        <div class="counter-val btc-color">₿ 1 = 100,000,000 Sats</div>
+        <div class="counter-label">Jeder Satoshi zählt</div>
+    </div>
+</div>
+<div class="glow-line"></div>
+
+<!-- ═══════ WHY BITCOIN ═══════ -->
+<section id="why">
+    <div class="container">
+        <span class="section-label">Warum Bitcoin?</span>
+        <h2 class="section-title">Das härteste Geld der Menschheit</h2>
+        <p class="section-desc">Bitcoin vereint die besten Eigenschaften von Gold, Immobilien und Technologie-Aktien — ohne deren Nachteile.</p>
+        <div class="why-grid">
+            <div class="why-card">
+                <div class="emoji">🔒</div>
+                <h4>Absolut knapp</h4>
+                <p>Maximal 21 Millionen Coins — für immer. Keine Zentralbank kann mehr drucken. Das macht Bitcoin zum härtesten Geld, das je existiert hat.</p>
+            </div>
+            <div class="why-card">
+                <div class="emoji">🌍</div>
+                <h4>Global & grenzenlos</h4>
+                <p>Sende Wert an jeden Ort der Welt in Minuten, 24/7, 365 Tage. Keine Bank, kein Mittelsmann, keine Öffnungszeiten.</p>
+            </div>
+            <div class="why-card">
+                <div class="emoji">📈</div>
+                <h4>Beste Performance</h4>
+                <p>Bitcoin hat in 12 der letzten 15 Jahre jede andere Anlageklasse geschlagen — Aktien, Gold, Immobilien, Anleihen.</p>
+            </div>
+            <div class="why-card">
+                <div class="emoji">🛡️</div>
+                <h4>Dezentral & sicher</h4>
+                <p>Kein CEO, keine Regierung, kein Single Point of Failure. Das Netzwerk wird von Hunderttausenden Nodes gesichert.</p>
+            </div>
+            <div class="why-card">
+                <div class="emoji">⚡</div>
+                <h4>Lightning schnell</h4>
+                <p>Das Lightning Network ermöglicht sofortige Mikrozahlungen für Centbeträge — perfekt für den täglichen Gebrauch.</p>
+            </div>
+            <div class="why-card">
+                <div class="emoji">🏦</div>
+                <h4>Selbst-Verwahrung</h4>
+                <p>Not your keys, not your coins. Du bist deine eigene Bank. Kein Dritter kann dein Vermögen einfrieren oder beschlagnahmen.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════ COMPARISON SECTION ═══════ -->
+<section id="compare" style="background: var(--dark2);">
+    <div class="container">
+        <span class="section-label">Investment-Vergleich</span>
+        <h2 class="section-title">Bitcoin vs. traditionelle Anlageklassen</h2>
+        <p class="section-desc">Was wäre aus $10.000 geworden, investiert vor 10 Jahren? Die Zahlen sprechen für sich.</p>
+        <div class="comparison-grid">
+            <div class="chart-card full">
+                <h3>$10.000 investiert — 10-Jahres-Performance</h3>
+                <div class="subtitle">Bitcoin vs. S&P 500 vs. Gold vs. Immobilien vs. Anleihen vs. Private Equity</div>
+                <div style="height: 400px; position: relative;">
+                    <canvas id="performanceChart"></canvas>
+                </div>
+            </div>
+            <div class="chart-card">
+                <h3>Jährliche Rendite (CAGR)</h3>
+                <div class="subtitle">Durchschnittliche jährliche Wachstumsrate</div>
+                <div style="height: 300px; position: relative;">
+                    <canvas id="cagrChart"></canvas>
+                </div>
+            </div>
+            <div class="chart-card">
+                <h3>Kaufkraftverlust durch Inflation</h3>
+                <div class="subtitle">Realer Wert von $10.000 nach 10 Jahren (nach Inflation)</div>
+                <div style="height: 300px; position: relative;">
+                    <canvas id="inflationChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════ BITCOIN CALCULATOR ═══════ -->
+<section id="calculator">
+    <div class="container">
+        <span class="section-label">Bitcoin-Rechner</span>
+        <h2 class="section-title">Berechne deine Freiheit</h2>
+        <p class="section-desc">Finde heraus, wie viel Bitcoin du brauchst, um von deinem Stack leben zu können — angepasst an dein Wunschland.</p>
+
+        <div class="calc-wrapper">
+            <div class="calc-grid">
+                <div>
+                    <div class="input-group">
+                        <label>💰 Monatliche Ausgaben (€)</label>
+                        <input type="number" id="monthlyExpense" value="2000" min="500" max="50000">
+                    </div>
+                    <div class="input-group">
+                        <label>📅 Gewünschtes Rentenalter</label>
+                        <input type="number" id="retireAge" value="40" min="20" max="80">
+                    </div>
+                    <div class="input-group">
+                        <label>🎂 Dein aktuelles Alter</label>
+                        <input type="number" id="currentAge" value="25" min="16" max="80">
+                    </div>
+                </div>
+                <div>
+                    <div class="input-group">
+                        <label>📈 Erwartetes BTC CAGR (%)</label>
+                        <input type="number" id="btcGrowth" value="30" min="5" max="100">
+                    </div>
+                    <div class="input-group">
+                        <label>💸 Monatliche Sparrate (€)</label>
+                        <input type="number" id="monthlySaving" value="500" min="50" max="50000">
+                    </div>
+                    <div class="input-group">
+                        <label>₿ Aktueller Bitcoin-Preis (€)</label>
+                        <input type="number" id="btcPriceInput" value="95000" min="1000">
+                    </div>
+                </div>
+            </div>
+            <div style="text-align:center; margin-top:1.5rem;">
+                <button class="btn" onclick="calculateRetirement()">₿ Berechnen</button>
+            </div>
+
+            <div class="result-card" id="calcResult" style="display:none;">
+                <div class="label">Du brauchst einen Stack von</div>
+                <div class="big-num" id="neededBtc">—</div>
+                <div class="label" id="neededSats">—</div>
+                <div class="result-row">
+                    <div class="result-item">
+                        <div class="val orange" id="resYears">—</div>
+                        <div class="lbl">Jahre bis zur Freiheit</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="val green" id="resStackVal">—</div>
+                        <div class="lbl">Geschätzter Stackwert bei Rente</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="val blue" id="resMonthly">—</div>
+                        <div class="lbl">Monatlich passives Einkommen</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="val orange" id="resTotalInvest">—</div>
+                        <div class="lbl">Total investiert</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════ WORLD MAP RETIREMENT SECTION ═══════ -->
+<section id="map" class="map-section">
+    <div class="container">
+        <span class="section-label">Weltkarte</span>
+        <h2 class="section-title">Retire Anywhere — Lebe überall auf der Welt</h2>
+        <p class="section-desc">Wähle eine Stadt und finde heraus, wie viel Bitcoin du brauchst, um dort sorgenfrei zu leben.</p>
+
+        <div class="map-container">
+            <div class="map-sidebar">
+                <input type="text" class="map-search" placeholder="🔍 Stadt oder Land suchen..." id="citySearch" oninput="filterCities()">
+                <div id="cityList"></div>
+            </div>
+            <div class="map-display">
+                <div class="map-svg-wrapper" id="worldMap"></div>
+                <div class="map-info-panel" id="mapInfo">
+                    <h3 id="mapCity">Wähle eine Stadt</h3>
+                    <div class="country-name" id="mapCountry">Klicke links auf eine Stadt, um die Analyse zu sehen</div>
+                    <div class="map-info-grid" id="mapGrid" style="display:none;">
+                        <div class="map-info-item">
+                            <div class="val orange" id="mapCost">—</div>
+                            <div class="lbl">Monatliche Kosten</div>
+                        </div>
+                        <div class="map-info-item">
+                            <div class="val btc-color" id="mapBtc">—</div>
+                            <div class="lbl">Benötigter BTC Stack</div>
+                        </div>
+                        <div class="map-info-item">
+                            <div class="val green" id="mapSats">—</div>
+                            <div class="lbl">In Satoshis</div>
+                        </div>
+                        <div class="map-info-item">
+                            <div class="val blue" id="mapEur">—</div>
+                            <div class="lbl">Stackwert in EUR</div>
+                        </div>
+                        <div class="map-info-item">
+                            <div class="val orange" id="mapYears">—</div>
+                            <div class="lbl">Rente nach (Jahre Sparen)</div>
+                        </div>
+                        <div class="map-info-item">
+                            <div class="val green" id="mapQuality">—</div>
+                            <div class="lbl">Lebensqualität</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════ MICROSTRATEGY / STRATEGY SECTION ═══════ -->
+<section id="strategy">
+    <div class="container">
+        <span class="section-label">Bitcoin-Strategie</span>
+        <h2 class="section-title">MicroStrategy — Die Bitcoin-Aktie</h2>
+        <p class="section-desc">Für alle, die über traditionelle Broker Bitcoin-Exposure wollen: Strategy (ehemals MicroStrategy) hält die größten Bitcoin-Reserven aller börsengehandelten Unternehmen.</p>
+
+        <div class="strategy-cards">
+            <div class="strat-card">
+                <div class="icon" style="background: rgba(247,147,26,0.15);">₿</div>
+                <h4>MSTR — Strategy Aktie</h4>
+                <p>Michael Saylors Unternehmen hält über 500.000 BTC in der Treasury. Die Aktie bietet gehebeltes Bitcoin-Exposure über jedes normale Depot.</p>
+                <span class="ticker">NASDAQ: MSTR</span>
+            </div>
+            <div class="strat-card">
+                <div class="icon" style="background: rgba(88,166,255,0.15);">📊</div>
+                <h4>MSTX — 2x Leveraged ETF</h4>
+                <p>Für aggressivere Investoren: Der MSTX ETF bietet die doppelte tägliche Rendite der Strategy-Aktie — maximales Bitcoin-Beta.</p>
+                <span class="ticker">MSTX · 2x Daily Long</span>
+            </div>
+            <div class="strat-card">
+                <div class="icon" style="background: rgba(63,185,80,0.15);">🏛️</div>
+                <h4>STRK — Strategy Preferred</h4>
+                <p>Preferred Stock mit 8% Dividende, konvertierbar in MSTR. Kombination aus regelmäßigem Einkommen und Bitcoin-Upside.</p>
+                <span class="ticker">STRK · Preferred</span>
+            </div>
+            <div class="strat-card">
+                <div class="icon" style="background: rgba(188,140,255,0.15);">📈</div>
+                <h4>STRF — Strike Preferred</h4>
+                <p>Feste 10% Dividende, Senior-Position. Ideal für konservativere Anleger, die trotzdem am Bitcoin-Ökosystem teilhaben wollen.</p>
+                <span class="ticker">STRF · 10% Fixed</span>
+            </div>
+            <div class="strat-card">
+                <div class="icon" style="background: rgba(247,147,26,0.15);">🌐</div>
+                <h4>Bitcoin Spot ETFs</h4>
+                <p>IBIT (BlackRock), FBTC (Fidelity), ARKB — regulierte Bitcoin ETFs für institutionelle und Retail-Investoren. Einfachster Einstieg über die Börse.</p>
+                <span class="ticker">IBIT · FBTC · ARKB</span>
+            </div>
+            <div class="strat-card">
+                <div class="icon" style="background: rgba(248,81,73,0.15);">⛏️</div>
+                <h4>Bitcoin Mining Aktien</h4>
+                <p>MARA, RIOT, CLSK — Mining-Unternehmen bieten gehebeltes BTC-Exposure plus Infrastruktur-Wachstum. Höheres Risiko, höhere Chance.</p>
+                <span class="ticker">MARA · RIOT · CLSK</span>
+            </div>
+        </div>
+
+        <!-- NAV Premium / Discount Section -->
+        <div class="chart-card full" style="margin-top:2rem;">
+            <h3>Warum nicht einfach direkt Bitcoin kaufen?</h3>
+            <div class="subtitle">Der beste Weg: Bitcoin direkt halten (Self-Custody) + optionales Exposure über Aktien/ETFs für dein Depot.</div>
+            <div style="padding: 2rem 0;">
+                <div class="result-row">
+                    <div class="result-item">
+                        <div class="val green">Self-Custody</div>
+                        <div class="lbl">Du besitzt ECHTE Bitcoin</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="val orange">Kein Gegenparteirisiko</div>
+                        <div class="lbl">Niemand kann dir nehmen</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="val blue">24/7 verfügbar</div>
+                        <div class="lbl">Keine Börsenzeiten</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="val" style="color: var(--purple);">Global nutzbar</div>
+                        <div class="lbl">In jedem Land der Welt</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════ BUSINESS PLAN SECTION ═══════ -->
+<section id="plan" style="background: var(--dark2);">
+    <div class="container">
+        <span class="section-label">Der Plan</span>
+        <h2 class="section-title">Dein Businessplan zur finanziellen Freiheit</h2>
+        <p class="section-desc">In 6 Schritten vom Gehalt-zu-Gehalt-Leben zur vollständigen Unabhängigkeit. Kein Glück nötig — nur Disziplin und Bitcoin.</p>
+
+        <div class="biz-plan">
+            <div class="biz-step">
+                <div class="biz-step-num">1</div>
+                <div>
+                    <h4>Notgroschen aufbauen (Monat 1–3)</h4>
+                    <p>Bevor du investierst: 3 Monatsgehälter als Sicherheitspolster in Fiat halten. Das gibt dir Ruhe und verhindert, dass du Bitcoin in einem Dip verkaufen musst. Reduziere alle unnötigen Ausgaben, kündige Abos die du nicht brauchst.</p>
+                </div>
+            </div>
+            <div class="biz-step">
+                <div class="biz-step-num">2</div>
+                <div>
+                    <h4>DCA starten — Dollar Cost Averaging (ab Monat 4)</h4>
+                    <p>Kaufe regelmäßig Bitcoin — wöchentlich oder monatlich, egal ob der Kurs hoch oder niedrig steht. Nutze Plattformen wie Relai, Pocket Bitcoin oder eine Bitcoin-Only Exchange. Automatisiere den Sparplan. Kein Trading, kein Timing. Stacking Sats ist die Strategie.</p>
+                </div>
+            </div>
+            <div class="biz-step">
+                <div class="biz-step-num">3</div>
+                <div>
+                    <h4>Self-Custody einrichten (ab 0.01 BTC)</h4>
+                    <p>Sobald dein Stack wächst, transferiere deine Bitcoin auf ein Hardware-Wallet (Ledger, Trezor, BitBox, ColdCard). Schreibe deine 24 Seed-Wörter auf Stahl (Seedplate). Lerne über Multi-Sig für größere Beträge. Not your keys, not your coins!</p>
+                </div>
+            </div>
+            <div class="biz-step">
+                <div class="biz-step-num">4</div>
+                <div>
+                    <h4>Einkommen steigern & Sparrate maximieren</h4>
+                    <p>Jeder Euro, den du mehr sparst, bringt dich schneller ans Ziel. Investiere in deine Skills, starte Nebenprojekte, verhandle dein Gehalt. Erhöhe deine Sparrate auf mindestens 30–50% deines Einkommens. Der Unterschied zwischen 15% und 50% Sparrate ist gewaltig.</p>
+                </div>
+            </div>
+            <div class="biz-step">
+                <div class="biz-step-num">5</div>
+                <div>
+                    <h4>Ziel-Stack definieren & Retirement-Land wählen</h4>
+                    <p>Nutze den Rechner oben: Berechne, wie viel BTC du für dein Wunschleben brauchst. Wähle ein Land mit niedrigen Lebenskosten und Bitcoin-freundlicher Regulierung (Portugal, El Salvador, Thailand, Georgien). Plane dein zweites Leben.</p>
+                </div>
+            </div>
+            <div class="biz-step">
+                <div class="biz-step-num">6</div>
+                <div>
+                    <h4>Retirement — Lebe von deinem Stack</h4>
+                    <p>Wenn dein Stack den Zielwert erreicht hat, beginne kontrolliert Satoshis zu entnehmen (max. 3–4% pro Jahr). Nutze Bitcoin-gesicherte Kredite, um steuerfrei Liquidität zu schaffen, ohne zu verkaufen. Genieße dein Leben — du hast es verdient. Willkommen in der Satoshi-Rente.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Risk Disclaimer -->
+        <div style="margin-top: 2rem; padding: 1.5rem; background: rgba(248,81,73,0.05); border: 1px solid rgba(248,81,73,0.15); border-radius: 12px;">
+            <p style="color: var(--text-dim); font-size: 0.85rem; line-height: 1.8;">
+                <strong style="color: var(--red);">⚠️ Disclaimer:</strong> Dies ist keine Finanzberatung. Bitcoin ist volatil und vergangene Performance garantiert keine zukünftigen Ergebnisse. Investiere nur, was du bereit bist zu verlieren. DYOR — Do Your Own Research. Diese Seite dient der Bildung und Unterhaltung. Spreche mit einem Finanzberater, bevor du Investmententscheidungen triffst.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════ FOOTER ═══════ -->
+<footer>
+    <div class="logo-foot">₿ SatoshiRetirement</div>
+    <p>Gebaut mit ❤️ und dem Glauben an hartes Geld.</p>
+    <p style="margin-top: 0.5rem;">„The Times 03/Jan/2009 Chancellor on brink of second bailout for banks" — Satoshi Nakamoto</p>
+</footer>
+
+<script>
+// ═══════════════════════════════════════════════════
+// DATA: Cities with cost of living
+// ═══════════════════════════════════════════════════
+const cityData = [
+    // Europa
+    { city: "Berlin", country: "Deutschland", continent: "Europa", cost: 2200, quality: "⭐⭐⭐⭐", lat: 52.5, lon: 13.4 },
+    { city: "München", country: "Deutschland", continent: "Europa", cost: 2800, quality: "⭐⭐⭐⭐⭐", lat: 48.1, lon: 11.6 },
+    { city: "Hamburg", country: "Deutschland", continent: "Europa", cost: 2400, quality: "⭐⭐⭐⭐", lat: 53.5, lon: 10.0 },
+    { city: "Wien", country: "Österreich", continent: "Europa", cost: 2100, quality: "⭐⭐⭐⭐⭐", lat: 48.2, lon: 16.4 },
+    { city: "Zürich", country: "Schweiz", continent: "Europa", cost: 4500, quality: "⭐⭐⭐⭐⭐", lat: 47.4, lon: 8.5 },
+    { city: "Lissabon", country: "Portugal", continent: "Europa", cost: 1500, quality: "⭐⭐⭐⭐", lat: 38.7, lon: -9.1 },
+    { city: "Porto", country: "Portugal", continent: "Europa", cost: 1200, quality: "⭐⭐⭐⭐", lat: 41.1, lon: -8.6 },
+    { city: "Barcelona", country: "Spanien", continent: "Europa", cost: 1800, quality: "⭐⭐⭐⭐", lat: 41.4, lon: 2.2 },
+    { city: "Madrid", country: "Spanien", continent: "Europa", cost: 1700, quality: "⭐⭐⭐⭐", lat: 40.4, lon: -3.7 },
+    { city: "Paris", country: "Frankreich", continent: "Europa", cost: 2600, quality: "⭐⭐⭐⭐", lat: 48.9, lon: 2.3 },
+    { city: "Amsterdam", country: "Niederlande", continent: "Europa", cost: 2500, quality: "⭐⭐⭐⭐", lat: 52.4, lon: 4.9 },
+    { city: "Prag", country: "Tschechien", continent: "Europa", cost: 1300, quality: "⭐⭐⭐⭐", lat: 50.1, lon: 14.4 },
+    { city: "Budapest", country: "Ungarn", continent: "Europa", cost: 1100, quality: "⭐⭐⭐", lat: 47.5, lon: 19.0 },
+    { city: "Bukarest", country: "Rumänien", continent: "Europa", cost: 900, quality: "⭐⭐⭐", lat: 44.4, lon: 26.1 },
+    { city: "Warschau", country: "Polen", continent: "Europa", cost: 1200, quality: "⭐⭐⭐", lat: 52.2, lon: 21.0 },
+    { city: "Tbilisi", country: "Georgien", continent: "Europa", cost: 800, quality: "⭐⭐⭐", lat: 41.7, lon: 44.8 },
+    { city: "London", country: "UK", continent: "Europa", cost: 3200, quality: "⭐⭐⭐⭐", lat: 51.5, lon: -0.1 },
+    { city: "Tallinn", country: "Estland", continent: "Europa", cost: 1400, quality: "⭐⭐⭐⭐", lat: 59.4, lon: 24.7 },
+
+    // Asien
+    { city: "Bangkok", country: "Thailand", continent: "Asien", cost: 900, quality: "⭐⭐⭐⭐", lat: 13.8, lon: 100.5 },
+    { city: "Chiang Mai", country: "Thailand", continent: "Asien", cost: 650, quality: "⭐⭐⭐", lat: 18.8, lon: 99.0 },
+    { city: "Bali (Ubud)", country: "Indonesien", continent: "Asien", cost: 750, quality: "⭐⭐⭐⭐", lat: -8.5, lon: 115.3 },
+    { city: "Kuala Lumpur", country: "Malaysia", continent: "Asien", cost: 850, quality: "⭐⭐⭐⭐", lat: 3.1, lon: 101.7 },
+    { city: "Ho-Chi-Minh-Stadt", country: "Vietnam", continent: "Asien", cost: 700, quality: "⭐⭐⭐", lat: 10.8, lon: 106.7 },
+    { city: "Tokio", country: "Japan", continent: "Asien", cost: 2000, quality: "⭐⭐⭐⭐⭐", lat: 35.7, lon: 139.7 },
+    { city: "Singapur", country: "Singapur", continent: "Asien", cost: 3000, quality: "⭐⭐⭐⭐⭐", lat: 1.3, lon: 103.8 },
+    { city: "Dubai", country: "VAE", continent: "Asien", cost: 2500, quality: "⭐⭐⭐⭐⭐", lat: 25.2, lon: 55.3 },
+    { city: "Taipei", country: "Taiwan", continent: "Asien", cost: 1100, quality: "⭐⭐⭐⭐", lat: 25.0, lon: 121.5 },
+
+    // Amerika
+    { city: "Mexico City", country: "Mexiko", continent: "Amerika", cost: 900, quality: "⭐⭐⭐", lat: 19.4, lon: -99.1 },
+    { city: "Playa del Carmen", country: "Mexiko", continent: "Amerika", cost: 1100, quality: "⭐⭐⭐⭐", lat: 20.6, lon: -87.1 },
+    { city: "Medellín", country: "Kolumbien", continent: "Amerika", cost: 800, quality: "⭐⭐⭐⭐", lat: 6.2, lon: -75.6 },
+    { city: "Bogotá", country: "Kolumbien", continent: "Amerika", cost: 750, quality: "⭐⭐⭐", lat: 4.7, lon: -74.1 },
+    { city: "Buenos Aires", country: "Argentinien", continent: "Amerika", cost: 700, quality: "⭐⭐⭐⭐", lat: -34.6, lon: -58.4 },
+    { city: "San José", country: "Costa Rica", continent: "Amerika", cost: 1200, quality: "⭐⭐⭐⭐", lat: 9.9, lon: -84.1 },
+    { city: "Panama City", country: "Panama", continent: "Amerika", cost: 1300, quality: "⭐⭐⭐⭐", lat: 9.0, lon: -79.5 },
+    { city: "El Zonte", country: "El Salvador", continent: "Amerika", cost: 600, quality: "⭐⭐⭐", lat: 13.5, lon: -89.4 },
+    { city: "New York", country: "USA", continent: "Amerika", cost: 4000, quality: "⭐⭐⭐⭐", lat: 40.7, lon: -74.0 },
+    { city: "Miami", country: "USA", continent: "Amerika", cost: 2800, quality: "⭐⭐⭐⭐", lat: 25.8, lon: -80.2 },
+    { city: "Austin", country: "USA", continent: "Amerika", cost: 2200, quality: "⭐⭐⭐⭐", lat: 30.3, lon: -97.7 },
+
+    // Afrika
+    { city: "Kapstadt", country: "Südafrika", continent: "Afrika", cost: 900, quality: "⭐⭐⭐⭐", lat: -33.9, lon: 18.4 },
+    { city: "Nairobi", country: "Kenia", continent: "Afrika", cost: 700, quality: "⭐⭐⭐", lat: -1.3, lon: 36.8 },
+    { city: "Dakar", country: "Senegal", continent: "Afrika", cost: 800, quality: "⭐⭐⭐", lat: 14.7, lon: -17.5 },
+
+    // Ozeanien
+    { city: "Sydney", country: "Australien", continent: "Ozeanien", cost: 3000, quality: "⭐⭐⭐⭐⭐", lat: -33.9, lon: 151.2 },
+    { city: "Auckland", country: "Neuseeland", continent: "Ozeanien", cost: 2200, quality: "⭐⭐⭐⭐", lat: -36.8, lon: 174.8 },
+];
+
+// ═══════════════════════════════════════════════════
+// RENDER CITY LIST
+// ═══════════════════════════════════════════════════
+function renderCityList(filter = '') {
+    const container = document.getElementById('cityList');
+    const continents = ['Europa', 'Asien', 'Amerika', 'Afrika', 'Ozeanien'];
+    let html = '';
+    const f = filter.toLowerCase();
+
+    continents.forEach(cont => {
+        const cities = cityData.filter(c =>
+            c.continent === cont &&
+            (f === '' || c.city.toLowerCase().includes(f) || c.country.toLowerCase().includes(f))
+        );
+        if (cities.length === 0) return;
+        html += `<div class="continent-group">
+            <div class="continent-title">${cont}</div>`;
+        cities.sort((a,b) => a.cost - b.cost).forEach(c => {
+            html += `<button class="city-btn" onclick="selectCity('${c.city}')" id="btn-${c.city.replace(/\s/g,'-')}">
+                <span>${c.city}, ${c.country}</span>
+                <span class="cost">€${c.cost.toLocaleString('de')}/mo</span>
+            </button>`;
+        });
+        html += '</div>';
+    });
+    container.innerHTML = html;
+}
+function filterCities() {
+    renderCityList(document.getElementById('citySearch').value);
+}
+
+// ═══════════════════════════════════════════════════
+// SELECT CITY
+// ═══════════════════════════════════════════════════
+function selectCity(name) {
+    const c = cityData.find(x => x.city === name);
+    if (!c) return;
+
+    // Highlight button
+    document.querySelectorAll('.city-btn').forEach(b => b.classList.remove('active'));
+    const btn = document.getElementById('btn-' + c.city.replace(/\s/g,'-'));
+    if (btn) btn.classList.add('active');
+
+    const btcPrice = 95000;
+    const annualCost = c.cost * 12;
+    const safeWithdrawal = 0.035; // 3.5% rule
+    const neededEur = annualCost / safeWithdrawal;
+    const neededBtc = neededEur / btcPrice;
+    const neededSats = Math.round(neededBtc * 100000000);
+    const monthlySaving = 500;
+    const btcCagr = 0.30;
+    const yearsToGoal = Math.log(neededEur / (monthlySaving * 12)) / Math.log(1 + btcCagr);
+
+    document.getElementById('mapCity').textContent = c.city;
+    document.getElementById('mapCountry').textContent = c.country + ' · ' + c.continent;
+    document.getElementById('mapCost').textContent = '€' + c.cost.toLocaleString('de') + '/mo';
+    document.getElementById('mapBtc').textContent = neededBtc.toFixed(2) + ' BTC';
+    document.getElementById('mapSats').textContent = neededSats.toLocaleString('de') + ' Sats';
+    document.getElementById('mapEur').textContent = '€' + Math.round(neededEur).toLocaleString('de');
+    document.getElementById('mapYears').textContent = Math.max(1, Math.round(yearsToGoal)) + ' Jahre';
+    document.getElementById('mapQuality').textContent = c.quality;
+    document.getElementById('mapGrid').style.display = 'grid';
+
+    // Update map highlight
+    renderWorldMap(c);
+}
+
+// ═══════════════════════════════════════════════════
+// SIMPLE WORLD MAP (SVG dots)
+// ═══════════════════════════════════════════════════
+function renderWorldMap(highlight = null) {
+    const w = 800, h = 420;
+    let svg = `<svg viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg">`;
+    // Background grid
+    svg += `<rect width="${w}" height="${h}" fill="#1c2333" rx="12"/>`;
+    // Grid lines
+    for (let x = 0; x <= w; x += 40) svg += `<line x1="${x}" y1="0" x2="${x}" y2="${h}" stroke="#252d3a" stroke-width="0.5"/>`;
+    for (let y = 0; y <= h; y += 40) svg += `<line x1="0" y1="${y}" x2="${w}" y2="${y}" stroke="#252d3a" stroke-width="0.5"/>`;
+    // Equator
+    svg += `<line x1="0" y1="${h/2}" x2="${w}" y2="${h/2}" stroke="#252d3a" stroke-width="1" stroke-dasharray="4"/>`;
+
+    // Project cities
+    cityData.forEach(c => {
+        const x = ((c.lon + 180) / 360) * w;
+        const y = ((90 - c.lat) / 180) * h;
+        const isHL = highlight && highlight.city === c.city;
+        const r = isHL ? 8 : 4;
+        const fill = isHL ? '#f7931a' : 'rgba(247,147,26,0.4)';
+        const stroke = isHL ? '#fdb94d' : 'none';
+
+        if (isHL) {
+            svg += `<circle cx="${x}" cy="${y}" r="16" fill="rgba(247,147,26,0.15)">
+                <animate attributeName="r" values="12;20;12" dur="2s" repeatCount="indefinite"/>
+                <animate attributeName="opacity" values="0.6;0.1;0.6" dur="2s" repeatCount="indefinite"/>
+            </circle>`;
+        }
+        svg += `<circle cx="${x}" cy="${y}" r="${r}" fill="${fill}" stroke="${stroke}" stroke-width="${isHL ? 2 : 0}"
+            style="cursor:pointer" onclick="selectCity('${c.city}')"/>`;
+        if (isHL) {
+            svg += `<text x="${x}" y="${y - 14}" text-anchor="middle" fill="#f7931a" font-size="11" font-weight="700" font-family="Space Grotesk,sans-serif">${c.city}</text>`;
+        }
+    });
+
+    svg += '</svg>';
+    document.getElementById('worldMap').innerHTML = svg;
+}
+
+// ═══════════════════════════════════════════════════
+// RETIREMENT CALCULATOR
+// ═══════════════════════════════════════════════════
+function calculateRetirement() {
+    const monthlyExpense = +document.getElementById('monthlyExpense').value;
+    const retireAge = +document.getElementById('retireAge').value;
+    const currentAge = +document.getElementById('currentAge').value;
+    const btcCagr = +document.getElementById('btcGrowth').value / 100;
+    const monthlySaving = +document.getElementById('monthlySaving').value;
+    const btcPrice = +document.getElementById('btcPriceInput').value;
+
+    const annualExpense = monthlyExpense * 12;
+    const safeRate = 0.035;
+    const neededEur = annualExpense / safeRate;
+    const neededBtc = neededEur / btcPrice;
+    const neededSats = Math.round(neededBtc * 100000000);
+
+    // Compound growth: how many years of saving to reach neededEur worth of BTC
+    // FV = PMT * [((1+r)^n - 1) / r] where r = monthly CAGR
+    const monthlyRate = Math.pow(1 + btcCagr, 1/12) - 1;
+    let stack = 0;
+    let months = 0;
+    const maxMonths = 600; // 50 years max
+    while (stack < neededEur && months < maxMonths) {
+        stack = stack * (1 + monthlyRate) + monthlySaving;
+        months++;
+    }
+    const years = (months / 12).toFixed(1);
+    const totalInvested = monthlySaving * months;
+
+    document.getElementById('calcResult').style.display = 'block';
+    document.getElementById('neededBtc').textContent = neededBtc.toFixed(4) + ' BTC';
+    document.getElementById('neededSats').textContent = neededSats.toLocaleString('de') + ' Satoshis';
+    document.getElementById('resYears').textContent = years + ' Jahre';
+    document.getElementById('resStackVal').textContent = '€' + Math.round(neededEur).toLocaleString('de');
+    document.getElementById('resMonthly').textContent = '€' + monthlyExpense.toLocaleString('de') + '/mo';
+    document.getElementById('resTotalInvest').textContent = '€' + Math.round(totalInvested).toLocaleString('de');
+}
+
+// ═══════════════════════════════════════════════════
+// CHARTS — Performance Comparison
+// ═══════════════════════════════════════════════════
+function initCharts() {
+    // --- 10 Year Performance ---
+    const years = ['2016','2017','2018','2019','2020','2021','2022','2023','2024','2025','2026'];
+    const btcGrowth =    [10000, 45000, 18000, 38000, 95000, 310000, 105000, 180000, 420000, 650000, 950000];
+    const sp500Growth =  [10000, 12200, 11600, 15100, 17800, 22100, 18500, 23500, 28000, 31000, 33000];
+    const goldGrowth =   [10000, 11300, 11100, 13000, 15200, 14500, 14800, 16000, 19500, 25000, 26000];
+    const realEstate =   [10000, 10700, 11200, 11800, 12100, 14000, 13200, 13800, 14500, 15200, 15800];
+    const bonds =        [10000, 10200, 10500, 10900, 11200, 10800, 9800, 10200, 10600, 11000, 11200];
+    const pe =           [10000, 11500, 11000, 13500, 15000, 19000, 14500, 17000, 20000, 22000, 24000];
+
+    new Chart(document.getElementById('performanceChart'), {
+        type: 'line',
+        data: {
+            labels: years,
+            datasets: [
+                { label: 'Bitcoin', data: btcGrowth, borderColor: '#f7931a', backgroundColor: 'rgba(247,147,26,0.1)', borderWidth: 3, fill: true, tension: 0.3 },
+                { label: 'S&P 500', data: sp500Growth, borderColor: '#58a6ff', borderWidth: 2, tension: 0.3 },
+                { label: 'Gold', data: goldGrowth, borderColor: '#fdb94d', borderWidth: 2, tension: 0.3 },
+                { label: 'Immobilien', data: realEstate, borderColor: '#3fb950', borderWidth: 2, tension: 0.3 },
+                { label: 'Anleihen', data: bonds, borderColor: '#8b949e', borderWidth: 2, tension: 0.3 },
+                { label: 'Private Equity', data: pe, borderColor: '#bc8cff', borderWidth: 2, tension: 0.3 }
+            ]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: {
+                legend: { labels: { color: '#8b949e', usePointStyle: true, padding: 20 } },
+                tooltip: {
+                    callbacks: {
+                        label: ctx => ctx.dataset.label + ': $' + ctx.parsed.y.toLocaleString()
+                    }
+                }
+            },
+            scales: {
+                x: { ticks: { color: '#8b949e' }, grid: { color: 'rgba(139,148,158,0.1)' } },
+                y: {
+                    type: 'logarithmic', ticks: {
+                        color: '#8b949e',
+                        callback: v => '$' + v.toLocaleString()
+                    },
+                    grid: { color: 'rgba(139,148,158,0.1)' }
+                }
+            }
+        }
+    });
+
+    // --- CAGR Bar Chart ---
+    new Chart(document.getElementById('cagrChart'), {
+        type: 'bar',
+        data: {
+            labels: ['Bitcoin', 'S&P 500', 'Gold', 'Immobilien', 'Anleihen', 'Private Equity'],
+            datasets: [{
+                label: 'CAGR %',
+                data: [55, 12.7, 10, 4.7, 1.2, 9.2],
+                backgroundColor: ['#f7931a', '#58a6ff', '#fdb94d', '#3fb950', '#8b949e', '#bc8cff'],
+                borderRadius: 8,
+                barPercentage: 0.6,
+            }]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            indexAxis: 'y',
+            plugins: {
+                legend: { display: false },
+                tooltip: { callbacks: { label: ctx => ctx.parsed.x + '% p.a.' } }
+            },
+            scales: {
+                x: { ticks: { color: '#8b949e', callback: v => v + '%' }, grid: { color: 'rgba(139,148,158,0.1)' } },
+                y: { ticks: { color: '#e6edf3' }, grid: { display: false } }
+            }
+        }
+    });
+
+    // --- Inflation Chart ---
+    new Chart(document.getElementById('inflationChart'), {
+        type: 'doughnut',
+        data: {
+            labels: ['Bitcoin-Kaufkraft', 'S&P 500', 'Gold', 'Immobilien', 'Anleihen (Verlust)', 'Cash (Verlust)'],
+            datasets: [{
+                data: [950000, 33000, 26000, 15800, 11200, 7400],
+                backgroundColor: ['#f7931a', '#58a6ff', '#fdb94d', '#3fb950', '#8b949e', '#f85149'],
+                borderWidth: 0,
+            }]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            cutout: '60%',
+            plugins: {
+                legend: { position: 'bottom', labels: { color: '#8b949e', usePointStyle: true, padding: 12, font: { size: 11 } } },
+                tooltip: {
+                    callbacks: {
+                        label: ctx => ctx.label + ': $' + ctx.parsed.toLocaleString() + ' (aus $10.000)'
+                    }
+                }
+            }
+        }
+    });
+}
+
+// ═══════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+    renderCityList();
+    renderWorldMap();
+    initCharts();
+});
+</script>
+</body>
+</html>

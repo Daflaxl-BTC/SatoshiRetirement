@@ -6,6 +6,8 @@
     <title>Satoshi Retirement — Lebe von Bitcoin. Geh früh in Rente.</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
     <style>
         :root {
             --orange: #f7931a;
@@ -935,46 +937,216 @@ function selectCity(name) {
 
     // Update map highlight
     renderWorldMap(c);
+
+    // Scroll map into view on mobile
+    if (window.innerWidth < 900) {
+        document.getElementById('worldMap').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
 }
 
 // ═══════════════════════════════════════════════════
-// SIMPLE WORLD MAP (SVG dots)
+// WORLD MAP (D3 + TopoJSON — echte Ländergrenzen)
 // ═══════════════════════════════════════════════════
-function renderWorldMap(highlight = null) {
-    const w = 800, h = 420;
-    let svg = `<svg viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg">`;
-    // Background grid
-    svg += `<rect width="${w}" height="${h}" fill="#1c2333" rx="12"/>`;
-    // Grid lines
-    for (let x = 0; x <= w; x += 40) svg += `<line x1="${x}" y1="0" x2="${x}" y2="${h}" stroke="#252d3a" stroke-width="0.5"/>`;
-    for (let y = 0; y <= h; y += 40) svg += `<line x1="0" y1="${y}" x2="${w}" y2="${y}" stroke="#252d3a" stroke-width="0.5"/>`;
-    // Equator
-    svg += `<line x1="0" y1="${h/2}" x2="${w}" y2="${h/2}" stroke="#252d3a" stroke-width="1" stroke-dasharray="4"/>`;
+let worldGeoData = null;
+let currentHighlight = null;
 
-    // Project cities
+async function loadWorldData() {
+    if (worldGeoData) return worldGeoData;
+    try {
+        const res = await fetch('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json');
+        const topology = await res.json();
+        worldGeoData = topojson.feature(topology, topology.objects.countries);
+        return worldGeoData;
+    } catch (e) {
+        console.error('World map load failed:', e);
+        return null;
+    }
+}
+
+function costToColor(cost) {
+    // Grün (günstig) → Gelb → Orange → Rot (teuer)
+    if (cost < 900) return '#3fb950';
+    if (cost < 1500) return '#d4a72c';
+    if (cost < 2500) return '#f7931a';
+    return '#f85149';
+}
+
+async function renderWorldMap(highlight = null) {
+    currentHighlight = highlight;
+    const container = document.getElementById('worldMap');
+
+    if (!worldGeoData) {
+        container.innerHTML = '<div style="color:var(--text-dim);padding:3rem;text-align:center;">🌍 Lade Weltkarte ...</div>';
+        await loadWorldData();
+    }
+
+    const w = 900, h = 480;
+    const projection = d3.geoNaturalEarth1()
+        .scale(170)
+        .translate([w / 2, h / 2 + 10]);
+    const pathGen = d3.geoPath(projection);
+
+    // Clear container
+    container.innerHTML = '';
+    const svg = d3.select(container).append('svg')
+        .attr('viewBox', `0 0 ${w} ${h}`)
+        .attr('preserveAspectRatio', 'xMidYMid meet')
+        .style('width', '100%')
+        .style('height', 'auto')
+        .style('max-height', '520px');
+
+    // Defs — gradients + glow filter
+    const defs = svg.append('defs');
+    const glow = defs.append('filter')
+        .attr('id', 'glow')
+        .attr('x', '-50%').attr('y', '-50%')
+        .attr('width', '200%').attr('height', '200%');
+    glow.append('feGaussianBlur').attr('stdDeviation', '3').attr('result', 'coloredBlur');
+    const feMerge = glow.append('feMerge');
+    feMerge.append('feMergeNode').attr('in', 'coloredBlur');
+    feMerge.append('feMergeNode').attr('in', 'SourceGraphic');
+
+    const oceanGrad = defs.append('radialGradient').attr('id', 'oceanGrad').attr('cx', '50%').attr('cy', '50%').attr('r', '70%');
+    oceanGrad.append('stop').attr('offset', '0%').attr('stop-color', '#1e2a40');
+    oceanGrad.append('stop').attr('offset', '100%').attr('stop-color', '#0d1420');
+
+    const landGrad = defs.append('linearGradient').attr('id', 'landGrad').attr('x1', '0%').attr('y1', '0%').attr('x2', '0%').attr('y2', '100%');
+    landGrad.append('stop').attr('offset', '0%').attr('stop-color', '#2a3448');
+    landGrad.append('stop').attr('offset', '100%').attr('stop-color', '#222b3c');
+
+    // Background (Ozean)
+    svg.append('rect')
+        .attr('width', w).attr('height', h)
+        .attr('fill', 'url(#oceanGrad)')
+        .attr('rx', 12);
+
+    // Grid / graticule (Breitengrade)
+    const graticule = d3.geoGraticule().step([20, 20]);
+    svg.append('path')
+        .datum(graticule())
+        .attr('d', pathGen)
+        .attr('fill', 'none')
+        .attr('stroke', 'rgba(255,255,255,0.03)')
+        .attr('stroke-width', 0.5);
+
+    // Countries
+    if (worldGeoData) {
+        svg.append('g')
+            .attr('class', 'countries')
+            .selectAll('path')
+            .data(worldGeoData.features)
+            .enter()
+            .append('path')
+            .attr('d', pathGen)
+            .attr('fill', 'url(#landGrad)')
+            .attr('stroke', '#0d1117')
+            .attr('stroke-width', 0.6)
+            .style('transition', 'fill 0.3s');
+    }
+
+    // City dots
+    const citiesGroup = svg.append('g').attr('class', 'cities');
+
     cityData.forEach(c => {
-        const x = ((c.lon + 180) / 360) * w;
-        const y = ((90 - c.lat) / 180) * h;
+        const coords = projection([c.lon, c.lat]);
+        if (!coords) return;
+        const [x, y] = coords;
         const isHL = highlight && highlight.city === c.city;
-        const r = isHL ? 8 : 4;
-        const fill = isHL ? '#f7931a' : 'rgba(247,147,26,0.4)';
-        const stroke = isHL ? '#fdb94d' : 'none';
+        const baseColor = costToColor(c.cost);
 
+        const cityG = citiesGroup.append('g')
+            .style('cursor', 'pointer')
+            .on('click', () => selectCity(c.city))
+            .on('mouseenter', function() {
+                d3.select(this).select('.city-dot').transition().duration(150).attr('r', isHL ? 9 : 6);
+                d3.select(this).select('.city-tooltip').style('opacity', 1);
+            })
+            .on('mouseleave', function() {
+                d3.select(this).select('.city-dot').transition().duration(150).attr('r', isHL ? 7 : 3.5);
+                if (!isHL) d3.select(this).select('.city-tooltip').style('opacity', 0);
+            });
+
+        // Puls-Animation (nur auf highlight)
         if (isHL) {
-            svg += `<circle cx="${x}" cy="${y}" r="16" fill="rgba(247,147,26,0.15)">
-                <animate attributeName="r" values="12;20;12" dur="2s" repeatCount="indefinite"/>
-                <animate attributeName="opacity" values="0.6;0.1;0.6" dur="2s" repeatCount="indefinite"/>
-            </circle>`;
+            cityG.append('circle')
+                .attr('cx', x).attr('cy', y).attr('r', 8)
+                .attr('fill', 'none')
+                .attr('stroke', '#f7931a')
+                .attr('stroke-width', 2)
+                .attr('opacity', 0.8)
+                .append('animate')
+                .attr('attributeName', 'r')
+                .attr('values', '8;28;8')
+                .attr('dur', '2.5s')
+                .attr('repeatCount', 'indefinite');
+
+            cityG.append('circle')
+                .attr('cx', x).attr('cy', y).attr('r', 8)
+                .attr('fill', 'none')
+                .attr('stroke', '#f7931a')
+                .attr('stroke-width', 1.5)
+                .attr('opacity', 0.5)
+                .append('animate')
+                .attr('attributeName', 'r')
+                .attr('values', '8;36;8')
+                .attr('dur', '2.5s')
+                .attr('begin', '0.5s')
+                .attr('repeatCount', 'indefinite');
         }
-        svg += `<circle cx="${x}" cy="${y}" r="${r}" fill="${fill}" stroke="${stroke}" stroke-width="${isHL ? 2 : 0}"
-            style="cursor:pointer" onclick="selectCity('${c.city}')"/>`;
-        if (isHL) {
-            svg += `<text x="${x}" y="${y - 14}" text-anchor="middle" fill="#f7931a" font-size="11" font-weight="700" font-family="Space Grotesk,sans-serif">${c.city}</text>`;
-        }
+
+        // Haupt-Dot
+        cityG.append('circle')
+            .attr('class', 'city-dot')
+            .attr('cx', x).attr('cy', y)
+            .attr('r', isHL ? 7 : 3.5)
+            .attr('fill', isHL ? '#f7931a' : baseColor)
+            .attr('stroke', isHL ? '#fff' : 'rgba(13,17,23,0.8)')
+            .attr('stroke-width', isHL ? 2 : 1)
+            .attr('filter', isHL ? 'url(#glow)' : null);
+
+        // Tooltip (Stadt-Name bei Hover)
+        const tooltip = cityG.append('g')
+            .attr('class', 'city-tooltip')
+            .style('opacity', isHL ? 1 : 0)
+            .style('transition', 'opacity 0.2s')
+            .style('pointer-events', 'none');
+
+        const textNode = tooltip.append('text')
+            .attr('x', x).attr('y', y - 14)
+            .attr('text-anchor', 'middle')
+            .attr('fill', '#f7931a')
+            .attr('font-family', 'Space Grotesk, sans-serif')
+            .attr('font-size', isHL ? 13 : 11)
+            .attr('font-weight', 700)
+            .attr('stroke', '#0d1117')
+            .attr('stroke-width', 3)
+            .attr('paint-order', 'stroke')
+            .text(c.city);
     });
 
-    svg += '</svg>';
-    document.getElementById('worldMap').innerHTML = svg;
+    // Legende unten
+    const legend = svg.append('g').attr('transform', `translate(20, ${h - 30})`);
+    const legItems = [
+        { c: '#3fb950', t: '< €900' },
+        { c: '#d4a72c', t: '€900–1500' },
+        { c: '#f7931a', t: '€1500–2500' },
+        { c: '#f85149', t: '> €2500' }
+    ];
+    legItems.forEach((item, i) => {
+        const g = legend.append('g').attr('transform', `translate(${i * 110}, 0)`);
+        g.append('circle').attr('r', 5).attr('fill', item.c);
+        g.append('text').attr('x', 12).attr('y', 4)
+            .attr('fill', '#8b949e').attr('font-size', 11)
+            .attr('font-family', 'Inter, sans-serif')
+            .text(item.t);
+    });
+    legend.append('text')
+        .attr('x', 0).attr('y', -10)
+        .attr('fill', '#8b949e').attr('font-size', 10)
+        .attr('font-family', 'Inter, sans-serif')
+        .attr('font-weight', 600)
+        .attr('letter-spacing', 1.5)
+        .text('LEBENSKOSTEN / MONAT');
 }
 
 // ═══════════════════════════════════════════════════
@@ -1121,10 +1293,10 @@ function initCharts() {
 // ═══════════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════════
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     renderCityList();
-    renderWorldMap();
     initCharts();
+    await renderWorldMap();
 });
 </script>
 </body>

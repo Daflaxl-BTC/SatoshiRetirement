@@ -279,6 +279,47 @@
 
         /* ═══════ MAP / RETIREMENT SECTION ═══════ */
         .map-section { background: var(--dark2); }
+        .map-params {
+            background: var(--dark3); border: 1px solid var(--dark4);
+            border-radius: 16px; padding: 1.2rem 1.5rem; margin-top: 1.5rem;
+        }
+        .map-params-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 0.9rem; flex-wrap: wrap; gap: 0.5rem;
+        }
+        .map-params-header > span {
+            font-size: 0.8rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 2px; color: var(--orange);
+        }
+        .map-params-reset {
+            background: transparent; border: 1px solid var(--dark4);
+            color: var(--text-dim); padding: 0.4rem 0.9rem;
+            border-radius: 8px; cursor: pointer; font-size: 0.78rem;
+            font-family: 'Inter', sans-serif; transition: all 0.2s;
+        }
+        .map-params-reset:hover { border-color: var(--orange); color: var(--orange); }
+        .map-params-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 0.8rem;
+        }
+        .map-param label {
+            display: block; font-size: 0.72rem; color: var(--text-dim);
+            margin-bottom: 0.3rem; font-weight: 500;
+        }
+        .map-param input {
+            width: 100%; padding: 0.55rem 0.7rem;
+            background: var(--dark); border: 1px solid var(--dark4);
+            border-radius: 8px; color: var(--text); font-size: 0.9rem;
+            font-family: 'Space Grotesk', sans-serif; font-weight: 600;
+            outline: none;
+        }
+        .map-param input:focus { border-color: var(--orange); }
+        @keyframes resultFlash {
+            0% { box-shadow: 0 0 0 0 rgba(247,147,26,0.5); }
+            50% { box-shadow: 0 0 0 8px rgba(247,147,26,0.15); }
+            100% { box-shadow: 0 0 0 0 rgba(247,147,26,0); }
+        }
+        .result-flash { animation: resultFlash 0.8s ease-out; }
         .map-container {
             display: grid; grid-template-columns: 350px 1fr; gap: 2rem;
             margin-top: 2rem; min-height: 600px;
@@ -774,6 +815,8 @@
             <li><a href="#tools">Tools</a></li>
             <li><a href="#map">Weltkarte</a></li>
             <li><a href="#strategy">Strategie</a></li>
+            <li><a href="#btc-stocks">Aktien-Vergleich</a></li>
+            <li><a href="#fixed-income">STRF-Rechner</a></li>
             <li><a href="#plan">Businessplan</a></li>
         </ul>
         <button class="mobile-menu" onclick="document.querySelector('nav ul').style.display = document.querySelector('nav ul').style.display === 'flex' ? 'none' : 'flex'">☰</button>
@@ -963,6 +1006,10 @@
                 Berechnet mit 16% jährlicher Bitcoin-Rendite · 3,5% Entnahmerate · konservative Schätzung
             </div>
 
+            <div style="text-align:center; margin-top:1.2rem;">
+                <button class="btn" onclick="calcSimpleRetirement(true)">₿ Jetzt berechnen</button>
+            </div>
+
             <!-- Simple Result -->
             <div class="result-card" id="simpleResult" style="display:none;">
                 <div class="label">Du brauchst</div>
@@ -999,6 +1046,25 @@
                     </div>
                 </div>
 
+                <!-- Zielalter-Check -->
+                <div id="simpleTargetCheck" style="display:none; margin-top:1.5rem; padding:1rem 1.5rem; background:rgba(88,166,255,0.08); border:1px solid rgba(88,166,255,0.2); border-radius:12px; text-align:left; font-size:0.9rem; color:var(--text); line-height:1.6;"></div>
+
+                <!-- Zusätzliche Details (Zielalter-abhängig) -->
+                <div class="result-row" id="simpleTargetDetails" style="display:none; margin-top:1rem;">
+                    <div class="result-item">
+                        <div class="val orange" id="simpleStackAtTarget">—</div>
+                        <div class="lbl">Stack bei Wunsch-Alter</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="val blue" id="simpleRequiredSaving">—</div>
+                        <div class="lbl">Nötige Sparrate für Wunsch-Alter</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="val green" id="simpleActualRetireAge">—</div>
+                        <div class="lbl">Tatsächliches Rentenalter</div>
+                    </div>
+                </div>
+
                 <div id="simpleHeadstart" style="display:none; margin-top:1.5rem; padding:1rem 1.5rem; background:rgba(63,185,80,0.08); border:1px solid rgba(63,185,80,0.2); border-radius:12px; text-align:left;">
                     <div style="font-size:0.9rem; color:var(--green); font-weight:600;" id="simpleHeadstartMsg">—</div>
                 </div>
@@ -1026,11 +1092,11 @@
                 <div class="calc-grid" style="margin:0;">
                     <div class="input-group" style="margin-bottom:0;">
                         <label>₿ Vorhandene Bitcoin</label>
-                        <input type="number" id="existingBtc" value="0" min="0" step="0.0001" oninput="syncStackFields('btc')">
+                        <input type="number" id="existingBtc" value="0" min="0" step="0.0001" oninput="syncStackFields('btc'); calculateRetirement();">
                     </div>
                     <div class="input-group" style="margin-bottom:0;">
                         <label>⚡ Oder in Satoshis</label>
-                        <input type="number" id="existingSats" value="0" min="0" step="1" oninput="syncStackFields('sats')">
+                        <input type="number" id="existingSats" value="0" min="0" step="1" oninput="syncStackFields('sats'); calculateRetirement();">
                     </div>
                 </div>
                 <div style="display:flex; gap:1.5rem; margin-top:0.8rem; flex-wrap:wrap;">
@@ -1043,29 +1109,29 @@
                 <div>
                     <div class="input-group">
                         <label>💰 Monatliche Ausgaben (€)</label>
-                        <input type="number" id="monthlyExpense" value="2000" min="500" max="50000">
+                        <input type="number" id="monthlyExpense" value="2000" min="500" max="50000" oninput="calculateRetirement()">
                     </div>
                     <div class="input-group">
                         <label>🎂 Dein aktuelles Alter</label>
-                        <input type="number" id="currentAge" value="25" min="16" max="80">
+                        <input type="number" id="currentAge" value="25" min="16" max="80" oninput="calculateRetirement()">
                     </div>
                     <div class="input-group">
                         <label>📅 Gewünschtes Rentenalter</label>
-                        <input type="number" id="retireAge" value="40" min="20" max="80">
+                        <input type="number" id="retireAge" value="40" min="20" max="80" oninput="calculateRetirement()">
                     </div>
                 </div>
                 <div>
                     <div class="input-group">
                         <label>💸 Monatliche Sparrate (€)</label>
-                        <input type="number" id="monthlySaving" value="500" min="50" max="50000">
+                        <input type="number" id="monthlySaving" value="500" min="50" max="50000" oninput="calculateRetirement()">
                     </div>
                     <div class="input-group">
                         <label>📈 Erwartetes BTC CAGR (%)</label>
-                        <input type="number" id="btcGrowth" value="30" min="5" max="100">
+                        <input type="number" id="btcGrowth" value="30" min="5" max="100" oninput="calculateRetirement()">
                     </div>
                     <div class="input-group">
                         <label>₿ Bitcoin-Preis (€) — Live</label>
-                        <input type="number" id="btcPriceInput" value="0" min="1000" placeholder="Wird geladen...">
+                        <input type="number" id="btcPriceInput" value="0" min="1000" placeholder="Wird geladen..." oninput="calculateRetirement(); syncStackFields('btc')">
                     </div>
                 </div>
             </div>
@@ -1073,7 +1139,7 @@
             <div class="input-group" style="margin-top:0.5rem;">
                 <label>🛡️ Safe Withdrawal Rate (% p.a.) — wie viel du jährlich entnimmst</label>
                 <div style="display:flex; align-items:center; gap:1rem;">
-                    <input type="range" id="withdrawalRate" min="2" max="6" step="0.5" value="3.5" style="flex:1;" oninput="document.getElementById('wrDisplay').textContent = this.value + '%'">
+                    <input type="range" id="withdrawalRate" min="2" max="6" step="0.5" value="3.5" style="flex:1;" oninput="document.getElementById('wrDisplay').textContent = this.value + '%'; calculateRetirement();">
                     <span id="wrDisplay" style="font-family:'Space Grotesk',sans-serif; font-weight:700; color:var(--orange); min-width:50px; text-align:right;">3.5%</span>
                 </div>
                 <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:var(--text-dim); margin-top:0.2rem;">
@@ -1118,6 +1184,24 @@
                     <div class="result-item">
                         <div class="val blue" id="resMonthly">—</div>
                         <div class="lbl">Passives Einkommen/Monat</div>
+                    </div>
+                </div>
+
+                <!-- Zielalter-Check -->
+                <div id="advTargetCheck" style="display:none; margin-top:1.5rem; padding:1rem 1.5rem; background:rgba(88,166,255,0.08); border:1px solid rgba(88,166,255,0.2); border-radius:12px; text-align:left; font-size:0.9rem; color:var(--text); line-height:1.6;"></div>
+
+                <div class="result-row" id="advTargetDetails" style="display:none; margin-top:1rem;">
+                    <div class="result-item">
+                        <div class="val orange" id="resStackAtTarget">—</div>
+                        <div class="lbl">Stack bei Wunsch-Alter</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="val blue" id="resRequiredSaving">—</div>
+                        <div class="lbl">Nötige Sparrate für Wunsch-Alter</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="val green" id="resActualRetireAge">—</div>
+                        <div class="lbl">Tatsächliches Rentenalter</div>
                     </div>
                 </div>
 
@@ -1412,7 +1496,41 @@
     <div class="container">
         <span class="section-label">Weltkarte</span>
         <h2 class="section-title">Retire Anywhere — Lebe überall auf der Welt</h2>
-        <p class="section-desc">Wähle eine Stadt und finde heraus, wie viel Bitcoin du brauchst, um dort sorgenfrei zu leben.</p>
+        <p class="section-desc">Wähle eine Stadt und finde heraus, wie viel Bitcoin du brauchst, um dort sorgenfrei zu leben. Passe deine Annahmen individuell an.</p>
+
+        <!-- ══ Parameter-Leiste (synced mit Freiheitsrechner) ══ -->
+        <div class="map-params" id="mapParams">
+            <div class="map-params-header">
+                <span>🎛️ Deine Annahmen</span>
+                <button class="map-params-reset" onclick="resetMapParams()" title="Werte aus Freiheitsrechner übernehmen">↻ Sync mit Freiheitsrechner</button>
+            </div>
+            <div class="map-params-grid">
+                <div class="map-param">
+                    <label>💸 Sparrate (€/Monat)</label>
+                    <input type="number" id="mapSaving" value="500" min="25" step="25" oninput="recalcCurrentCity()">
+                </div>
+                <div class="map-param">
+                    <label>📈 BTC CAGR (%)</label>
+                    <input type="number" id="mapCagr" value="30" min="5" max="100" step="1" oninput="recalcCurrentCity()">
+                </div>
+                <div class="map-param">
+                    <label>₿ Dein Stack (BTC)</label>
+                    <input type="number" id="mapExistingBtc" value="0" min="0" step="0.001" oninput="recalcCurrentCity()">
+                </div>
+                <div class="map-param">
+                    <label>🛡️ Entnahmerate (%)</label>
+                    <input type="number" id="mapWithdrawal" value="3.5" min="2" max="6" step="0.1" oninput="recalcCurrentCity()">
+                </div>
+                <div class="map-param">
+                    <label>🎂 Aktuelles Alter</label>
+                    <input type="number" id="mapAge" value="25" min="16" max="80" oninput="recalcCurrentCity()">
+                </div>
+                <div class="map-param">
+                    <label>🏖️ Wunsch-Alter</label>
+                    <input type="number" id="mapRetireAge" value="45" min="20" max="85" oninput="recalcCurrentCity()">
+                </div>
+            </div>
+        </div>
 
         <div class="map-container">
             <div class="map-sidebar">
@@ -1424,6 +1542,17 @@
                 <div class="map-info-panel" id="mapInfo">
                     <h3 id="mapCity">Wähle eine Stadt</h3>
                     <div class="country-name" id="mapCountry">Klicke links auf eine Stadt, um die Analyse zu sehen</div>
+
+                    <!-- Kosten-Override (pro Stadt anpassbar) -->
+                    <div id="mapCostOverride" style="display:none; margin:1rem 0; padding:0.8rem 1rem; background:var(--dark3); border:1px solid var(--dark4); border-radius:10px;">
+                        <label style="display:block; font-size:0.75rem; text-transform:uppercase; letter-spacing:1.5px; color:var(--text-dim); font-weight:700; margin-bottom:0.5rem;">💰 Lebenskosten anpassen (€/Monat)</label>
+                        <div style="display:flex; align-items:center; gap:0.8rem;">
+                            <input type="range" id="mapCostSlider" min="300" max="6000" step="50" value="2000" oninput="onCostOverride()" style="flex:1;">
+                            <input type="number" id="mapCostInput" min="100" max="20000" step="50" value="2000" oninput="onCostOverride(true)" style="width:110px;">
+                            <button onclick="resetCityCost()" style="background:none; border:1px solid var(--dark4); color:var(--text-dim); padding:0.4rem 0.7rem; border-radius:6px; cursor:pointer; font-size:0.75rem;" title="Standardwert der Stadt wiederherstellen">↺</button>
+                        </div>
+                    </div>
+
                     <div class="map-info-grid" id="mapGrid" style="display:none;">
                         <div class="map-info-item">
                             <div class="val orange" id="mapCost">—</div>
@@ -1443,13 +1572,14 @@
                         </div>
                         <div class="map-info-item">
                             <div class="val orange" id="mapYears">—</div>
-                            <div class="lbl">Rente nach (Jahre Sparen)</div>
+                            <div class="lbl">Jahre bis Ziel (mit deiner Sparrate)</div>
                         </div>
                         <div class="map-info-item">
                             <div class="val green" id="mapQuality">—</div>
                             <div class="lbl">Lebensqualität</div>
                         </div>
                     </div>
+                    <div id="mapTargetCheck" style="display:none; margin-top:1rem; padding:0.9rem 1.1rem; background:rgba(88,166,255,0.08); border:1px solid rgba(88,166,255,0.2); border-radius:12px; font-size:0.88rem; line-height:1.55; color:var(--text);"></div>
                 </div>
             </div>
         </div>
@@ -1525,6 +1655,278 @@
                         <div class="lbl">In jedem Land der Welt</div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════ BITCOIN-AKTIEN VERGLEICH ═══════ -->
+<section id="btc-stocks">
+    <div class="container">
+        <span class="section-label">Bitcoin-Aktien Vergleich</span>
+        <h2 class="section-title">MSTR vs. Metaplanet vs. STRF vs. Bitcoin</h2>
+        <p class="section-desc">Vier Wege, am Bitcoin-Ökosystem teilzuhaben — von konservativem Fixed Income bis zum aggressivsten Hebel. Finde den Ansatz, der zu deinem Risikoprofil passt.</p>
+
+        <div class="compare-table-wrap">
+            <table class="compare-table">
+                <thead>
+                    <tr>
+                        <th>Asset</th>
+                        <th>Typ</th>
+                        <th>Dividende</th>
+                        <th>BTC-Hebel</th>
+                        <th>Risiko</th>
+                        <th>Für wen?</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <div class="ticker-cell">
+                                <div class="ticker-icon" style="background:rgba(247,147,26,0.15);">₿</div>
+                                <div>
+                                    <div class="ticker-name">Bitcoin (BTC)</div>
+                                    <div class="ticker-sub">Spot / Self-Custody</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>Basiswert</td>
+                        <td style="color:var(--text-dim);">Keine</td>
+                        <td><strong style="color:var(--orange);">1.0x</strong></td>
+                        <td><span class="risk-badge risk-med">Mittel</span></td>
+                        <td style="color:var(--text-dim);font-size:0.85rem;">Langfristige Hodler, Self-Custody-Fans</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="ticker-cell">
+                                <div class="ticker-icon" style="background:rgba(88,166,255,0.15);">📊</div>
+                                <div>
+                                    <div class="ticker-name">Strategy (MSTR)</div>
+                                    <div class="ticker-sub">NASDAQ: MSTR</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>Aktie</td>
+                        <td style="color:var(--text-dim);">Keine</td>
+                        <td><strong style="color:var(--blue);">~1.5–2.5x</strong></td>
+                        <td><span class="risk-badge risk-high">Hoch</span></td>
+                        <td style="color:var(--text-dim);font-size:0.85rem;">Depot-Anleger, die gehebeltes BTC-Exposure wollen</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="ticker-cell">
+                                <div class="ticker-icon" style="background:rgba(188,140,255,0.15);">🇯🇵</div>
+                                <div>
+                                    <div class="ticker-name">Metaplanet (3350)</div>
+                                    <div class="ticker-sub">TSE: 3350.T</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>Aktie</td>
+                        <td style="color:var(--text-dim);">Keine</td>
+                        <td><strong style="color:var(--purple);">~2–4x</strong></td>
+                        <td><span class="risk-badge risk-vhigh">Sehr hoch</span></td>
+                        <td style="color:var(--text-dim);font-size:0.85rem;">Aggressive Anleger — das japanische MicroStrategy</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="ticker-cell">
+                                <div class="ticker-icon" style="background:rgba(63,185,80,0.15);">💵</div>
+                                <div>
+                                    <div class="ticker-name">STRF (Strike Pref.)</div>
+                                    <div class="ticker-sub">NASDAQ: STRF</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>Preferred Stock</td>
+                        <td><strong style="color:var(--green);">10% fest</strong></td>
+                        <td><strong style="color:var(--text-dim);">~0x</strong> <span style="font-size:0.75rem;color:var(--text-dim);">(kein Upside)</span></td>
+                        <td><span class="risk-badge risk-low">Niedrig</span></td>
+                        <td style="color:var(--text-dim);font-size:0.85rem;">Konservative, Fixed-Income-Suchende</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="ticker-cell">
+                                <div class="ticker-icon" style="background:rgba(63,185,80,0.1);">🏛️</div>
+                                <div>
+                                    <div class="ticker-name">STRK (Pref. Conv.)</div>
+                                    <div class="ticker-sub">NASDAQ: STRK</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>Convertible Pref.</td>
+                        <td><strong style="color:var(--green);">8%</strong> <span style="font-size:0.75rem;color:var(--text-dim);">+ Konvertierung</span></td>
+                        <td><strong style="color:var(--orange);">~0.5–1x</strong> <span style="font-size:0.75rem;color:var(--text-dim);">(via Conversion)</span></td>
+                        <td><span class="risk-badge risk-med">Mittel</span></td>
+                        <td style="color:var(--text-dim);font-size:0.85rem;">Dividende + Bitcoin-Upside Combo</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="compare-highlight">
+            <div class="compare-insight">
+                <div class="ci-icon">🛡️</div>
+                <div class="ci-title">Konservativ: STRF</div>
+                <div class="ci-desc">10% feste Dividende, Senior-Position im Kapitalstack. Dein Einkommen fließt, egal was BTC macht. Ideal als Tagesgeld-Killer.</div>
+            </div>
+            <div class="compare-insight">
+                <div class="ci-icon">⚖️</div>
+                <div class="ci-title">Balanced: STRK</div>
+                <div class="ci-desc">8% Dividende plus die Option, in MSTR-Aktien zu konvertieren. Best of both worlds — Cashflow heute, BTC-Upside morgen.</div>
+            </div>
+            <div class="compare-insight">
+                <div class="ci-icon">🚀</div>
+                <div class="ci-title">Aggressiv: MSTR</div>
+                <div class="ci-desc">Gehebeltes BTC-Exposure durch Saylors Treasury-Strategie. ~500k+ BTC im Bestand. Der OG Bitcoin-Equity-Play.</div>
+            </div>
+            <div class="compare-insight">
+                <div class="ci-icon">🎌</div>
+                <div class="ci-title">Yolo: Metaplanet</div>
+                <div class="ci-desc">Japans Bitcoin-Treasury-Company. Kleiner, jünger, riskanter — aber mit enormem Upside-Potential. Asiens Antwort auf MSTR.</div>
+            </div>
+        </div>
+
+        <div class="chart-card full" style="margin-top:2rem;">
+            <h3>Risiko-Rendite-Profil (schematisch)</h3>
+            <div class="subtitle">Wo sich die Bitcoin-Aktien im Risiko-Rendite-Spektrum einordnen</div>
+            <div style="height:320px; margin-top:1rem;">
+                <canvas id="riskReturnChart"></canvas>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════ STRF FIXED-INCOME RECHNER ═══════ -->
+<section id="fixed-income" class="fi-section">
+    <div class="container">
+        <span class="section-label">Fixed-Income Rechner</span>
+        <h2 class="section-title">STRF Dividenden-Rechner — Dein Bitcoin-Tagesgeld</h2>
+        <p class="section-desc">Berechne, wie viel passives Einkommen du mit STRF (10% Dividende) generieren kannst — und vergleiche es mit klassischen Alternativen wie Tagesgeld, Anleihen oder STRK.</p>
+
+        <div class="fi-calc-wrap">
+            <div class="fi-grid">
+                <div class="input-group">
+                    <label>Investitionssumme (€)</label>
+                    <input type="number" id="fiInvest" value="10000" min="100" step="100" oninput="calcFixedIncome()">
+                </div>
+                <div class="input-group">
+                    <label>STRF Kurs ($)</label>
+                    <input type="number" id="fiStrfPrice" value="87" min="1" step="0.5" oninput="calcFixedIncome()">
+                </div>
+                <div class="input-group">
+                    <label>STRF Dividende (% p.a.)</label>
+                    <input type="number" id="fiStrfDiv" value="10" min="0" max="50" step="0.1" oninput="calcFixedIncome()">
+                </div>
+                <div class="input-group">
+                    <label>Nennwert / Liquidation Preference ($)</label>
+                    <input type="number" id="fiStrfPar" value="100" min="1" step="1" oninput="calcFixedIncome()">
+                </div>
+                <div class="input-group">
+                    <label>EUR/USD Wechselkurs</label>
+                    <input type="number" id="fiEurUsd" value="1.14" min="0.5" max="2" step="0.01" oninput="calcFixedIncome()">
+                </div>
+                <div class="input-group">
+                    <label>Haltedauer (Jahre)</label>
+                    <input type="number" id="fiYears" value="5" min="1" max="30" step="1" oninput="calcFixedIncome()">
+                </div>
+            </div>
+
+            <div style="margin-top:1.5rem; padding:1rem; background:var(--dark); border-radius:12px;">
+                <div style="font-size:0.85rem; font-weight:600; color:var(--text-dim); margin-bottom:0.8rem;">Vergleichs-Zinssätze (anpassen nach Marktlage):</div>
+                <div class="fi-grid">
+                    <div class="input-group" style="margin-bottom:0;">
+                        <label>Tagesgeld (% p.a.)</label>
+                        <input type="number" id="fiTagesgeld" value="2.5" min="0" max="20" step="0.1" oninput="calcFixedIncome()">
+                    </div>
+                    <div class="input-group" style="margin-bottom:0;">
+                        <label>Staatsanleihe 10J (% p.a.)</label>
+                        <input type="number" id="fiBonds" value="2.8" min="0" max="20" step="0.1" oninput="calcFixedIncome()">
+                    </div>
+                    <div class="input-group" style="margin-bottom:0;">
+                        <label>STRK Dividende (% p.a.)</label>
+                        <input type="number" id="fiStrkDiv" value="8" min="0" max="50" step="0.1" oninput="calcFixedIncome()">
+                    </div>
+                    <div class="input-group" style="margin-bottom:0;">
+                        <label>Unternehmensanleihe HY (% p.a.)</label>
+                        <input type="number" id="fiCorpBond" value="5.5" min="0" max="30" step="0.1" oninput="calcFixedIncome()">
+                    </div>
+                </div>
+            </div>
+
+            <div id="fiResults" class="fi-result-cards">
+                <div class="fi-result-card">
+                    <div class="fi-lbl">Anzahl STRF-Shares</div>
+                    <div class="fi-val" style="color:var(--orange);" id="fiShares">—</div>
+                </div>
+                <div class="fi-result-card">
+                    <div class="fi-lbl">Jährliche Dividende</div>
+                    <div class="fi-val" style="color:var(--green);" id="fiAnnualDiv">—</div>
+                </div>
+                <div class="fi-result-card">
+                    <div class="fi-lbl">Monatliches Einkommen</div>
+                    <div class="fi-val" style="color:var(--green);" id="fiMonthlyDiv">—</div>
+                </div>
+                <div class="fi-result-card">
+                    <div class="fi-lbl">Effektive Rendite (auf Kaufpreis)</div>
+                    <div class="fi-val" style="color:var(--blue);" id="fiEffYield">—</div>
+                </div>
+                <div class="fi-result-card">
+                    <div class="fi-lbl">Kumulierte Dividende (<span id="fiYearsLabel">5</span>J)</div>
+                    <div class="fi-val" style="color:var(--orange);" id="fiCumDiv">—</div>
+                </div>
+                <div class="fi-result-card">
+                    <div class="fi-lbl">Mehr als Tagesgeld</div>
+                    <div class="fi-val" style="color:var(--green);" id="fiVsTagesgeld">—</div>
+                </div>
+            </div>
+
+            <div class="fi-vs-bar">
+                <h4 style="margin-bottom:1rem; font-size:1rem;">Jährliches Einkommen bei <span id="fiInvestLabel">€10.000</span> Investment</h4>
+                <div class="fi-bar-row">
+                    <div class="fi-bar-label" style="color:var(--orange);">STRF (10%)</div>
+                    <div class="fi-bar-track">
+                        <div class="fi-bar-fill" id="fiBarStrf" style="background:linear-gradient(90deg,var(--orange),var(--orange-light));width:100%;"></div>
+                    </div>
+                </div>
+                <div class="fi-bar-row">
+                    <div class="fi-bar-label" style="color:var(--blue);">STRK (8%)</div>
+                    <div class="fi-bar-track">
+                        <div class="fi-bar-fill" id="fiBarStrk" style="background:linear-gradient(90deg,var(--blue),#7dc3ff);width:80%;"></div>
+                    </div>
+                </div>
+                <div class="fi-bar-row">
+                    <div class="fi-bar-label" style="color:var(--purple);">Corp. Bond HY</div>
+                    <div class="fi-bar-track">
+                        <div class="fi-bar-fill" id="fiBarCorp" style="background:linear-gradient(90deg,var(--purple),#d4b3ff);width:55%;"></div>
+                    </div>
+                </div>
+                <div class="fi-bar-row">
+                    <div class="fi-bar-label" style="color:#8b949e;">Staatsanleihe</div>
+                    <div class="fi-bar-track">
+                        <div class="fi-bar-fill" id="fiBarBond" style="background:linear-gradient(90deg,#6e7681,#8b949e);width:28%;"></div>
+                    </div>
+                </div>
+                <div class="fi-bar-row">
+                    <div class="fi-bar-label" style="color:var(--red);">Tagesgeld</div>
+                    <div class="fi-bar-track">
+                        <div class="fi-bar-fill" id="fiBarTages" style="background:linear-gradient(90deg,#c74540,var(--red));width:25%;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="fi-chart-wrap">
+                <h4 style="margin-bottom:0.3rem;">Kumulierte Erträge über Zeit</h4>
+                <div class="subtitle" style="margin-bottom:1rem;">STRF vs. STRK vs. Tagesgeld vs. Anleihen — gleiches Startkapital</div>
+                <div style="height:300px;">
+                    <canvas id="fiCumChart"></canvas>
+                </div>
+            </div>
+
+            <div style="margin-top:1.5rem; padding:1rem; background:rgba(248,81,73,0.05); border:1px solid rgba(248,81,73,0.12); border-radius:10px;">
+                <p style="color:var(--text-dim); font-size:0.8rem; line-height:1.7;">
+                    <strong style="color:var(--red);">Hinweis:</strong> STRF ist ein Preferred Stock von Strategy (MicroStrategy). Die 10% Dividende ist zwar vertraglich festgelegt, aber vom Unternehmen abhängig. Im Insolvenzfall besteht ein Verlustrisiko. Dies ist keine risikolose Anlage wie Tagesgeld — aber das Rendite-Risiko-Profil ist attraktiver als klassische Fixed-Income-Produkte. DYOR.
+                </p>
             </div>
         </div>
     </div>
@@ -1689,46 +2091,185 @@ function filterCities() {
 }
 
 // ═══════════════════════════════════════════════════
-// SELECT CITY
+// SELECT CITY + MAP PARAMETER-LOGIC
 // ═══════════════════════════════════════════════════
+let currentCity = null;        // gewählte Stadt
+let cityCostOverride = null;   // individuell gesetzte Kosten (€/mo) oder null
+
+function getMapParams() {
+    return {
+        monthlySaving: +document.getElementById('mapSaving').value || 0,
+        cagr: (+document.getElementById('mapCagr').value || 30) / 100,
+        existingBtc: +document.getElementById('mapExistingBtc').value || 0,
+        withdrawal: (+document.getElementById('mapWithdrawal').value || 3.5) / 100,
+        age: +document.getElementById('mapAge').value || 25,
+        retireAge: +document.getElementById('mapRetireAge').value || 45,
+        btcPrice: liveBtcEur || 95000
+    };
+}
+
+// Übernimmt Werte aus dem Freiheitsrechner (Experten-Modus bevorzugt)
+function resetMapParams() {
+    const advSaving = +document.getElementById('monthlySaving').value;
+    const advCagr = +document.getElementById('btcGrowth').value;
+    const advBtc = +document.getElementById('existingBtc').value;
+    const advWd = +document.getElementById('withdrawalRate').value;
+    const advAge = +document.getElementById('currentAge').value;
+    const advRetAge = +document.getElementById('retireAge').value;
+
+    const simpleSaving = +document.getElementById('simpleSaving').value;
+    const simpleBtc = +document.getElementById('simpleExistingBtc').value;
+    const simpleAge = +document.getElementById('simpleAge').value;
+    const simpleRetAge = +document.getElementById('simpleRetireAge').value;
+
+    document.getElementById('mapSaving').value = advSaving || simpleSaving || 500;
+    document.getElementById('mapCagr').value = advCagr || 16;
+    document.getElementById('mapExistingBtc').value = advBtc || simpleBtc || 0;
+    document.getElementById('mapWithdrawal').value = advWd || 3.5;
+    document.getElementById('mapAge').value = advAge || simpleAge || 25;
+    document.getElementById('mapRetireAge').value = advRetAge || simpleRetAge || 45;
+    recalcCurrentCity();
+}
+
+// Wird vom Freiheitsrechner aufgerufen (sanfter Sync — überschreibt Map-Inputs nur, wenn User sie nicht bearbeitet)
+function onFreedomInputsChanged() {
+    // Sanft nachziehen: nur wenn User die Map-Felder nicht gerade fokussiert hat
+    // Wir lassen die Map-Werte unberührt — User kann per "Sync"-Button gezielt übernehmen.
+    // (Bewusst leer gelassen, um unerwartete Overrides zu vermeiden.)
+}
+
+function onCostOverride(fromNumber) {
+    const slider = document.getElementById('mapCostSlider');
+    const num = document.getElementById('mapCostInput');
+    if (fromNumber) {
+        const v = +num.value || 0;
+        slider.value = Math.min(+slider.max, Math.max(+slider.min, v));
+    } else {
+        num.value = slider.value;
+    }
+    cityCostOverride = +num.value || null;
+    if (currentCity) renderCityAnalysis();
+}
+
+function resetCityCost() {
+    cityCostOverride = null;
+    if (currentCity) {
+        document.getElementById('mapCostSlider').value = currentCity.cost;
+        document.getElementById('mapCostInput').value = currentCity.cost;
+        renderCityAnalysis();
+    }
+}
+
+function recalcCurrentCity() {
+    if (currentCity) renderCityAnalysis();
+}
+
 function selectCity(name) {
     const c = cityData.find(x => x.city === name);
     if (!c) return;
+    currentCity = c;
+    cityCostOverride = null;
 
-    // Highlight button
     document.querySelectorAll('.city-btn').forEach(b => b.classList.remove('active'));
     const btn = document.getElementById('btn-' + c.city.replace(/\s/g,'-'));
     if (btn) btn.classList.add('active');
 
-    const btcPrice = liveBtcEur || 95000;
-    const annualCost = c.cost * 12;
-    const safeWithdrawal = 0.035; // 3.5% rule
-    const neededEur = annualCost / safeWithdrawal;
-    const monthlySaving = 500;
-    const btcCagr = 0.30;
-    const yearsToGoal = Math.max(1, Math.log(neededEur / (monthlySaving * 12)) / Math.log(1 + btcCagr));
-    // Projizierter BTC-Preis nach yearsToGoal Jahren
-    const futureBtcPrice = btcPrice * Math.pow(1 + btcCagr, yearsToGoal);
-    const neededBtc = neededEur / futureBtcPrice;
-    const neededSats = Math.round(neededBtc * 100000000);
+    // Kosten-Slider auf Stadt-Default setzen
+    const costSlider = document.getElementById('mapCostSlider');
+    const costInput = document.getElementById('mapCostInput');
+    if (costSlider && costInput) {
+        const sliderMax = Math.max(6000, c.cost * 2);
+        costSlider.max = sliderMax;
+        costSlider.value = c.cost;
+        costInput.value = c.cost;
+    }
+    document.getElementById('mapCostOverride').style.display = 'block';
 
-    document.getElementById('mapCity').textContent = c.city;
-    document.getElementById('mapCountry').textContent = c.country + ' · ' + c.continent;
-    document.getElementById('mapCost').textContent = '€' + c.cost.toLocaleString('de') + '/mo';
-    document.getElementById('mapBtc').textContent = neededBtc.toFixed(2) + ' BTC';
-    document.getElementById('mapSats').textContent = neededSats.toLocaleString('de') + ' Sats';
-    document.getElementById('mapEur').textContent = '€' + Math.round(neededEur).toLocaleString('de');
-    document.getElementById('mapYears').textContent = Math.max(1, Math.round(yearsToGoal)) + ' Jahre';
-    document.getElementById('mapQuality').textContent = c.quality;
-    document.getElementById('mapGrid').style.display = 'grid';
-
-    // Update map highlight
+    renderCityAnalysis();
     renderWorldMap(c);
 
-    // Scroll map into view on mobile
     if (window.innerWidth < 900) {
         document.getElementById('worldMap').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
+}
+
+function renderCityAnalysis() {
+    const c = currentCity;
+    if (!c) return;
+    const p = getMapParams();
+    const cost = cityCostOverride !== null ? cityCostOverride : c.cost;
+    const annualCost = cost * 12;
+    const neededEur = annualCost / p.withdrawal;
+
+    // Simulation — Stack wachsen lassen bis Ziel erreicht
+    const existingEur = p.existingBtc * p.btcPrice;
+    const monthlyRate = Math.pow(1 + p.cagr, 1/12) - 1;
+    let stack = existingEur;
+    let months = 0;
+    const maxMonths = 720;
+    let goalReached = stack >= neededEur;
+    while (stack < neededEur && months < maxMonths) {
+        stack = stack * (1 + monthlyRate) + p.monthlySaving;
+        months++;
+    }
+    if (stack >= neededEur) goalReached = true;
+    const years = months / 12;
+
+    // Projizierter Preis & benötigter BTC-Stack (beim Ziel-Zeitpunkt)
+    const projectionYears = goalReached ? years : Math.max(0, p.retireAge - p.age);
+    const futureBtcPrice = p.btcPrice * Math.pow(1 + p.cagr, projectionYears);
+    const neededBtc = neededEur / futureBtcPrice;
+    const neededSats = Math.round(neededBtc * 100000000);
+
+    // Zielalter-Check
+    const targetYears = Math.max(0, p.retireAge - p.age);
+    const targetMonths = targetYears * 12;
+    let requiredSaving = null;
+    let stackAtTarget = existingEur;
+    if (targetMonths > 0) {
+        const growth = Math.pow(1 + monthlyRate, targetMonths);
+        stackAtTarget = existingEur * growth + p.monthlySaving * ((growth - 1) / monthlyRate);
+        const futureExisting = existingEur * growth;
+        if (futureExisting >= neededEur) requiredSaving = 0;
+        else requiredSaving = (neededEur - futureExisting) / ((growth - 1) / monthlyRate);
+    }
+
+    // DOM updates
+    document.getElementById('mapCity').textContent = c.city;
+    document.getElementById('mapCountry').textContent = c.country + ' · ' + c.continent;
+    document.getElementById('mapCost').textContent = '€' + cost.toLocaleString('de') + '/mo';
+    document.getElementById('mapBtc').textContent = neededBtc.toFixed(2) + ' BTC';
+    document.getElementById('mapSats').textContent = neededSats.toLocaleString('de') + ' Sats';
+    document.getElementById('mapEur').textContent = '€' + Math.round(neededEur).toLocaleString('de');
+    document.getElementById('mapYears').textContent = goalReached
+        ? years.toFixed(1) + ' Jahre'
+        : '> 60 Jahre';
+    document.getElementById('mapQuality').textContent = c.quality;
+    document.getElementById('mapGrid').style.display = 'grid';
+
+    // Ziel-Check-Box
+    const check = document.getElementById('mapTargetCheck');
+    let msg = '';
+    if (p.monthlySaving <= 0) {
+        msg = `ℹ️ Ohne Sparrate kannst du nicht zum Ziel kommen. Passe die Annahmen oben an.`;
+    } else if (targetYears <= 0) {
+        msg = `⚠️ Wunsch-Rentenalter (${p.retireAge}) liegt bei oder unter deinem aktuellen Alter (${p.age}).`;
+    } else if (stackAtTarget >= neededEur) {
+        msg = `✅ <strong>Für ${c.city} reicht deine Sparrate!</strong> Mit €${p.monthlySaving.toLocaleString('de')}/Monat hast du mit ${p.retireAge} einen Stack von <strong>€${Math.round(stackAtTarget).toLocaleString('de')}</strong> (Ziel: €${Math.round(neededEur).toLocaleString('de')}).`;
+        if (requiredSaving !== null && requiredSaving < p.monthlySaving && requiredSaving > 0) {
+            msg += `<br>💡 Minimal-Sparrate für ${c.city}: <strong>€${Math.round(requiredSaving).toLocaleString('de')}/Monat</strong>.`;
+        }
+    } else {
+        const actualAge = goalReached ? Math.ceil(p.age + years) : null;
+        msg = `❌ <strong>Mit ${p.retireAge} reicht es für ${c.city} nicht.</strong> ` + (actualAge !== null
+            ? `Du schaffst es frühestens mit <strong>${actualAge}</strong>.`
+            : `Selbst nach 60 Jahren erreichst du das Ziel nicht.`);
+        if (requiredSaving !== null && isFinite(requiredSaving) && requiredSaving > 0) {
+            msg += `<br>💪 Du brauchst <strong>€${Math.round(requiredSaving).toLocaleString('de')}/Monat</strong>, um im Wunsch-Alter in ${c.city} frei zu sein.`;
+        }
+    }
+    check.innerHTML = msg;
+    check.style.display = 'block';
 }
 
 // ═══════════════════════════════════════════════════
@@ -1949,7 +2490,7 @@ function switchCalcMode(mode) {
 }
 
 // ── Einfacher Rechner (feste 16% CAGR, 3.5% Withdrawal) ──
-function calcSimpleRetirement() {
+function calcSimpleRetirement(flash = false) {
     const existingBtc = +document.getElementById('simpleExistingBtc').value || 0;
     const monthlyExpense = +document.getElementById('simpleExpense').value || 2000;
     const monthlySaving = +document.getElementById('simpleSaving').value || 500;
@@ -1965,49 +2506,72 @@ function calcSimpleRetirement() {
     const annualExpense = monthlyExpense * 12;
     const neededEur = annualExpense / WITHDRAWAL;
 
-    // Simulation: Stack wachsen lassen bis Ziel erreicht
+    // Simulation: Stack wachsen lassen bis Ziel erreicht (mit aktueller Sparrate)
     const existingEur = existingBtc * btcPrice;
     const monthlyRate = Math.pow(1 + CAGR, 1/12) - 1;
 
     let stack = existingEur;
     let months = 0;
-    const maxMonths = 600;
+    const maxMonths = 720; // 60 years
+    let goalReached = stack >= neededEur;
 
-    if (stack < neededEur) {
-        while (stack < neededEur && months < maxMonths) {
-            stack = stack * (1 + monthlyRate) + monthlySaving;
-            months++;
-        }
+    while (stack < neededEur && months < maxMonths) {
+        stack = stack * (1 + monthlyRate) + monthlySaving;
+        months++;
     }
+    if (stack >= neededEur) goalReached = true;
 
     const years = months / 12;
     const freeYear = new Date().getFullYear() + Math.ceil(years);
 
+    // --- Zielalter-Logik ---
+    const targetYears = Math.max(0, retireAge - age);
+    const targetMonths = targetYears * 12;
+    const growthFactorTarget = Math.pow(1 + monthlyRate, targetMonths);
+    const stackAtTarget = targetMonths > 0
+        ? existingEur * growthFactorTarget + monthlySaving * ((growthFactorTarget - 1) / monthlyRate)
+        : existingEur;
+
+    // Benötigte monatliche Sparrate, um exakt im Ziel-Alter fertig zu sein
+    let requiredSaving = null;
+    if (targetMonths > 0) {
+        const futureExisting = existingEur * growthFactorTarget;
+        if (futureExisting >= neededEur) {
+            requiredSaving = 0;
+        } else {
+            const annuityFactor = (growthFactorTarget - 1) / monthlyRate;
+            requiredSaving = (neededEur - futureExisting) / annuityFactor;
+        }
+    }
+
     // PROJIZIERTER BTC-Preis bei Rente (Preis wächst mit demselben CAGR)
-    const futureBtcPrice = btcPrice * Math.pow(1 + CAGR, years);
+    const projectionYears = goalReached ? years : targetYears;
+    const futureBtcPrice = btcPrice * Math.pow(1 + CAGR, projectionYears);
     const neededBtcAtRetirement = neededEur / futureBtcPrice;
     const neededSats = Math.round(neededBtcAtRetirement * 100000000);
 
-    // Progress: vorhandene BTC vs benötigte BTC bei Rente
     const progressPct = neededBtcAtRetirement > 0
         ? Math.min(100, (existingBtc / neededBtcAtRetirement) * 100)
         : 0;
 
     // Ergebnis anzeigen
-    document.getElementById('simpleResult').style.display = 'block';
+    const resultEl = document.getElementById('simpleResult');
+    resultEl.style.display = 'block';
     document.getElementById('simpleNeededBtc').textContent = neededBtcAtRetirement.toFixed(2) + ' BTC';
     document.getElementById('simpleNeededSats').textContent = neededSats.toLocaleString('de') + ' Satoshis';
     document.getElementById('simpleFutureBtcPrice').textContent = '📈 Proj. BTC-Preis bei Rente: €' + Math.round(futureBtcPrice).toLocaleString('de');
 
-    // Progress
     document.getElementById('simpleProgressFill').style.width = progressPct + '%';
     document.getElementById('simpleProgPct').textContent = progressPct.toFixed(1) + '%';
     document.getElementById('simpleProgLabel').textContent = existingBtc > 0
         ? `Dein Stack: ${existingBtc} BTC` : 'Noch kein Stack';
 
-    if (months === 0) {
+    if (months === 0 && goalReached) {
         document.getElementById('simpleYears').textContent = 'JETZT! 🎉';
         document.getElementById('simpleFreeYear').textContent = new Date().getFullYear().toString();
+    } else if (!goalReached) {
+        document.getElementById('simpleYears').textContent = '> 60 Jahre';
+        document.getElementById('simpleFreeYear').textContent = '—';
     } else {
         document.getElementById('simpleYears').textContent = years.toFixed(1) + ' Jahre';
         document.getElementById('simpleFreeYear').textContent = freeYear.toString();
@@ -2015,9 +2579,50 @@ function calcSimpleRetirement() {
     document.getElementById('simpleTargetVal').textContent = '€' + Math.round(neededEur).toLocaleString('de');
     document.getElementById('simpleIncome').textContent = '€' + monthlyExpense.toLocaleString('de') + '/mo';
 
+    // --- Zielalter-Check + Detail-Karten ---
+    const targetCheck = document.getElementById('simpleTargetCheck');
+    const targetDetails = document.getElementById('simpleTargetDetails');
+    const actualRetireAge = goalReached ? (age + years) : null;
+
+    document.getElementById('simpleStackAtTarget').textContent =
+        '€' + Math.round(Math.max(0, stackAtTarget)).toLocaleString('de');
+    if (requiredSaving === null || !isFinite(requiredSaving)) {
+        document.getElementById('simpleRequiredSaving').textContent = '—';
+    } else if (requiredSaving <= 0) {
+        document.getElementById('simpleRequiredSaving').textContent = '€0';
+    } else {
+        document.getElementById('simpleRequiredSaving').textContent = '€' + Math.round(requiredSaving).toLocaleString('de') + '/mo';
+    }
+    document.getElementById('simpleActualRetireAge').textContent =
+        actualRetireAge !== null ? Math.ceil(actualRetireAge) + ' Jahre' : '> ' + (age + 60);
+    targetDetails.style.display = 'grid';
+
+    let msg = '';
+    if (targetYears <= 0) {
+        msg = `⚠️ Dein Wunsch-Rentenalter (${retireAge}) liegt vor oder bei deinem aktuellen Alter (${age}) — bitte korrigieren.`;
+    } else if (stackAtTarget >= neededEur) {
+        const surplus = stackAtTarget - neededEur;
+        msg = `✅ <strong>Deine Sparrate reicht!</strong> Mit €${monthlySaving.toLocaleString('de')}/Monat hast du im Alter von <strong>${retireAge}</strong> einen Stack von <strong>€${Math.round(stackAtTarget).toLocaleString('de')}</strong> — das sind €${Math.round(surplus).toLocaleString('de')} über dem Ziel.`;
+        if (requiredSaving !== null && requiredSaving < monthlySaving && requiredSaving > 0) {
+            msg += `<br>💡 Du könntest auch mit <strong>€${Math.round(requiredSaving).toLocaleString('de')}/Monat</strong> exakt dein Ziel erreichen.`;
+        }
+    } else {
+        const needed = requiredSaving !== null && isFinite(requiredSaving) ? Math.round(requiredSaving) : null;
+        const extra = needed !== null ? Math.max(0, needed - monthlySaving) : null;
+        const actualAgeTxt = actualRetireAge !== null
+            ? `frühestens mit <strong>${Math.ceil(actualRetireAge)}</strong>`
+            : `erst nach mehr als 60 Jahren`;
+        msg = `❌ <strong>Deine Sparrate reicht nicht für Alter ${retireAge}.</strong> Mit €${monthlySaving.toLocaleString('de')}/Monat erreichst du das Ziel ${actualAgeTxt}.`;
+        if (needed !== null) {
+            msg += `<br>💪 Du brauchst <strong>€${needed.toLocaleString('de')}/Monat</strong> (+€${extra.toLocaleString('de')}), um mit ${retireAge} frei zu sein.`;
+        }
+    }
+    targetCheck.innerHTML = msg;
+    targetCheck.style.display = 'block';
+
     // Headstart
     const hs = document.getElementById('simpleHeadstart');
-    if (existingBtc > 0 && months > 0) {
+    if (existingBtc > 0 && months > 0 && goalReached) {
         let monthsWithout = 0, stackWithout = 0;
         while (stackWithout < neededEur && monthsWithout < maxMonths) {
             stackWithout = stackWithout * (1 + monthlyRate) + monthlySaving;
@@ -2027,12 +2632,21 @@ function calcSimpleRetirement() {
         hs.style.display = 'block';
         document.getElementById('simpleHeadstartMsg').innerHTML =
             `🚀 Dein Stack von <strong>${existingBtc} BTC</strong> spart dir <strong>${(saved/12).toFixed(1)} Jahre</strong> — du bist ${saved} Monate früher frei!`;
-    } else if (existingBtc > 0 && months === 0) {
+    } else if (existingBtc > 0 && goalReached && months === 0) {
         hs.style.display = 'block';
         document.getElementById('simpleHeadstartMsg').innerHTML =
             `🚀 Dein Stack von <strong>${existingBtc} BTC</strong> (€${Math.round(existingEur).toLocaleString('de')}) reicht bereits! Du könntest jetzt in Rente gehen.`;
     } else {
         hs.style.display = 'none';
+    }
+
+    // Weltkarte-Default-Parameter aktualisieren (Sync)
+    if (typeof onFreedomInputsChanged === 'function') onFreedomInputsChanged();
+
+    if (flash) {
+        resultEl.classList.remove('result-flash');
+        void resultEl.offsetWidth;
+        resultEl.classList.add('result-flash');
     }
 }
 
@@ -2051,37 +2665,33 @@ function syncStackFields(source) {
     }
 }
 
-function calculateRetirement() {
-    const monthlyExpense = +document.getElementById('monthlyExpense').value;
-    const retireAge = +document.getElementById('retireAge').value;
-    const currentAge = +document.getElementById('currentAge').value;
-    const btcCagr = +document.getElementById('btcGrowth').value / 100;
-    const monthlySaving = +document.getElementById('monthlySaving').value;
-    const btcPrice = +document.getElementById('btcPriceInput').value;
+function calculateRetirement(flash = false) {
+    const monthlyExpense = +document.getElementById('monthlyExpense').value || 0;
+    const retireAge = +document.getElementById('retireAge').value || 0;
+    const currentAge = +document.getElementById('currentAge').value || 0;
+    const btcCagr = (+document.getElementById('btcGrowth').value || 0) / 100;
+    const monthlySaving = +document.getElementById('monthlySaving').value || 0;
+    const btcPrice = +document.getElementById('btcPriceInput').value || liveBtcEur;
     const existingBtc = +document.getElementById('existingBtc').value || 0;
-    const withdrawalRate = +document.getElementById('withdrawalRate').value / 100;
+    const withdrawalRate = (+document.getElementById('withdrawalRate').value || 3.5) / 100;
+
+    if (btcPrice <= 0 || btcCagr <= 0 || withdrawalRate <= 0 || monthlyExpense <= 0) return;
 
     const annualExpense = monthlyExpense * 12;
     const neededEur = annualExpense / withdrawalRate;
-
-    // Startwert: vorhandener Stack in EUR
     const existingEur = existingBtc * btcPrice;
-
-    // Compound growth: monatliche Simulation MIT bestehendem Stack als Startkapital
     const monthlyRate = Math.pow(1 + btcCagr, 1/12) - 1;
-    let stack = existingEur; // ← bestehender Stack als Startwert!
-    let months = 0;
-    const maxMonths = 600; // 50 years max
 
-    // Falls Stack bereits ausreicht
-    if (stack >= neededEur) {
-        months = 0;
-    } else {
-        while (stack < neededEur && months < maxMonths) {
-            stack = stack * (1 + monthlyRate) + monthlySaving;
-            months++;
-        }
+    // Simulation mit aktueller Sparrate
+    let stack = existingEur;
+    let months = 0;
+    const maxMonths = 720;
+    let goalReached = stack >= neededEur;
+    while (stack < neededEur && months < maxMonths) {
+        stack = stack * (1 + monthlyRate) + monthlySaving;
+        months++;
     }
+    if (stack >= neededEur) goalReached = true;
 
     const years = months / 12;
     const totalInvested = existingEur + (monthlySaving * months);
@@ -2089,25 +2699,40 @@ function calculateRetirement() {
     const retireAgeActual = currentAge + years;
     const roi = totalInvested > 0 ? ((neededEur / totalInvested - 1) * 100) : 0;
 
-    // PROJIZIERTER BTC-Preis bei Rente (Preis wächst mit demselben CAGR)
-    const futureBtcPrice = btcPrice * Math.pow(1 + btcCagr, years);
+    // --- Zielalter-Logik ---
+    const targetYears = Math.max(0, retireAge - currentAge);
+    const targetMonths = targetYears * 12;
+    const growthFactorTarget = Math.pow(1 + monthlyRate, targetMonths);
+    const stackAtTarget = targetMonths > 0
+        ? existingEur * growthFactorTarget + monthlySaving * ((growthFactorTarget - 1) / monthlyRate)
+        : existingEur;
+
+    let requiredSaving = null;
+    if (targetMonths > 0) {
+        const futureExisting = existingEur * growthFactorTarget;
+        if (futureExisting >= neededEur) {
+            requiredSaving = 0;
+        } else {
+            const annuityFactor = (growthFactorTarget - 1) / monthlyRate;
+            requiredSaving = (neededEur - futureExisting) / annuityFactor;
+        }
+    }
+
+    const projectionYears = goalReached ? years : targetYears;
+    const futureBtcPrice = btcPrice * Math.pow(1 + btcCagr, projectionYears);
     const neededBtc = neededEur / futureBtcPrice;
     const neededSats = Math.round(neededBtc * 100000000);
-
-    // Progress bar (vorhandener Stack vs Ziel)
     const progressPct = Math.min(100, (existingEur / neededEur) * 100);
 
-    // Update Vorsprung-Anzeige
     document.getElementById('existingValue').textContent = '€' + Math.round(existingEur).toLocaleString('de');
     document.getElementById('existingAdvantage').textContent = progressPct.toFixed(1) + '%';
 
-    // Ergebnisse anzeigen
-    document.getElementById('calcResult').style.display = 'block';
+    const resultEl = document.getElementById('calcResult');
+    resultEl.style.display = 'block';
     document.getElementById('neededBtc').textContent = neededBtc.toFixed(4) + ' BTC';
     document.getElementById('neededSats').textContent = neededSats.toLocaleString('de') + ' Satoshis';
     document.getElementById('futureBtcPriceDisplay').textContent = '📈 Proj. BTC-Preis bei Rente: €' + Math.round(futureBtcPrice).toLocaleString('de');
 
-    // Progress bar
     document.getElementById('stackProgressFill').style.width = progressPct + '%';
     document.getElementById('progPct').textContent = progressPct.toFixed(1) + '%';
     document.getElementById('progTarget').textContent = neededBtc.toFixed(4) + ' BTC';
@@ -2115,9 +2740,12 @@ function calculateRetirement() {
         ? `Dein Stack: ${existingBtc.toFixed(4)} BTC`
         : 'Noch kein Stack';
 
-    if (months === 0 && existingEur >= neededEur) {
+    if (goalReached && months === 0) {
         document.getElementById('resYears').textContent = 'JETZT! 🎉';
         document.getElementById('resRetireYear').textContent = new Date().getFullYear().toString();
+    } else if (!goalReached) {
+        document.getElementById('resYears').textContent = '> 60 Jahre';
+        document.getElementById('resRetireYear').textContent = '—';
     } else {
         document.getElementById('resYears').textContent = years.toFixed(1) + ' Jahre';
         document.getElementById('resRetireYear').textContent = retireYear.toString();
@@ -2130,7 +2758,6 @@ function calculateRetirement() {
     document.getElementById('resStackVal').textContent = '€' + Math.round(neededEur).toLocaleString('de');
     document.getElementById('resMonthly').textContent = '€' + monthlyExpense.toLocaleString('de') + '/mo';
 
-    // Kapitalaufschlüsselung
     document.getElementById('resExistingStack').textContent = existingBtc > 0
         ? '€' + Math.round(existingEur).toLocaleString('de')
         : '€0';
@@ -2139,11 +2766,52 @@ function calculateRetirement() {
     document.getElementById('resCompoundGain').textContent = '+€' + Math.round(Math.max(0, compoundGain)).toLocaleString('de');
     document.getElementById('resROI').textContent = '+' + roi.toFixed(0) + '%';
 
-    // Headstart-Nachricht (nur wenn Stack > 0)
+    // --- Zielalter-Check ---
+    const targetCheck = document.getElementById('advTargetCheck');
+    const targetDetails = document.getElementById('advTargetDetails');
+
+    document.getElementById('resStackAtTarget').textContent =
+        '€' + Math.round(Math.max(0, stackAtTarget)).toLocaleString('de');
+    if (requiredSaving === null || !isFinite(requiredSaving)) {
+        document.getElementById('resRequiredSaving').textContent = '—';
+    } else if (requiredSaving <= 0) {
+        document.getElementById('resRequiredSaving').textContent = '€0';
+    } else {
+        document.getElementById('resRequiredSaving').textContent = '€' + Math.round(requiredSaving).toLocaleString('de') + '/mo';
+    }
+    document.getElementById('resActualRetireAge').textContent =
+        goalReached ? Math.ceil(retireAgeActual) + ' Jahre' : '> ' + (currentAge + 60);
+    targetDetails.style.display = 'grid';
+
+    let msg = '';
+    if (targetYears <= 0) {
+        msg = `⚠️ Dein Wunsch-Rentenalter (${retireAge}) liegt vor oder bei deinem aktuellen Alter (${currentAge}) — bitte korrigieren.`;
+    } else if (stackAtTarget >= neededEur) {
+        const surplus = stackAtTarget - neededEur;
+        msg = `✅ <strong>Deine Sparrate reicht!</strong> Mit €${monthlySaving.toLocaleString('de')}/Monat hast du im Alter von <strong>${retireAge}</strong> einen Stack von <strong>€${Math.round(stackAtTarget).toLocaleString('de')}</strong> — das sind €${Math.round(surplus).toLocaleString('de')} über dem Ziel.`;
+        if (requiredSaving !== null && requiredSaving < monthlySaving && requiredSaving > 0) {
+            msg += `<br>💡 Du könntest auch mit <strong>€${Math.round(requiredSaving).toLocaleString('de')}/Monat</strong> exakt dein Ziel erreichen.`;
+        } else if (requiredSaving === 0) {
+            msg += `<br>💎 Dein bestehender Stack wächst allein schon über das Ziel hinaus.`;
+        }
+    } else {
+        const needed = requiredSaving !== null && isFinite(requiredSaving) ? Math.round(requiredSaving) : null;
+        const extra = needed !== null ? Math.max(0, needed - monthlySaving) : null;
+        const actualAgeTxt = goalReached
+            ? `frühestens mit <strong>${Math.ceil(retireAgeActual)}</strong>`
+            : `erst nach mehr als 60 Jahren`;
+        msg = `❌ <strong>Deine Sparrate reicht nicht für Alter ${retireAge}.</strong> Mit €${monthlySaving.toLocaleString('de')}/Monat erreichst du das Ziel ${actualAgeTxt}.`;
+        if (needed !== null) {
+            msg += `<br>💪 Du brauchst <strong>€${needed.toLocaleString('de')}/Monat</strong> (+€${extra.toLocaleString('de')}), um mit ${retireAge} frei zu sein.`;
+        }
+    }
+    targetCheck.innerHTML = msg;
+    targetCheck.style.display = 'block';
+
+    // Headstart-Nachricht
     const headstart = document.getElementById('stackHeadstart');
-    if (existingBtc > 0) {
+    if (existingBtc > 0 && goalReached) {
         headstart.style.display = 'block';
-        // Berechne, wie viel schneller man ist dank bestehendem Stack
         let monthsWithout = 0;
         let stackWithout = 0;
         while (stackWithout < neededEur && monthsWithout < maxMonths) {
@@ -2162,6 +2830,15 @@ function calculateRetirement() {
         }
     } else {
         headstart.style.display = 'none';
+    }
+
+    // Weltkarte-Sync
+    if (typeof onFreedomInputsChanged === 'function') onFreedomInputsChanged();
+
+    if (flash) {
+        resultEl.classList.remove('result-flash');
+        void resultEl.offsetWidth;
+        resultEl.classList.add('result-flash');
     }
 }
 
@@ -2588,6 +3265,11 @@ function applyLivePrice() {
     // ── Bestehender Stack Wert ──
     syncStackFields('btc');
 
+    // ── Rechner & Map neu berechnen mit aktualisiertem Preis ──
+    if (document.getElementById('simpleResult')) calcSimpleRetirement();
+    if (document.getElementById('calcResult') && document.getElementById('calcResult').style.display !== 'none') calculateRetirement();
+    if (typeof currentCity !== 'undefined' && currentCity) recalcCurrentCity();
+
     // ── Live-Badge Styling ──
     const badge = document.getElementById('liveBadge');
     if (badge) badge.classList.add('live-active');
@@ -2804,13 +3486,226 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Rechner nach Live-Preis starten
     calcSimpleRetirement();
+    calculateRetirement();
     simulateDca();
+
+    // Map-Parameter aus Freiheitsrechner initial übernehmen
+    resetMapParams();
+
+    // Neue Sections initialisieren
+    initRiskReturnChart();
+    calcFixedIncome();
 
     // Animations
     initStarfield();
     initBtcPlanet();
     spawnHeroParticles();
 });
+
+// ═══════════════════════════════════════════════════
+// RISIKO-RENDITE SCATTER CHART (Bubble)
+// ═══════════════════════════════════════════════════
+function initRiskReturnChart() {
+    const ctx = document.getElementById('riskReturnChart');
+    if (!ctx) return;
+
+    new Chart(ctx, {
+        type: 'bubble',
+        data: {
+            datasets: [
+                {
+                    label: 'Bitcoin (BTC)',
+                    data: [{ x: 50, y: 55, r: 18 }],
+                    backgroundColor: 'rgba(247,147,26,0.7)',
+                    borderColor: '#f7931a', borderWidth: 2
+                },
+                {
+                    label: 'Strategy (MSTR)',
+                    data: [{ x: 70, y: 80, r: 16 }],
+                    backgroundColor: 'rgba(88,166,255,0.7)',
+                    borderColor: '#58a6ff', borderWidth: 2
+                },
+                {
+                    label: 'Metaplanet (3350)',
+                    data: [{ x: 90, y: 120, r: 12 }],
+                    backgroundColor: 'rgba(188,140,255,0.7)',
+                    borderColor: '#bc8cff', borderWidth: 2
+                },
+                {
+                    label: 'STRF (10% Fixed)',
+                    data: [{ x: 25, y: 10, r: 14 }],
+                    backgroundColor: 'rgba(63,185,80,0.7)',
+                    borderColor: '#3fb950', borderWidth: 2
+                },
+                {
+                    label: 'STRK (8% Conv.)',
+                    data: [{ x: 40, y: 25, r: 13 }],
+                    backgroundColor: 'rgba(88,166,255,0.4)',
+                    borderColor: '#58a6ff', borderWidth: 2
+                },
+                {
+                    label: 'S&P 500',
+                    data: [{ x: 30, y: 12, r: 10 }],
+                    backgroundColor: 'rgba(139,148,158,0.5)',
+                    borderColor: '#8b949e', borderWidth: 2
+                },
+                {
+                    label: 'Tagesgeld',
+                    data: [{ x: 5, y: 2.5, r: 10 }],
+                    backgroundColor: 'rgba(248,81,73,0.4)',
+                    borderColor: '#f85149', borderWidth: 2
+                }
+            ]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: { color: '#8b949e', usePointStyle: true, padding: 14, font: { size: 11 } }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: ctx => {
+                            const d = ctx.raw;
+                            return `${ctx.dataset.label}: Risiko ${d.x}/100, Rendite ~${d.y}% p.a.`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    title: { display: true, text: 'Risiko (schematisch)', color: '#8b949e', font: { size: 12 } },
+                    min: 0, max: 100,
+                    ticks: { color: '#8b949e', callback: v => { if (v===0) return 'Niedrig'; if (v===50) return 'Mittel'; if (v===100) return 'Hoch'; return ''; } },
+                    grid: { color: 'rgba(139,148,158,0.08)' }
+                },
+                y: {
+                    title: { display: true, text: 'Erwartete Rendite (% p.a.)', color: '#8b949e', font: { size: 12 } },
+                    min: 0, max: 140,
+                    ticks: { color: '#8b949e', callback: v => v + '%' },
+                    grid: { color: 'rgba(139,148,158,0.08)' }
+                }
+            }
+        }
+    });
+}
+
+// ═══════════════════════════════════════════════════
+// STRF FIXED-INCOME RECHNER
+// ═══════════════════════════════════════════════════
+let fiChartInstance = null;
+
+function calcFixedIncome() {
+    const investEur = +document.getElementById('fiInvest').value || 10000;
+    const strfPrice = +document.getElementById('fiStrfPrice').value || 87;
+    const strfDivPct = +document.getElementById('fiStrfDiv').value || 10;
+    const strfPar = +document.getElementById('fiStrfPar').value || 100;
+    const eurUsd = +document.getElementById('fiEurUsd').value || 1.14;
+    const years = +document.getElementById('fiYears').value || 5;
+    const tagesgeldPct = +document.getElementById('fiTagesgeld').value || 2.5;
+    const bondsPct = +document.getElementById('fiBonds').value || 2.8;
+    const strkDivPct = +document.getElementById('fiStrkDiv').value || 8;
+    const corpBondPct = +document.getElementById('fiCorpBond').value || 5.5;
+
+    // Investitionssumme in USD umrechnen
+    const investUsd = investEur * eurUsd;
+
+    // Anzahl STRF Shares
+    const shares = Math.floor(investUsd / strfPrice);
+    const actualInvestUsd = shares * strfPrice;
+    const actualInvestEur = actualInvestUsd / eurUsd;
+
+    // Dividende berechnet auf Nennwert ($100), NICHT auf Kaufpreis
+    const annualDivUsd = shares * strfPar * (strfDivPct / 100);
+    const annualDivEur = annualDivUsd / eurUsd;
+    const monthlyDivEur = annualDivEur / 12;
+
+    // Effektive Rendite auf Kaufpreis
+    const effYield = (annualDivUsd / actualInvestUsd) * 100;
+
+    // Kumulierte Dividende
+    const cumDivEur = annualDivEur * years;
+
+    // Vergleich mit Tagesgeld
+    const tagesgeldAnnual = investEur * (tagesgeldPct / 100);
+    const vsTagesgeld = annualDivEur - tagesgeldAnnual;
+
+    // Ergebnisse anzeigen
+    document.getElementById('fiShares').textContent = shares.toLocaleString('de');
+    document.getElementById('fiAnnualDiv').textContent = '€' + Math.round(annualDivEur).toLocaleString('de');
+    document.getElementById('fiMonthlyDiv').textContent = '€' + Math.round(monthlyDivEur).toLocaleString('de');
+    document.getElementById('fiEffYield').textContent = effYield.toFixed(1) + '%';
+    document.getElementById('fiYearsLabel').textContent = years;
+    document.getElementById('fiCumDiv').textContent = '€' + Math.round(cumDivEur).toLocaleString('de');
+    document.getElementById('fiVsTagesgeld').textContent = '+€' + Math.round(vsTagesgeld).toLocaleString('de') + '/J';
+    document.getElementById('fiInvestLabel').textContent = '€' + investEur.toLocaleString('de');
+
+    // Vergleichs-Balken
+    const strfIncome = annualDivEur;
+    const strkIncome = investEur * (strkDivPct / 100);
+    const corpIncome = investEur * (corpBondPct / 100);
+    const bondIncome = investEur * (bondsPct / 100);
+    const tagesIncome = tagesgeldAnnual;
+    const maxIncome = Math.max(strfIncome, strkIncome, corpIncome, bondIncome, tagesIncome);
+
+    function setBar(id, val) {
+        const el = document.getElementById(id);
+        const pct = maxIncome > 0 ? (val / maxIncome) * 100 : 0;
+        el.style.width = Math.max(8, pct) + '%';
+        el.textContent = '€' + Math.round(val).toLocaleString('de');
+    }
+    setBar('fiBarStrf', strfIncome);
+    setBar('fiBarStrk', strkIncome);
+    setBar('fiBarCorp', corpIncome);
+    setBar('fiBarBond', bondIncome);
+    setBar('fiBarTages', tagesIncome);
+
+    // Kumulierter Chart
+    renderFiChart(investEur, strfDivPct, effYield, strkDivPct, tagesgeldPct, bondsPct, corpBondPct, years);
+}
+
+function renderFiChart(invest, strfPct, strfEffPct, strkPct, tagesPct, bondPct, corpPct, maxYears) {
+    if (fiChartInstance) fiChartInstance.destroy();
+    const ctx = document.getElementById('fiCumChart');
+    if (!ctx) return;
+
+    const labels = [];
+    const strfData = [], strkData = [], tagesData = [], bondData = [], corpData = [];
+    for (let y = 0; y <= maxYears; y++) {
+        labels.push('Jahr ' + y);
+        strfData.push(Math.round(invest * (strfEffPct / 100) * y));
+        strkData.push(Math.round(invest * (strkPct / 100) * y));
+        corpData.push(Math.round(invest * (corpPct / 100) * y));
+        bondData.push(Math.round(invest * (bondPct / 100) * y));
+        tagesData.push(Math.round(invest * (tagesPct / 100) * y));
+    }
+
+    fiChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [
+                { label: 'STRF', data: strfData, borderColor: '#f7931a', backgroundColor: 'rgba(247,147,26,0.1)', borderWidth: 3, fill: true, tension: 0.2, pointRadius: 4 },
+                { label: 'STRK', data: strkData, borderColor: '#58a6ff', borderWidth: 2, tension: 0.2, pointRadius: 3 },
+                { label: 'Corp. Bond HY', data: corpData, borderColor: '#bc8cff', borderWidth: 2, tension: 0.2, pointRadius: 3, borderDash: [5,3] },
+                { label: 'Staatsanleihe', data: bondData, borderColor: '#8b949e', borderWidth: 2, tension: 0.2, pointRadius: 3, borderDash: [5,3] },
+                { label: 'Tagesgeld', data: tagesData, borderColor: '#f85149', borderWidth: 2, tension: 0.2, pointRadius: 3, borderDash: [3,3] }
+            ]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: {
+                legend: { labels: { color: '#8b949e', usePointStyle: true, padding: 14, font: { size: 11 } } },
+                tooltip: { callbacks: { label: ctx => ctx.dataset.label + ': €' + ctx.parsed.y.toLocaleString('de') } }
+            },
+            scales: {
+                x: { ticks: { color: '#8b949e' }, grid: { color: 'rgba(139,148,158,0.08)' } },
+                y: { ticks: { color: '#8b949e', callback: v => '€' + (v >= 1000 ? (v/1000).toFixed(1) + 'k' : v) }, grid: { color: 'rgba(139,148,158,0.08)' } }
+            }
+        }
+    });
+}
 </script>
 </body>
 </html>

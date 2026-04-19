@@ -681,6 +681,14 @@
             font-weight: 800; font-size: 1.2rem; color: var(--orange);
             margin-bottom: 0.5rem;
         }
+        footer .legal {
+            margin-top: 1.5rem; font-size: 0.8rem;
+            display: flex; flex-wrap: wrap; justify-content: center;
+            gap: 0.4rem 0.8rem;
+        }
+        footer .legal a { color: var(--text-dim); text-decoration: none; transition: color 0.2s; }
+        footer .legal a:hover { color: var(--orange); }
+        footer .legal .sep { color: var(--dark4); user-select: none; }
 
         /* ═══════ RESPONSIVE ═══════ */
         @media (max-width: 900px) {
@@ -2127,6 +2135,13 @@
     <div class="logo-foot">₿ SatoshiRetirement</div>
     <p>Gebaut mit ❤️ und dem Glauben an hartes Geld.</p>
     <p style="margin-top: 0.5rem;">„The Times 03/Jan/2009 Chancellor on brink of second bailout for banks" — Satoshi Nakamoto</p>
+    <nav class="legal" aria-label="Rechtliches">
+        <a href="/impressum">Impressum</a>
+        <span class="sep">·</span>
+        <a href="/datenschutz">Datenschutz</a>
+        <span class="sep">·</span>
+        <span>© 2026 Felix Bredl</span>
+    </nav>
 </footer>
 
 <script>

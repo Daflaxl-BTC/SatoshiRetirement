@@ -1,14 +1,143 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
+    <!-- ═══════ BASIS ═══════ -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
     <title>Satoshi Retirement — Lebe von Bitcoin. Geh früh in Rente.</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <meta name="description" content="Berechne in 60 Sekunden, wie viel Bitcoin du für deine finanzielle Freiheit brauchst. Drei Szenarien, interaktiver Rechner, DACH-Perspektive — ohne Finanzporno, ohne Moonboy-Gelaber.">
+    <meta name="keywords" content="Bitcoin Rente, Bitcoin Freiheitsrechner, Satoshi Retirement, finanzielle Freiheit Bitcoin, Bitcoin Sparplan DACH, FIRE Bitcoin, Bitcoin Lebensunterhalt, Bitcoin Standard Deutschland">
+    <meta name="author" content="Felix Bredl">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta name="theme-color" content="#f7931a">
+    <meta name="format-detection" content="telephone=no">
+
+    <!-- ═══════ CANONICAL + SPRACHE ═══════ -->
+    <link rel="canonical" href="https://satoshi-retirement.de/">
+    <link rel="alternate" hreflang="de" href="https://satoshi-retirement.de/">
+    <link rel="alternate" hreflang="de-DE" href="https://satoshi-retirement.de/">
+    <link rel="alternate" hreflang="de-AT" href="https://satoshi-retirement.de/">
+    <link rel="alternate" hreflang="de-CH" href="https://satoshi-retirement.de/">
+    <link rel="alternate" hreflang="x-default" href="https://satoshi-retirement.de/">
+
+    <!-- ═══════ OPEN GRAPH ═══════ -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Satoshi Retirement">
+    <meta property="og:title" content="Satoshi Retirement — Lebe von Bitcoin. Geh früh in Rente.">
+    <meta property="og:description" content="Der ehrliche Bitcoin-Freiheitsrechner für DACH. Drei Szenarien, null Moonboy-Gelaber, ein Ziel: wissen, wie viel Sats dich wirklich befreien.">
+    <meta property="og:url" content="https://satoshi-retirement.de/">
+    <meta property="og:locale" content="de_DE">
+    <meta property="og:locale:alternate" content="de_AT">
+    <meta property="og:locale:alternate" content="de_CH">
+    <meta property="og:image" content="https://satoshi-retirement.de/og/home.png">
+    <meta property="og:image:secure_url" content="https://satoshi-retirement.de/og/home.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Satoshi Retirement — Bitcoin Freiheitsrechner">
+
+    <!-- ═══════ TWITTER / X ═══════ -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@satoshiretire">
+    <meta name="twitter:creator" content="@felixbredl">
+    <meta name="twitter:title" content="Satoshi Retirement — Lebe von Bitcoin.">
+    <meta name="twitter:description" content="Wie viele Sats brauchst du, um nie wieder arbeiten zu müssen? 60-Sekunden-Rechner, drei Szenarien, DACH-Fokus.">
+    <meta name="twitter:image" content="https://satoshi-retirement.de/og/home.png">
+    <meta name="twitter:image:alt" content="Satoshi Retirement — Bitcoin Freiheitsrechner">
+
+    <!-- ═══════ FAVICONS ═══════ -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/android-chrome-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="/android-chrome-512x512.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#f7931a">
+    <link rel="manifest" href="/site.webmanifest">
+    <meta name="msapplication-TileColor" content="#0d1117">
+    <meta name="msapplication-TileImage" content="/mstile-144x144.png">
+    <meta name="apple-mobile-web-app-title" content="Satoshi Retirement">
+    <meta name="application-name" content="Satoshi Retirement">
+
+    <!-- ═══════ PRECONNECT / PERFORMANCE ═══════ -->
+    <link rel="preload" href="/fonts/inter-400-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/fonts/space-grotesk-700-latin.woff2" as="font" type="font/woff2" crossorigin>
+
+    <!-- ═══════ SCHEMA.ORG JSON-LD ═══════ -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://satoshi-retirement.de/#organization",
+          "name": "Satoshi Retirement",
+          "url": "https://satoshi-retirement.de/",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://satoshi-retirement.de/logo-512.png",
+            "width": 512,
+            "height": 512
+          },
+          "founder": { "@type": "Person", "name": "Felix Bredl" },
+          "sameAs": [
+            "https://twitter.com/satoshiretire",
+            "https://www.linkedin.com/in/felixbredl/"
+          ]
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://satoshi-retirement.de/#website",
+          "url": "https://satoshi-retirement.de/",
+          "name": "Satoshi Retirement",
+          "description": "Bitcoin-Freiheitsrechner und FIRE-Szenarien für den DACH-Raum.",
+          "inLanguage": "de-DE",
+          "publisher": { "@id": "https://satoshi-retirement.de/#organization" },
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": "https://satoshi-retirement.de/?q={search_term_string}",
+            "query-input": "required name=search_term_string"
+          }
+        },
+        {
+          "@type": "Article",
+          "@id": "https://satoshi-retirement.de/#article",
+          "isPartOf": { "@id": "https://satoshi-retirement.de/#website" },
+          "headline": "Satoshi Retirement — Lebe von Bitcoin. Geh früh in Rente.",
+          "description": "Der ehrliche Bitcoin-Freiheitsrechner für DACH. Drei Szenarien (Klara, Markus, Jonas), interaktiver Rechner, Weltkarte mit Länder-Parametern.",
+          "image": "https://satoshi-retirement.de/og/home.png",
+          "author": {
+            "@type": "Person",
+            "name": "Felix Bredl",
+            "url": "https://satoshi-retirement.de/#organization"
+          },
+          "publisher": { "@id": "https://satoshi-retirement.de/#organization" },
+          "datePublished": "2026-03-01",
+          "dateModified": "2026-04-19",
+          "inLanguage": "de-DE",
+          "mainEntityOfPage": "https://satoshi-retirement.de/"
+        },
+        {
+          "@type": "WebApplication",
+          "name": "Bitcoin Freiheitsrechner",
+          "url": "https://satoshi-retirement.de/#rechner",
+          "applicationCategory": "FinanceApplication",
+          "operatingSystem": "Web Browser",
+          "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" }
+        }
+      ]
+    }
+    </script>
+
+    <link rel="stylesheet" href="/fonts/fonts.css">
+    <script src="/vendor/chart.umd.min.js"></script>
+    <script src="/vendor/d3.min.js"></script>
+    <script src="/vendor/topojson.min.js"></script>
+    <script src="/vendor/three.min.js"></script>
     <style>
         :root {
             --orange: #f7931a;

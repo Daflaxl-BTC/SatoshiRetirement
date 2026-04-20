@@ -1152,7 +1152,12 @@
                 <div class="label">Du brauchst</div>
                 <div class="big-num" id="simpleNeededBtc">—</div>
                 <div class="label" id="simpleNeededSats">—</div>
-                <div class="label" id="simpleFutureBtcPrice" style="color:var(--green); margin-top:0.5rem; font-size:0.85rem;">—</div>
+
+                <div style="margin:1.2rem auto 0; max-width:440px; padding:1rem 1.3rem; background:linear-gradient(135deg, rgba(63,185,80,0.12), rgba(63,185,80,0.03)); border:1px solid rgba(63,185,80,0.3); border-radius:14px;">
+                    <div style="font-size:0.7rem; text-transform:uppercase; letter-spacing:1.5px; color:var(--text-dim); font-weight:700;">📈 BTC-Preis bei deiner Freiheit</div>
+                    <div style="font-family:'Space Grotesk',sans-serif; font-size:1.9rem; font-weight:700; color:var(--green); margin-top:0.3rem; line-height:1.1;" id="simpleFutureBtcPrice">—</div>
+                    <div style="font-size:0.75rem; color:var(--text-dim); margin-top:0.2rem;" id="simpleFutureBtcPriceNote">projiziert mit angenommenem BTC-Wachstum</div>
+                </div>
 
                 <div id="simpleProgress" style="margin:1.5rem auto; max-width:500px;">
                     <div style="display:flex; justify-content:space-between; font-size:0.8rem; margin-bottom:0.4rem;">
@@ -1293,7 +1298,12 @@
                 <div class="label">Ziel-Stack für deine Freiheit</div>
                 <div class="big-num" id="neededBtc">—</div>
                 <div class="label" id="neededSats">—</div>
-                <div class="label" id="futureBtcPriceDisplay" style="color:var(--green); margin-top:0.5rem; font-size:0.85rem;">—</div>
+
+                <div style="margin:1.2rem auto 0; max-width:440px; padding:1rem 1.3rem; background:linear-gradient(135deg, rgba(63,185,80,0.12), rgba(63,185,80,0.03)); border:1px solid rgba(63,185,80,0.3); border-radius:14px;">
+                    <div style="font-size:0.7rem; text-transform:uppercase; letter-spacing:1.5px; color:var(--text-dim); font-weight:700;">📈 BTC-Preis bei deiner Freiheit</div>
+                    <div style="font-family:'Space Grotesk',sans-serif; font-size:1.9rem; font-weight:700; color:var(--green); margin-top:0.3rem; line-height:1.1;" id="futureBtcPriceDisplay">—</div>
+                    <div style="font-size:0.75rem; color:var(--text-dim); margin-top:0.2rem;">projiziert mit gewähltem CAGR</div>
+                </div>
 
                 <div id="stackProgress" style="margin:1.5rem auto; max-width:500px;">
                     <div style="display:flex; justify-content:space-between; font-size:0.8rem; margin-bottom:0.4rem;">
@@ -2635,12 +2645,15 @@ function switchCalcMode(mode) {
 
 // ── Einfacher Rechner (feste 16% CAGR, 3.5% Withdrawal) ──
 function calcSimpleRetirement(flash = false) {
-    const existingBtc = +document.getElementById('simpleExistingBtc').value || 0;
-    const monthlyExpense = +document.getElementById('simpleExpense').value || 2000;
-    const monthlySaving = +document.getElementById('simpleSaving').value || 500;
-    const age = +document.getElementById('simpleAge').value || 25;
-    const retireAge = +document.getElementById('simpleRetireAge').value || 45;
+    const numOr = (id, fb) => { const v = document.getElementById(id).value; return v === '' ? fb : +v; };
+    const existingBtc = Math.max(0, numOr('simpleExistingBtc', 0));
+    const monthlyExpense = Math.max(0, numOr('simpleExpense', 2000));
+    const monthlySaving = Math.max(0, numOr('simpleSaving', 500));
+    const age = Math.max(0, numOr('simpleAge', 25));
+    const retireAge = Math.max(0, numOr('simpleRetireAge', 45));
     const btcPrice = +document.getElementById('simpleBtcPrice').value || liveBtcEur;
+
+    if (monthlyExpense <= 0) return;
 
     if (btcPrice <= 0) return;
 
@@ -2703,7 +2716,7 @@ function calcSimpleRetirement(flash = false) {
     resultEl.style.display = 'block';
     document.getElementById('simpleNeededBtc').textContent = neededBtcAtRetirement.toFixed(2) + ' BTC';
     document.getElementById('simpleNeededSats').textContent = neededSats.toLocaleString('de') + ' Satoshis';
-    document.getElementById('simpleFutureBtcPrice').textContent = '📈 Proj. BTC-Preis bei Rente: €' + Math.round(futureBtcPrice).toLocaleString('de');
+    document.getElementById('simpleFutureBtcPrice').textContent = '€' + Math.round(futureBtcPrice).toLocaleString('de');
 
     document.getElementById('simpleProgressFill').style.width = progressPct + '%';
     document.getElementById('simpleProgPct').textContent = progressPct.toFixed(1) + '%';
@@ -2875,7 +2888,7 @@ function calculateRetirement(flash = false) {
     resultEl.style.display = 'block';
     document.getElementById('neededBtc').textContent = neededBtc.toFixed(4) + ' BTC';
     document.getElementById('neededSats').textContent = neededSats.toLocaleString('de') + ' Satoshis';
-    document.getElementById('futureBtcPriceDisplay').textContent = '📈 Proj. BTC-Preis bei Rente: €' + Math.round(futureBtcPrice).toLocaleString('de');
+    document.getElementById('futureBtcPriceDisplay').textContent = '€' + Math.round(futureBtcPrice).toLocaleString('de');
 
     document.getElementById('stackProgressFill').style.width = progressPct + '%';
     document.getElementById('progPct').textContent = progressPct.toFixed(1) + '%';

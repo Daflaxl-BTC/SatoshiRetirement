@@ -1,0 +1,9 @@
+{
+  "name": "satoshi-retirement",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Bitcoin Freiheitsrechner für DACH — Satoshi Retirement",
+  "dependencies": {
+    "@vercel/og": "^0.6.4"
+  }
+}

@@ -1352,6 +1352,154 @@
             0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
             100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
         }
+
+        /* ═══════════════════════════════════════════════════
+           SHARE — Zeitmaschine
+           ═══════════════════════════════════════════════════ */
+        .tm-share-row {
+            display: flex; flex-wrap: wrap;
+            gap: 0.6rem; justify-content: center;
+            margin-top: 1.6rem;
+        }
+        .tm-share-btn {
+            display: inline-flex; align-items: center;
+            gap: 0.45rem;
+            background: transparent;
+            border: 1px solid var(--dark4);
+            color: var(--text);
+            padding: 0.55rem 1rem;
+            border-radius: 100px;
+            font-size: 0.85rem; font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer; text-decoration: none;
+            transition: all 0.2s;
+        }
+        .tm-share-btn:hover {
+            border-color: var(--orange);
+            color: var(--orange);
+            transform: translateY(-1px);
+        }
+        .tm-share-btn.tm-share-primary {
+            background: linear-gradient(135deg, var(--orange), var(--orange-dark));
+            color: #fff; border-color: transparent;
+            box-shadow: 0 4px 16px rgba(247,147,26,0.3);
+        }
+        .tm-share-btn.tm-share-primary:hover {
+            box-shadow: 0 6px 22px rgba(247,147,26,0.4);
+            color: #fff;
+        }
+        .tm-share-btn.copied {
+            border-color: var(--green); color: var(--green);
+        }
+
+        /* Share modal */
+        .share-modal {
+            position: fixed; inset: 0; z-index: 10001;
+            display: flex; align-items: center; justify-content: center;
+            background: rgba(13,17,23,0.88);
+            backdrop-filter: blur(10px);
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.3s ease;
+            padding: 1rem;
+        }
+        .share-modal.active {
+            opacity: 1; pointer-events: auto;
+        }
+        .share-modal-card {
+            background: linear-gradient(135deg, var(--dark2), var(--dark3));
+            border: 1px solid var(--dark4);
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 560px; width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+            transform: scale(0.92);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            max-height: 90vh; overflow-y: auto;
+        }
+        .share-modal.active .share-modal-card { transform: scale(1); }
+        .share-modal-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 1.2rem;
+        }
+        .share-modal-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.3rem; font-weight: 800;
+        }
+        .share-modal-close {
+            background: none; border: none;
+            color: var(--text-dim); font-size: 1.6rem;
+            cursor: pointer; line-height: 1;
+            padding: 0.3rem 0.6rem; border-radius: 8px;
+        }
+        .share-modal-close:hover { color: var(--orange); background: var(--dark); }
+        .share-preview {
+            border: 1px solid var(--dark4);
+            border-radius: 12px;
+            overflow: hidden;
+            aspect-ratio: 1200 / 630;
+            background: var(--dark);
+            margin-bottom: 1.2rem;
+            position: relative;
+        }
+        .share-preview img {
+            width: 100%; height: 100%; object-fit: cover;
+            display: block;
+        }
+        .share-preview-loading {
+            position: absolute; inset: 0;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--text-dim); font-size: 0.9rem;
+        }
+        .share-link-box {
+            display: flex; gap: 0.5rem;
+            background: var(--dark);
+            border: 1px solid var(--dark4);
+            border-radius: 10px;
+            padding: 0.6rem; margin-bottom: 1rem;
+        }
+        .share-link-input {
+            flex: 1; background: transparent; border: none;
+            color: var(--text); font-size: 0.85rem;
+            font-family: 'Space Grotesk', sans-serif;
+            outline: none; overflow: hidden;
+            text-overflow: ellipsis; white-space: nowrap;
+        }
+        .share-link-copy {
+            background: var(--orange); color: #fff;
+            border: none; border-radius: 8px;
+            padding: 0.4rem 1rem;
+            font-weight: 700; font-size: 0.8rem;
+            cursor: pointer; font-family: 'Inter', sans-serif;
+            transition: all 0.2s;
+        }
+        .share-link-copy:hover { background: var(--orange-light); }
+        .share-link-copy.copied { background: var(--green); }
+        .share-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 0.6rem;
+        }
+        .share-action {
+            display: inline-flex; align-items: center; justify-content: center;
+            gap: 0.5rem;
+            background: var(--dark);
+            border: 1px solid var(--dark4);
+            color: var(--text);
+            padding: 0.8rem 1rem;
+            border-radius: 10px;
+            font-size: 0.85rem; font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            text-decoration: none; cursor: pointer;
+            transition: all 0.2s;
+        }
+        .share-action:hover {
+            border-color: var(--orange); color: var(--orange);
+            transform: translateY(-1px);
+        }
+        .share-action.x { }
+        .share-action.linkedin { }
+        .share-action.whatsapp { }
+        .share-action.telegram { }
     </style>
 </head>
 <body>
@@ -1376,6 +1524,44 @@
         <button class="stack-save-btn primary" onclick="resetStackTracker()">Reset</button>
     </div>
 </aside>
+
+<!-- Share Modal (Zeitmaschine) -->
+<div class="share-modal" id="shareModal" role="dialog" aria-modal="true" aria-labelledby="shareModalTitle">
+    <div class="share-modal-card">
+        <div class="share-modal-header">
+            <div class="share-modal-title" id="shareModalTitle">📣 Ergebnis teilen</div>
+            <button class="share-modal-close" onclick="closeSharePanel()" aria-label="Schließen">×</button>
+        </div>
+        <div class="share-preview" id="sharePreview">
+            <div class="share-preview-loading" id="sharePreviewLoading">Lade Vorschau…</div>
+            <img id="sharePreviewImg" alt="" style="display:none;">
+        </div>
+        <div class="share-link-box">
+            <input type="text" class="share-link-input" id="shareLinkInput" readonly>
+            <button class="share-link-copy" id="shareLinkCopy" onclick="copyShareInput(this)">Kopieren</button>
+        </div>
+        <div class="share-grid">
+            <a class="share-action x" id="shareActionX" target="_blank" rel="noopener">
+                <span>𝕏</span> <span>Post auf X</span>
+            </a>
+            <a class="share-action linkedin" id="shareActionLinkedIn" target="_blank" rel="noopener">
+                <span>in</span> <span>LinkedIn</span>
+            </a>
+            <a class="share-action whatsapp" id="shareActionWhatsApp" target="_blank" rel="noopener">
+                <span>💬</span> <span>WhatsApp</span>
+            </a>
+            <a class="share-action telegram" id="shareActionTelegram" target="_blank" rel="noopener">
+                <span>✈️</span> <span>Telegram</span>
+            </a>
+            <button class="share-action" id="shareActionDownload" onclick="downloadShareImage()">
+                <span>⬇️</span> <span>Bild speichern</span>
+            </button>
+            <button class="share-action" id="shareActionNative" onclick="triggerNativeShare()">
+                <span>📱</span> <span>Teilen…</span>
+            </button>
+        </div>
+    </div>
+</div>
 
 <!-- Milestone Celebration Overlay -->
 <div class="milestone-celebration" id="milestoneCel" role="dialog" aria-modal="true" aria-labelledby="milestoneTitle">
@@ -1964,6 +2150,16 @@
                 <div class="tm-hero-label">Dein Stack wäre heute wert</div>
                 <div class="tm-hero-val" id="tmHeroValue">€0</div>
                 <div class="tm-hero-sub" id="tmHeroSub">—</div>
+                <div class="tm-share-row">
+                    <button class="tm-share-btn tm-share-primary" onclick="openSharePanel()" aria-haspopup="dialog">
+                        <span>📣</span> Ergebnis teilen
+                    </button>
+                    <button class="tm-share-btn" onclick="copyShareLink(this)" title="Link kopieren">
+                        🔗 Link
+                    </button>
+                    <a class="tm-share-btn" id="tmShareTwitter" href="#" target="_blank" rel="noopener" title="Auf X teilen">𝕏 X</a>
+                    <a class="tm-share-btn" id="tmShareLinkedIn" href="#" target="_blank" rel="noopener" title="Auf LinkedIn teilen">in LinkedIn</a>
+                </div>
             </div>
 
             <div class="tm-stats">
@@ -4275,6 +4471,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     initVitalsCockpit();
     initZeitmaschine();
     initStackTracker();
+    applyZeitmaschineDeepLink();
 });
 
 // ═══════════════════════════════════════════════════
@@ -5069,6 +5266,229 @@ function spawnConfetti(container) {
         c.style.transform = `rotate(${Math.random() * 360}deg)`;
         container.appendChild(c);
         setTimeout(() => c.remove(), 5000);
+    }
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// ███ SHARE — Zeitmaschine viral flow
+// ═══════════════════════════════════════════════════════════════════════
+function buildShareParams() {
+    const startIdx = +document.getElementById('tmStart').value;
+    const amount = +document.getElementById('tmAmount').value;
+    const startRow = BTC_HISTORY[startIdx];
+    if (!startRow) return null;
+
+    const latestPrice = (typeof liveBtcEur === 'number' && liveBtcEur > 0)
+        ? liveBtcEur : BTC_HISTORY[BTC_HISTORY.length - 1].p;
+    const history = BTC_HISTORY.slice(startIdx);
+    let btcStack = 0, invested = 0;
+    history.forEach(r => { btcStack += amount / r.p; invested += amount; });
+    const value = btcStack * latestPrice;
+    const years = history.length / 12;
+
+    return {
+        start: startRow.d,
+        amount,
+        invested: Math.round(invested),
+        value: Math.round(value),
+        btc: +btcStack.toFixed(4),
+        years: +years.toFixed(1),
+    };
+}
+
+function buildShareUrl(params) {
+    const origin = location.origin.startsWith('http') ? location.origin : 'https://satoshi-retirement.de';
+    const qs = new URLSearchParams({
+        start: params.start,
+        amount: String(params.amount),
+        invested: String(params.invested),
+        value: String(params.value),
+        btc: String(params.btc),
+        years: String(params.years),
+    });
+    return `${origin}/share?${qs.toString()}`;
+}
+
+function buildShareText(params) {
+    const fmt = n => n >= 1_000_000 ? '€' + (n/1_000_000).toFixed(2).replace('.', ',') + ' Mio.' :
+                    '€' + Math.round(n).toLocaleString('de-DE');
+    const multiple = params.invested > 0 ? params.value / params.invested : 0;
+    return `Aus ${fmt(params.invested)} Bitcoin-DCA wären heute ${fmt(params.value)} geworden — das ${multiple.toFixed(1)}-fache. Berechne deine Zeitmaschine:`;
+}
+
+function openSharePanel() {
+    const params = buildShareParams();
+    if (!params) return;
+    const shareUrl = buildShareUrl(params);
+    const shareText = buildShareText(params);
+
+    document.getElementById('shareLinkInput').value = shareUrl;
+
+    // Direct social intents (no scraper required for the text)
+    const xUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`;
+    const linkedInUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`;
+    const waUrl = `https://wa.me/?text=${encodeURIComponent(shareText + ' ' + shareUrl)}`;
+    const tgUrl = `https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareText)}`;
+
+    document.getElementById('shareActionX').href = xUrl;
+    document.getElementById('shareActionLinkedIn').href = linkedInUrl;
+    document.getElementById('shareActionWhatsApp').href = waUrl;
+    document.getElementById('shareActionTelegram').href = tgUrl;
+
+    // Top quick-row intents
+    const qX = document.getElementById('tmShareTwitter');
+    const qL = document.getElementById('tmShareLinkedIn');
+    if (qX) qX.href = xUrl;
+    if (qL) qL.href = linkedInUrl;
+
+    // Preview image — point at /api/og (only works on deployed Vercel)
+    const img = document.getElementById('sharePreviewImg');
+    const loading = document.getElementById('sharePreviewLoading');
+    img.style.display = 'none';
+    if (loading) loading.style.display = 'flex';
+    const ogParams = new URLSearchParams({
+        value: String(params.value),
+        invested: String(params.invested),
+        btc: String(params.btc),
+        years: String(params.years),
+        amount: String(params.amount),
+    });
+    const origin = location.origin.startsWith('http') ? location.origin : 'https://satoshi-retirement.de';
+    const ogUrl = `${origin}/api/og?${ogParams.toString()}`;
+    img.onload = () => {
+        img.style.display = 'block';
+        if (loading) loading.style.display = 'none';
+    };
+    img.onerror = () => {
+        if (loading) loading.innerHTML = 'Vorschau nur auf <code>satoshi-retirement.de</code> verfügbar — Link teilen funktioniert bereits.';
+    };
+    img.src = ogUrl;
+
+    // Hide native share on desktop
+    const nativeBtn = document.getElementById('shareActionNative');
+    if (nativeBtn) nativeBtn.style.display = (navigator.share ? 'inline-flex' : 'none');
+
+    document.getElementById('shareModal').classList.add('active');
+    // Update quick-intent buttons too
+    updateQuickShareIntents(shareUrl, shareText);
+}
+
+function closeSharePanel() {
+    document.getElementById('shareModal').classList.remove('active');
+}
+
+function updateQuickShareIntents(shareUrl, shareText) {
+    const qX = document.getElementById('tmShareTwitter');
+    const qL = document.getElementById('tmShareLinkedIn');
+    if (qX) qX.href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`;
+    if (qL) qL.href = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`;
+}
+
+function copyShareLink(btn) {
+    const params = buildShareParams();
+    if (!params) return;
+    const url = buildShareUrl(params);
+    navigator.clipboard.writeText(url).then(() => {
+        const original = btn.innerHTML;
+        btn.innerHTML = '✓ Kopiert';
+        btn.classList.add('copied');
+        setTimeout(() => {
+            btn.innerHTML = original;
+            btn.classList.remove('copied');
+        }, 1800);
+    }).catch(() => { openSharePanel(); });
+}
+
+function copyShareInput(btn) {
+    const input = document.getElementById('shareLinkInput');
+    input.select();
+    navigator.clipboard.writeText(input.value).then(() => {
+        btn.textContent = 'Kopiert ✓';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = 'Kopieren'; btn.classList.remove('copied'); }, 1800);
+    });
+}
+
+async function triggerNativeShare() {
+    const params = buildShareParams();
+    if (!params) return;
+    const shareUrl = buildShareUrl(params);
+    const shareText = buildShareText(params);
+    if (navigator.share) {
+        try { await navigator.share({ title: 'Satoshi Retirement', text: shareText, url: shareUrl }); } catch (e) {}
+    }
+}
+
+async function downloadShareImage() {
+    const params = buildShareParams();
+    if (!params) return;
+    const ogParams = new URLSearchParams({
+        value: String(params.value),
+        invested: String(params.invested),
+        btc: String(params.btc),
+        years: String(params.years),
+        amount: String(params.amount),
+    });
+    const origin = location.origin.startsWith('http') ? location.origin : 'https://satoshi-retirement.de';
+    const url = `${origin}/api/og?${ogParams.toString()}`;
+    try {
+        const res = await fetch(url);
+        if (!res.ok) throw new Error('fetch failed');
+        const blob = await res.blob();
+        const href = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = href;
+        a.download = `satoshi-retirement-${params.start}.png`;
+        document.body.appendChild(a); a.click(); a.remove();
+        setTimeout(() => URL.revokeObjectURL(href), 5000);
+    } catch (e) {
+        alert('Bild-Download ist nur auf satoshi-retirement.de verfügbar. Nutze einen Screenshot als Alternative.');
+    }
+}
+
+// Close modal on backdrop click or ESC
+document.addEventListener('click', e => {
+    const modal = document.getElementById('shareModal');
+    if (modal && e.target === modal) closeSharePanel();
+});
+document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+        const modal = document.getElementById('shareModal');
+        if (modal && modal.classList.contains('active')) closeSharePanel();
+    }
+});
+
+// ═══════════════════════════════════════════════════════════════════════
+// ███ DEEP-LINKING — read ?start=YYYY-MM&amount=N and pre-fill Zeitmaschine
+// ═══════════════════════════════════════════════════════════════════════
+function applyZeitmaschineDeepLink() {
+    const q = new URLSearchParams(location.search);
+    const start = q.get('start');
+    const amount = q.get('amount');
+    if (!start && !amount) return;
+
+    const startEl = document.getElementById('tmStart');
+    const amountEl = document.getElementById('tmAmount');
+    if (!startEl || !amountEl) return;
+
+    if (start) {
+        const idx = BTC_HISTORY.findIndex(r => r.d === start);
+        if (idx >= 0) startEl.value = idx;
+    }
+    if (amount) {
+        const n = parseInt(amount, 10);
+        if (isFinite(n) && n >= 25 && n <= 2000) amountEl.value = n;
+    }
+    // Clear active preset (since deep-link overrides)
+    document.querySelectorAll('#tmPresets .tm-preset').forEach(b => b.classList.remove('active'));
+    renderZeitmaschine();
+
+    // Scroll into view if anchor points to zeitmaschine, or if deep-link present
+    if (location.hash === '#zeitmaschine' || (start || amount)) {
+        requestAnimationFrame(() => {
+            const el = document.getElementById('zeitmaschine');
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
     }
 }
 </script>

@@ -81,9 +81,10 @@
       assets:      { items: [] },
       liabilities: { items: [] },
       assumptions: {
-        cagr: 0.16,            // erwartete BTC-Rendite p.a.
-        withdrawalRate: 0.035, // sichere Entnahmerate
-        btcPriceEur: null,     // Live-Preis (informativ)
+        cagr: 0.16,                  // erwartete BTC-Rendite p.a.
+        withdrawalRate: 0.035,       // sichere Entnahmerate
+        btcPriceEur: null,           // Live-Preis (CoinGecko/Coinbase/Blockchain.info-Fallback)
+        btcPriceUpdatedAt: null,     // ISO-Timestamp der letzten Live-Preis-Aktualisierung
       },
     };
   }

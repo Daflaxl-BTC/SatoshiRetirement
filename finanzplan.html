@@ -284,6 +284,22 @@
         .kpi .kpi-sub {
             font-size: 0.72rem; color: var(--text-dim); margin-top: 0.2rem;
         }
+        .live-price-tag {
+            font-size: 0.78rem;
+            color: var(--text-dim);
+            margin: 0 0 0.7rem;
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        .live-price-tag .dot {
+            width: 6px; height: 6px; border-radius: 50%;
+            background: var(--text-dim);
+        }
+        .live-price-tag.live .dot { background: var(--green); box-shadow: 0 0 6px var(--green); }
+        .live-price-tag.fallback .dot { background: var(--yellow); }
+        .live-price-tag.live { color: var(--text); }
 
         /* ═══ ARCHETYPE ═══ */
         .archetype-card {
@@ -600,6 +616,10 @@
             <div class="card">
                 <span class="section-label">Live-KPIs</span>
                 <h2>📊 Übersicht</h2>
+                <div class="live-price-tag" id="livePriceTag" title="Aktueller BTC-Preis für Net-Worth- und Allokations-Berechnung">
+                    <span class="dot"></span>
+                    <span id="livePriceText">BTC: € — · lädt …</span>
+                </div>
                 <div class="kpi-grid" style="margin-bottom:0;">
                     <div class="kpi green"><div class="kpi-label">Einkommen / Mon</div><div class="kpi-val" id="kpiIncome">€0</div></div>
                     <div class="kpi red"><div class="kpi-label">Ausgaben / Mon</div><div class="kpi-val" id="kpiExpenses">€0</div></div>
@@ -1436,6 +1456,48 @@ function resetAll() {
 }
 
 // ═══════════════════════════════════════════════════════════════════════
+// LIVE-BTC-PREIS — CoinGecko + Fallback-APIs (gleiche Reihenfolge wie index.html)
+// ═══════════════════════════════════════════════════════════════════════
+const PRICE_APIS = [
+    { name: 'CoinGecko',    url: 'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=eur', parse: d => d?.bitcoin?.eur },
+    { name: 'Coinbase',     url: 'https://api.coinbase.com/v2/exchange-rates?currency=BTC',                     parse: d => +d?.data?.rates?.EUR },
+    { name: 'Blockchain',   url: 'https://blockchain.info/ticker',                                              parse: d => d?.EUR?.last },
+];
+
+async function fetchLiveBtcEur() {
+    for (const api of PRICE_APIS) {
+        try {
+            const res = await fetch(api.url);
+            if (!res.ok) continue;
+            const data = await res.json();
+            const eur = api.parse(data);
+            if (Number.isFinite(eur) && eur > 0) {
+                plan.assumptions.btcPriceEur = eur;
+                plan.assumptions.btcPriceUpdatedAt = new Date().toISOString();
+                FP.savePlan(plan);
+                renderLivePriceTag(eur, api.name);
+                recompute();
+                return;
+            }
+        } catch (_) { /* nächste API */ }
+    }
+    // Alle Fallbacks gescheitert: zeige zuletzt persistierten oder 95k
+    const cached = plan.assumptions.btcPriceEur;
+    renderLivePriceTag(cached || 95000, cached ? 'cache' : 'fallback');
+}
+
+function renderLivePriceTag(price, source) {
+    const wrap = document.getElementById('livePriceTag');
+    const text = document.getElementById('livePriceText');
+    if (!wrap || !text) return;
+    const live = source && source !== 'fallback' && source !== 'cache';
+    wrap.classList.toggle('live', live);
+    wrap.classList.toggle('fallback', !live);
+    const label = live ? `live · ${source}` : (source === 'cache' ? 'zuletzt bekannt' : 'Fallback');
+    text.textContent = `BTC: ${fmtEur(price)} · ${label}`;
+}
+
+// ═══════════════════════════════════════════════════════════════════════
 // Re-render Sankey on resize
 // ═══════════════════════════════════════════════════════════════════════
 let _resizeTimer;
@@ -1446,6 +1508,13 @@ window.addEventListener('resize', () => {
 
 // GO
 init();
+// Falls ein zuvor gefetchter Preis im Plan steckt, sofort als „cache" anzeigen,
+// damit nicht „lädt …" steht, während die API antwortet.
+if (Number.isFinite(plan.assumptions.btcPriceEur) && plan.assumptions.btcPriceEur > 0) {
+    renderLivePriceTag(plan.assumptions.btcPriceEur, 'cache');
+}
+// Live-Preis nicht-blockierend nachladen — Plan-Recompute folgt automatisch.
+fetchLiveBtcEur();
 </script>
 
 </body>

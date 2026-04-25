@@ -138,6 +138,7 @@
     <script src="/vendor/d3.min.js"></script>
     <script src="/vendor/topojson.min.js"></script>
     <script src="/vendor/three.min.js"></script>
+    <script src="/js/finanzplan-schema.js"></script>
     <style>
         :root {
             --orange: #f7931a;
@@ -1284,6 +1285,16 @@
             background: rgba(247,147,26,0.1);
             transform: translateY(-1px);
         }
+        .save-stack-cta.finanzplan-cta {
+            border-color: var(--blue);
+            color: var(--blue);
+        }
+        .save-stack-cta.finanzplan-cta:hover { background: rgba(88,166,255,0.1); }
+        .save-stack-cta.export-cta {
+            border-color: var(--text-dim);
+            color: var(--text-dim);
+        }
+        .save-stack-cta.export-cta:hover { background: rgba(139,148,158,0.1); color: var(--text); }
 
         /* Milestone celebration */
         .milestone-celebration {
@@ -1586,6 +1597,7 @@
             <li><a href="#map">Weltkarte</a></li>
             <li><a href="#btc-stocks">Aktien</a></li>
             <li><a href="#plan">Plan</a></li>
+            <li><a href="/finanzplan" style="color:var(--orange); font-weight:700;">📊 Finanzplan</a></li>
         </ul>
         <button class="mobile-menu" onclick="document.querySelector('nav ul').style.display = document.querySelector('nav ul').style.display === 'flex' ? 'none' : 'flex'">☰</button>
     </div>
@@ -1915,9 +1927,15 @@
                     <div style="font-size:0.9rem; color:var(--green); font-weight:600;" id="simpleHeadstartMsg">—</div>
                 </div>
 
-                <div style="margin-top:1.5rem; text-align:center;">
+                <div style="margin-top:1.5rem; text-align:center; display:flex; flex-wrap:wrap; gap:0.6rem; justify-content:center;">
                     <button class="save-stack-cta" onclick="saveStackFromCalculator('simple')">
                         💎 Diesen Stack verfolgen
+                    </button>
+                    <button class="save-stack-cta finanzplan-cta" onclick="openInFinanzplan('simple')" title="Diese Daten im großen Finanzplan-Cockpit weiternutzen">
+                        📊 Im Finanzplan öffnen
+                    </button>
+                    <button class="save-stack-cta export-cta" onclick="exportRechnerJson('simple')" title="Daten als JSON-Datei herunterladen">
+                        💾 JSON-Export
                     </button>
                 </div>
             </div>
@@ -2095,9 +2113,15 @@
                     <div style="font-size:0.9rem; color:var(--green); font-weight:600;" id="headstartMsg">—</div>
                 </div>
 
-                <div style="margin-top:1.5rem; text-align:center;">
+                <div style="margin-top:1.5rem; text-align:center; display:flex; flex-wrap:wrap; gap:0.6rem; justify-content:center;">
                     <button class="save-stack-cta" onclick="saveStackFromCalculator('advanced')">
                         💎 Diesen Stack verfolgen
+                    </button>
+                    <button class="save-stack-cta finanzplan-cta" onclick="openInFinanzplan('advanced')" title="Diese Daten im großen Finanzplan-Cockpit weiternutzen">
+                        📊 Im Finanzplan öffnen
+                    </button>
+                    <button class="save-stack-cta export-cta" onclick="exportRechnerJson('advanced')" title="Daten als JSON-Datei herunterladen">
+                        💾 JSON-Export
                     </button>
                 </div>
             </div>
@@ -5173,6 +5197,58 @@ function saveStackFromCalculator(which) {
     renderStackTracker(data);
     showStackTracker();
     checkMilestones(sats);
+}
+
+// ─────────────────────────────────────────────────────────────────────
+// Renten-Rechner → Finanzplan-Brücke
+// Liest aktuelle Inputs aus dem aktiven Modus und baut einen
+// kompatiblen Finanzplan-State für Handoff oder Datei-Export.
+// ─────────────────────────────────────────────────────────────────────
+function readRechnerInputs(which) {
+    const v = id => +(document.getElementById(id)?.value || 0);
+    if (which === 'simple') {
+        return {
+            existingBtc: v('simpleExistingBtc'),
+            existingSats: 0,
+            monthlyExpense: v('simpleExpense'),
+            monthlySaving: v('simpleSaving'),
+            age: v('simpleAge'),
+            retireAge: v('simpleRetireAge'),
+            btcPriceEur: v('simpleBtcPrice'),
+            cagrPct: 16,
+            withdrawalPct: 3.5,
+        };
+    }
+    return {
+        existingBtc: v('existingBtc'),
+        existingSats: v('existingSats'),
+        monthlyExpense: v('monthlyExpense'),
+        monthlySaving: v('monthlySaving'),
+        age: v('currentAge'),
+        retireAge: v('retireAge'),
+        btcPriceEur: v('btcPriceInput'),
+        cagrPct: v('btcGrowth'),
+        withdrawalPct: parseFloat(document.getElementById('withdrawalRate')?.value) || 3.5,
+    };
+}
+
+function openInFinanzplan(which) {
+    if (!window.Finanzplan) {
+        alert('Finanzplan-Modul nicht geladen. Seite neu laden und erneut versuchen.');
+        return;
+    }
+    const plan = window.Finanzplan.fromRentenRechner(readRechnerInputs(which));
+    window.Finanzplan.setHandoff(plan);
+    window.location.href = '/finanzplan';
+}
+
+function exportRechnerJson(which) {
+    if (!window.Finanzplan) {
+        alert('Finanzplan-Modul nicht geladen. Seite neu laden und erneut versuchen.');
+        return;
+    }
+    const plan = window.Finanzplan.fromRentenRechner(readRechnerInputs(which));
+    window.Finanzplan.exportToFile(plan);
 }
 
 function renderStackTracker(data) {

@@ -1369,6 +1369,84 @@ const RULES = [
             action: 'Schreibe einen 1-Pager Bitcoin-Notfallplan: wo Seed, wer kontaktiert wen, welcher Steuerberater. Verschlossen aufbewahren.',
         }),
     },
+    // ═══════════════════════════════════════════════════════════════════════
+    // RENTEN-PHASE — feuert nur wenn der User im Ruhestand ist (oder
+    // bereits FI). Rein additive Regeln — Akkumulations-Logik bleibt unberührt.
+    // ═══════════════════════════════════════════════════════════════════════
+    {
+        id: 'retired-stack-insufficient',
+        prio: 92, severity: 'critical',
+        when: (p, a) => {
+            const age = p.profile.age || 0;
+            const target = p.profile.targetRetirementAge || 0;
+            if (!(target > 0 && age >= target)) return false;
+            const wRate = p.assumptions.withdrawalRate || 0.035;
+            return a.expenseTotal > 0 && a.btcValue * wRate < a.expenseTotal * 12;
+        },
+        out: (p, a) => {
+            const wRate = p.assumptions.withdrawalRate || 0.035;
+            const safeIncome = a.btcValue * wRate;
+            const annualNeed = a.expenseTotal * 12;
+            const gapMonth = annualNeed / 12 - safeIncome / 12;
+            return {
+                title: '🚨 Renten-Alter erreicht, Stack reicht nicht',
+                body: `Wunsch-Renten-Alter ${p.profile.targetRetirementAge} ist erreicht, aber Stack × ${fmtPct(wRate)} = ${fmtEur(safeIncome)}/Jahr deckt nur ${fmtPct(safeIncome / annualNeed)} der ${fmtEur(annualNeed)}/Jahr Ausgaben. Rechnerisch fehlen ${fmtEur(gapMonth)}/Monat.`,
+                action: 'Optionen: Renten-Eintritt verschieben + weiter stacken, Ausgaben senken (Wohnort/Lifestyle), Teilzeit/Beratung als Brückeneinkommen, oder weitere Assets aktivieren.',
+            };
+        },
+    },
+    {
+        id: 'sequence-risk-no-cash-buffer',
+        prio: 82, severity: 'warning',
+        when: (p, a) => {
+            if (!isInRetirementPhase(p, a)) return false;
+            const cash = totalAssetsByCat(p, 'cash');
+            return a.expenseTotal > 0 && cash < a.expenseTotal * 18;
+        },
+        out: (p, a) => {
+            const cash = totalAssetsByCat(p, 'cash');
+            const target = a.expenseTotal * 18;
+            return {
+                title: '⚠️ Sequence-of-Returns-Risiko',
+                body: `In der Renten-Phase mit nur ${fmtEur(cash)} Cash bei ${fmtEur(a.expenseTotal)}/Mon Ausgaben. Trifft dich ein -70 %-Bear in den ersten Renten-Jahren, müsstest du am Tief BTC verkaufen — das zerstört den Stack mathematisch (Sequence-of-Returns-Risk).`,
+                action: `Cash-Brücke auf 18 Monate ${fmtEur(target)} aufbauen. In Bull-Phasen Stack monetarisieren, in Bear-Phasen nur aus Cash leben.`,
+            };
+        },
+    },
+    {
+        id: 'lombard-retirement-refi',
+        prio: 72, severity: 'warning',
+        when: (p, a) => isInRetirementPhase(p, a) && totalLiability(p, 'lombard') > 0,
+        out: (p, a) => {
+            const lom = totalLiability(p, 'lombard');
+            const ltv = a.btcValue > 0 ? lom / a.btcValue : 0;
+            return {
+                title: '🏦 Lombard im Ruhestand: Refi-Plan nötig',
+                body: `${fmtEur(lom)} Lombard bei LTV ${fmtPct(ltv)}. Ohne Aktivlohn ist die Refi-Frage zentral: Wenn der Kreditrahmen ausläuft oder Margin Call droht, fehlt die Cashflow-Quelle zum Auffüllen — außer BTC-Verkauf am denkbar schlechtesten Moment.`,
+                action: 'LTV unter 25 % halten, Refi-Termine im Kalender, quartalsweise Margin-Reserve prüfen. Plan B dokumentieren: Tilgungsweg ohne BTC-Verkauf (Cash-Brücke + Lombard-Roll).',
+            };
+        },
+    },
+    {
+        id: 'withdrawal-comfortable',
+        prio: 25, severity: 'good',
+        when: (p, a) => {
+            if (!isInRetirementPhase(p, a)) return false;
+            const wRate = p.assumptions.withdrawalRate || 0.035;
+            return a.expenseTotal > 0 && a.btcValue * wRate >= a.expenseTotal * 12 * 1.5;
+        },
+        out: (p, a) => {
+            const wRate = p.assumptions.withdrawalRate || 0.035;
+            const safeIncome = a.btcValue * wRate;
+            const annualNeed = a.expenseTotal * 12;
+            const buffer = safeIncome / annualNeed;
+            return {
+                title: '✅ Komfortabler Renten-Puffer',
+                body: `Stack × ${fmtPct(wRate)} = ${fmtEur(safeIncome)}/Jahr deckt deine Ausgaben ${buffer.toFixed(1).replace('.', ',')}-fach. Du liegst deutlich oberhalb der 4 %-Regel — mehrjährige Drawdowns verkraftest du, ohne Lifestyle zu kürzen.`,
+                action: 'Trenne mental einen "Generationen-Stack" ab oder nutze Lombard für Liquidität ohne Verkauf (= ohne KapESt-Trigger). Tax-Setup mit Berater fixieren.',
+            };
+        },
+    },
     {
         id: 'expense-uncategorized',
         prio: 15, severity: 'info',
@@ -1395,6 +1473,19 @@ function hasLiability(p, cat) { return p.liabilities.items.some(l => l.category 
 function totalLiability(p, cat) { return p.liabilities.items.filter(l => l.category === cat).reduce((s,l)=>s+(l.balance||0), 0); }
 function sumExpensesByCat(p, cat) {
     return p.expenses.items.filter(e => e.category === cat).reduce((s,e)=>s+toMonthly(e.amount, e.frequency), 0);
+}
+function totalAssetsByCat(p, cat) {
+    return p.assets.items.filter(a => a.category === cat).reduce((s, a) => s + (a.value || 0), 0);
+}
+// Renten-Phase: explizit (Alter ≥ Wunsch-Renten-Alter) ODER finanziell-frei
+// (Stack × Withdrawal-Rate deckt 12 Monatsausgaben). Beides löst die
+// Renten-spezifischen Tipps aus.
+function isInRetirementPhase(p, a) {
+    const age = p.profile.age || 0;
+    const target = p.profile.targetRetirementAge || 0;
+    if (target > 0 && age >= target) return true;
+    const wRate = p.assumptions.withdrawalRate || 0.035;
+    return a.expenseTotal > 0 && a.btcValue * wRate >= a.expenseTotal * 12;
 }
 
 function renderTips(a) {

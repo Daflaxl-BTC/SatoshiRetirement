@@ -317,7 +317,19 @@
             color: var(--orange);
             margin-bottom: 0.3rem;
         }
-        .archetype-sub { color: var(--text-dim); font-size: 0.9rem; margin-bottom: 1rem; }
+        .archetype-sub { color: var(--text-dim); font-size: 0.9rem; margin-bottom: 0.7rem; }
+        .archetype-cluster {
+            font-size: 0.78rem;
+            color: var(--text);
+            margin-bottom: 0.9rem;
+            padding: 0.4rem 0.7rem;
+            background: rgba(247,147,26,0.08);
+            border: 1px solid rgba(247,147,26,0.18);
+            border-radius: 999px;
+            display: inline-block;
+        }
+        .archetype-cluster:empty,
+        .archetype-cluster.hidden { display: none; }
         .archetype-meta {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -605,6 +617,7 @@
                 <div class="archetype-emoji" id="archEmoji">🌱</div>
                 <div class="archetype-name" id="archName">Pre-Coiner</div>
                 <div class="archetype-sub" id="archSub">Trage zuerst deinen Bitcoin-Stack ein, um deinen Archetyp zu sehen.</div>
+                <div class="archetype-cluster hidden" id="archCluster"></div>
                 <div class="archetype-meta">
                     <div>Stack<strong id="archStack">— BTC</strong></div>
                     <div>Allokation<strong id="archAlloc">—%</strong></div>
@@ -1049,6 +1062,40 @@ function renderArchetype(a) {
     document.getElementById('archStack').textContent = (plan.stack.btc || 0).toFixed((plan.stack.btc || 0) >= 1 ? 2 : 4) + ' BTC';
     document.getElementById('archAlloc').textContent = a.totalAssets > 0 ? fmtPct(a.btcAllocation, 0) : '—';
     document.getElementById('archPhase').textContent = arch.phase;
+
+    // Sub-Cluster (Wohnsituation × Haushalt) — verfeinert die Archetyp-Aussage,
+    // wird nur eingeblendet wenn mindestens eine Achse Daten hat.
+    const sc = computeSubCluster(plan);
+    const wrap = document.getElementById('archCluster');
+    if (sc.label) {
+        wrap.textContent = sc.label;
+        wrap.classList.remove('hidden');
+    } else {
+        wrap.classList.add('hidden');
+    }
+}
+
+// Sub-Cluster-Berechnung: zwei orthogonale Achsen (Wohnen × Haushalt) liefern
+// 6 sinnvolle Kombinationen. Wird sowohl im Archetyp-Karten-UI angezeigt als
+// auch von Tip-Regeln (renter-stacker-evaluate-ownership, family-mortgage-
+// stacker-protection) konsumiert.
+function computeSubCluster(p) {
+    const hasMortgage = p.liabilities.items.some(l => l.category === 'mortgage' && (l.balance || 0) > 0);
+    const housingExp = sumExpensesByCat(p, 'housing');
+    let housing = 'unknown';
+    if (hasMortgage) housing = 'mortgage';
+    else if (housingExp > 0) housing = 'rent';
+
+    const kids = p.profile.children || 0;
+    const partnered = p.profile.relationshipStatus === 'partner' || p.profile.relationshipStatus === 'married';
+    let household = 'single';
+    if (kids >= 1) household = 'family';
+    else if (partnered) household = 'couple';
+
+    const housingLabels = { mortgage: '🏠 Hauseigentum (Hypothek)', rent: '🏠 Mieter', unknown: null };
+    const householdLabels = { single: '👤 Single', couple: '👫 Partnerschaft', family: '👨‍👩‍👧 Familie' };
+    const parts = [housingLabels[housing], householdLabels[household]].filter(Boolean);
+    return { housing, household, label: parts.length ? parts.join(' · ') : '' };
 }
 
 // ═══════════════════════════════════════════════════════════════════════
@@ -1444,6 +1491,45 @@ const RULES = [
                 title: '✅ Komfortabler Renten-Puffer',
                 body: `Stack × ${fmtPct(wRate)} = ${fmtEur(safeIncome)}/Jahr deckt deine Ausgaben ${buffer.toFixed(1).replace('.', ',')}-fach. Du liegst deutlich oberhalb der 4 %-Regel — mehrjährige Drawdowns verkraftest du, ohne Lifestyle zu kürzen.`,
                 action: 'Trenne mental einen "Generationen-Stack" ab oder nutze Lombard für Liquidität ohne Verkauf (= ohne KapESt-Trigger). Tax-Setup mit Berater fixieren.',
+            };
+        },
+    },
+    // ═══════════════════════════════════════════════════════════════════════
+    // SUB-CLUSTER — feuert auf Wohn-/Haushalts-Kombinationen, die Archetyp
+    // allein nicht abdeckt. Nutzt computeSubCluster(plan) für die Achsen.
+    // ═══════════════════════════════════════════════════════════════════════
+    {
+        id: 'family-mortgage-stacker-protection',
+        prio: 76, severity: 'warning',
+        when: (p) => {
+            const sc = computeSubCluster(p);
+            return sc.housing === 'mortgage' && sc.household === 'family' && (p.stack.btc || 0) >= 0.05;
+        },
+        out: (p, a) => {
+            const mortBal = totalLiability(p, 'mortgage');
+            return {
+                title: '🛡️ Familie + Hypothek + Stack → Absicherung prüfen',
+                body: `Du trägst ${fmtEur(mortBal)} Hypothek mit Familie und ernstzunehmendem BTC-Stack. Wenn dir was passiert, soll der Stack die Familie tragen — nicht zwangsverkauft werden, um die Hypothek zu bedienen.`,
+                action: 'Risiko-Lebensversicherung in Höhe Mortgage-Restschuld + 12 Monate Lebenshaltung. Erbplan klären (wer hat Seed-Zugang?). BU separat denken.',
+            };
+        },
+    },
+    {
+        id: 'renter-stacker-evaluate-ownership',
+        prio: 48, severity: 'info',
+        when: (p, a) => {
+            const sc = computeSubCluster(p);
+            const btc = p.stack.btc || 0;
+            const age = p.profile.age || 0;
+            return sc.housing === 'rent' && btc >= 0.05 && a.surplus > 500 && age >= 25 && age <= 50;
+        },
+        out: (p, a) => {
+            const rent = sumExpensesByCat(p, 'housing');
+            const cumulative20y = rent * 12 * 20;
+            return {
+                title: '🏠 Mieter mit Stack — Eigentum-Math durchrechnen',
+                body: `Du baust Stack zur Miete und hast ${fmtEur(a.surplus)} Überschuss. Über 20 Jahre fließen ${fmtEur(cumulative20y)} Miete weg ohne Asset-Aufbau. Eigentum lohnt nicht überall — aber die Rechnung verdient einen ehrlichen Blick, bevor sie unausgesprochen bleibt.`,
+                action: 'Modelliere drei Pfade: (a) weiter mieten + 100 % DCA, (b) Eigentum kaufen + Hypothek + reduzierter DCA, (c) geografische Flexibilität (günstigere Stadt/Land). Über 20 Jahre läuft (a) oft erstaunlich gut, wenn DCA diszipliniert.',
             };
         },
     },

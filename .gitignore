@@ -7,4 +7,6 @@ node_modules/
 
 # Local preview helpers (not part of the deployed site)
 _serve.mjs
-.claude/launch.json
+
+# Claude Code lokale Daten (worktrees, launch configs, etc.)
+.claude/

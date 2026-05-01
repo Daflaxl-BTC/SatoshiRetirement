@@ -1516,6 +1516,288 @@
         .share-action.linkedin { }
         .share-action.whatsapp { }
         .share-action.telegram { }
+
+        /* ═══════ LEBENSSTANDARD-MODUL ═══════ */
+        .ls-hero {
+            background: linear-gradient(135deg, rgba(247,147,26,0.10), rgba(88,166,255,0.06));
+            border: 1px solid rgba(247,147,26,0.25);
+            border-radius: 16px; padding: 1.4rem 1.6rem; margin-bottom: 1.5rem;
+        }
+        .ls-hero-grid {
+            display: grid; grid-template-columns: 2fr 3fr;
+            gap: 1.5rem; align-items: center;
+        }
+        @media (max-width: 720px) { .ls-hero-grid { grid-template-columns: 1fr; } }
+        .ls-input-row {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem;
+        }
+        .ls-input-row .input-group { margin-bottom: 0; }
+        .ls-budget-display {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background: rgba(13,17,23,0.45); border: 1px solid var(--dark4);
+            border-radius: 14px; padding: 1.2rem;
+        }
+        .ls-budget-val {
+            font-family: 'Space Grotesk', sans-serif; font-weight: 800;
+            font-size: 2.4rem; line-height: 1; color: var(--orange);
+            background: linear-gradient(135deg, var(--orange), var(--orange-light));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .ls-budget-lbl { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 2px; color: var(--text-dim); margin-top: 0.4rem; }
+        .ls-budget-tier { margin-top: 0.7rem; font-size: 0.95rem; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 0.4rem; }
+        .ls-prefill-row { margin-top: 1rem; display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; }
+        .ls-prefill-btn {
+            font-size: 0.78rem; padding: 0.45rem 0.95rem; border-radius: 8px;
+            background: rgba(247,147,26,0.08); border: 1px solid rgba(247,147,26,0.3);
+            color: var(--orange); cursor: pointer; font-weight: 600;
+            transition: all 0.2s;
+        }
+        .ls-prefill-btn:hover { background: rgba(247,147,26,0.18); }
+        .ls-prefill-btn.btc { background: rgba(247,147,26,0.05); }
+
+        .ls-subnav {
+            display: flex; gap: 0.4rem; margin: 1.2rem 0 1rem;
+            background: var(--dark2); padding: 0.4rem; border-radius: 12px;
+            border: 1px solid var(--dark4); flex-wrap: wrap;
+        }
+        .ls-subbtn {
+            flex: 1 1 auto; min-width: 120px;
+            padding: 0.7rem 1rem; border-radius: 8px;
+            background: transparent; border: none;
+            color: var(--text-dim); font-size: 0.85rem; cursor: pointer;
+            font-family: 'Inter', sans-serif; font-weight: 600;
+            display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem;
+            transition: all 0.2s;
+        }
+        .ls-subbtn:hover { color: var(--text); }
+        .ls-subbtn.active {
+            background: rgba(247,147,26,0.15); color: var(--orange);
+            box-shadow: inset 0 0 0 1px rgba(247,147,26,0.3);
+        }
+        .ls-panel { display: none; }
+        .ls-panel.active { display: block; animation: fadeIn 0.3s ease; }
+
+        /* — MAP — */
+        .ls-map-wrap {
+            background: var(--dark2); border: 1px solid var(--dark4);
+            border-radius: 16px; padding: 1.2rem;
+            display: grid; grid-template-columns: 1.4fr 1fr; gap: 1.2rem;
+        }
+        @media (max-width: 900px) { .ls-map-wrap { grid-template-columns: 1fr; } }
+        #lsMap { width: 100%; height: 580px; display: block; background: radial-gradient(ellipse at center, rgba(247,147,26,0.04), transparent 70%); border-radius: 12px; }
+        @media (max-width: 900px) { #lsMap { height: 460px; } }
+        .ls-de-outline { fill: rgba(247,147,26,0.04); stroke: rgba(247,147,26,0.25); stroke-width: 1.5; }
+        .ls-de-state { fill: rgba(247,147,26,0.06); stroke: rgba(247,147,26,0.18); stroke-width: 0.5; }
+        .ls-city-dot { cursor: pointer; transition: all 0.2s; stroke: rgba(13,17,23,0.7); stroke-width: 1; }
+        .ls-city-dot:hover { stroke: #fff; stroke-width: 2; filter: drop-shadow(0 0 8px currentColor); }
+        .ls-city-dot.selected { stroke: #fff; stroke-width: 2.5; filter: drop-shadow(0 0 12px currentColor); }
+        .ls-city-label { font-size: 9px; fill: var(--text-dim); pointer-events: none; font-family: 'Inter', sans-serif; font-weight: 600; }
+        .ls-city-label.major { fill: var(--text); font-size: 11px; }
+        .ls-legend {
+            position: absolute; left: 18px; bottom: 18px;
+            background: rgba(13,17,23,0.85); border: 1px solid var(--dark4);
+            backdrop-filter: blur(10px);
+            padding: 0.7rem 0.9rem; border-radius: 10px; font-size: 0.72rem;
+        }
+        .ls-legend-row { display: flex; align-items: center; gap: 0.45rem; margin: 0.18rem 0; }
+        .ls-legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+        .ls-map-col { position: relative; }
+
+        .ls-detail-card {
+            background: var(--dark3); border: 1px solid var(--dark4);
+            border-radius: 14px; padding: 1.3rem; min-height: 100%;
+        }
+        .ls-detail-header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 0.8rem; gap: 0.5rem; flex-wrap: wrap; }
+        .ls-city-name { font-family: 'Space Grotesk', sans-serif; font-size: 1.6rem; font-weight: 800; color: var(--text); }
+        .ls-city-sub { font-size: 0.8rem; color: var(--text-dim); }
+        .ls-verdict-pill {
+            font-size: 0.78rem; font-weight: 700; padding: 0.35rem 0.8rem;
+            border-radius: 999px; display: inline-flex; align-items: center; gap: 0.3rem;
+        }
+        .ls-verdict-pill.green { background: rgba(63,185,80,0.15); color: var(--green); border: 1px solid rgba(63,185,80,0.4); }
+        .ls-verdict-pill.yellow { background: rgba(227,179,65,0.15); color: var(--yellow); border: 1px solid rgba(227,179,65,0.4); }
+        .ls-verdict-pill.red { background: rgba(248,81,73,0.15); color: var(--red); border: 1px solid rgba(248,81,73,0.4); }
+        .ls-verdict-pill.blue { background: rgba(88,166,255,0.15); color: var(--blue); border: 1px solid rgba(88,166,255,0.4); }
+        .ls-detail-grid {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 0.6rem; margin-top: 0.8rem;
+        }
+        .ls-detail-item {
+            background: var(--dark2); border: 1px solid var(--dark4);
+            border-radius: 10px; padding: 0.7rem 0.85rem;
+        }
+        .ls-detail-item .v {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700; font-size: 1.05rem; color: var(--text);
+        }
+        .ls-detail-item .l { font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; margin-top: 0.2rem; }
+        .ls-bar { background: var(--dark2); border-radius: 6px; height: 8px; overflow: hidden; margin-top: 0.4rem; }
+        .ls-bar-fill { height: 100%; background: linear-gradient(90deg, var(--green), var(--orange) 60%, var(--red)); transition: width 0.3s; }
+        .ls-rent-section { margin-top: 1rem; padding: 0.9rem; background: var(--dark2); border-radius: 10px; border: 1px solid var(--dark4); }
+        .ls-rent-row { display: flex; justify-content: space-between; padding: 0.35rem 0; border-bottom: 1px dashed rgba(255,255,255,0.05); font-size: 0.84rem; }
+        .ls-rent-row:last-child { border-bottom: none; }
+        .ls-rent-row strong { color: var(--text); }
+        .ls-rent-row .ok { color: var(--green); }
+        .ls-rent-row .nok { color: var(--red); }
+
+        .ls-tier-strip {
+            display: grid; grid-template-columns: repeat(5, 1fr);
+            gap: 0.5rem; margin: 1rem 0;
+        }
+        @media (max-width: 720px) { .ls-tier-strip { grid-template-columns: repeat(2, 1fr); } }
+        .ls-tier-card {
+            background: var(--dark2); border: 1px solid var(--dark4);
+            border-radius: 10px; padding: 0.7rem 0.6rem;
+            text-align: center; cursor: pointer; transition: all 0.2s;
+        }
+        .ls-tier-card.active {
+            border-color: var(--orange);
+            background: linear-gradient(180deg, rgba(247,147,26,0.18), rgba(247,147,26,0.04));
+        }
+        .ls-tier-card:hover { border-color: rgba(247,147,26,0.5); }
+        .ls-tier-card .em { font-size: 1.3rem; }
+        .ls-tier-card .nm { font-weight: 700; font-size: 0.85rem; margin-top: 0.2rem; color: var(--text); }
+        .ls-tier-card .rng { font-size: 0.7rem; color: var(--text-dim); margin-top: 0.15rem; }
+
+        .ls-tier-detail {
+            background: var(--dark2); border: 1px solid var(--dark4);
+            border-radius: 14px; padding: 1.4rem; margin-top: 1rem;
+        }
+        .ls-tier-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 0.8rem; margin-top: 1rem;
+        }
+        .ls-tier-block {
+            background: var(--dark3); border: 1px solid var(--dark4);
+            border-radius: 10px; padding: 1rem;
+        }
+        .ls-tier-block h4 { font-size: 0.95rem; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.4rem; }
+        .ls-tier-block ul { list-style: none; font-size: 0.85rem; color: var(--text-dim); }
+        .ls-tier-block ul li { padding: 0.2rem 0; padding-left: 1rem; position: relative; }
+        .ls-tier-block ul li::before { content: '›'; position: absolute; left: 0; color: var(--orange); font-weight: 700; }
+        .ls-tier-block .big {
+            font-family: 'Space Grotesk', sans-serif; font-weight: 700;
+            font-size: 1.4rem; color: var(--orange); margin: 0.3rem 0;
+        }
+
+        /* — RANKING LIST — */
+        .ls-ranking { background: var(--dark2); border: 1px solid var(--dark4); border-radius: 14px; padding: 1.2rem; margin-top: 1rem; }
+        .ls-ranking-row {
+            display: grid; grid-template-columns: 30px 1fr auto auto; gap: 0.8rem;
+            padding: 0.55rem 0.6rem; border-radius: 8px; align-items: center;
+            font-size: 0.88rem;
+        }
+        .ls-ranking-row + .ls-ranking-row { border-top: 1px solid var(--dark4); }
+        .ls-ranking-row:hover { background: var(--dark3); cursor: pointer; }
+        .ls-ranking-row .rk { font-weight: 700; color: var(--text-dim); text-align: center; }
+        .ls-ranking-row .nm { font-weight: 600; }
+        .ls-ranking-row .rt { font-size: 0.78rem; color: var(--text-dim); }
+
+        /* — AUTO DEEP-DIVE — */
+        .ls-auto-grid { display: grid; grid-template-columns: 1.1fr 2fr; gap: 1rem; }
+        @media (max-width: 900px) { .ls-auto-grid { grid-template-columns: 1fr; } }
+        .ls-auto-list {
+            background: var(--dark2); border: 1px solid var(--dark4);
+            border-radius: 14px; padding: 0.9rem; max-height: 720px; overflow-y: auto;
+        }
+        .ls-auto-pick {
+            padding: 0.7rem 0.85rem; margin-bottom: 0.45rem; border-radius: 10px;
+            background: var(--dark3); border: 1px solid var(--dark4);
+            cursor: pointer; transition: all 0.2s;
+            display: flex; justify-content: space-between; align-items: center; gap: 0.5rem;
+        }
+        .ls-auto-pick:hover { border-color: rgba(247,147,26,0.4); }
+        .ls-auto-pick.selected { border-color: var(--orange); background: rgba(247,147,26,0.1); }
+        .ls-auto-pick .mn { font-weight: 700; font-size: 0.92rem; }
+        .ls-auto-pick .mt { font-size: 0.74rem; color: var(--text-dim); }
+        .ls-auto-pick .pr { font-family: 'Space Grotesk', sans-serif; font-weight: 700; color: var(--orange); white-space: nowrap; }
+
+        .ls-auto-detail {
+            background: var(--dark2); border: 1px solid var(--dark4);
+            border-radius: 14px; padding: 1.4rem;
+        }
+        .ls-fin-tabs { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 0.9rem; }
+        .ls-fin-tab {
+            padding: 0.5rem 0.9rem; border-radius: 8px; cursor: pointer;
+            background: var(--dark3); border: 1px solid var(--dark4);
+            color: var(--text-dim); font-size: 0.82rem; font-weight: 600;
+            font-family: 'Inter', sans-serif; transition: all 0.2s;
+        }
+        .ls-fin-tab:hover { color: var(--text); }
+        .ls-fin-tab.active { background: rgba(247,147,26,0.15); color: var(--orange); border-color: var(--orange); }
+
+        .ls-fin-compare-grid {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.6rem;
+            margin: 0.8rem 0 1rem;
+        }
+        @media (max-width: 720px) { .ls-fin-compare-grid { grid-template-columns: repeat(2, 1fr); } }
+        .ls-fin-card {
+            background: var(--dark3); border: 1px solid var(--dark4);
+            border-radius: 10px; padding: 0.85rem 0.9rem;
+            text-align: center; transition: all 0.2s;
+        }
+        .ls-fin-card.winner { border-color: var(--green); background: linear-gradient(180deg, rgba(63,185,80,0.15), rgba(63,185,80,0.04)); }
+        .ls-fin-card.loser { opacity: 0.65; }
+        .ls-fin-card .ttl { font-size: 0.78rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; }
+        .ls-fin-card .vl { font-family: 'Space Grotesk', sans-serif; font-weight: 800; font-size: 1.25rem; color: var(--text); margin: 0.4rem 0 0.2rem; }
+        .ls-fin-card .sub { font-size: 0.72rem; color: var(--text-dim); }
+        .ls-fin-card.winner .vl { color: var(--green); }
+
+        .ls-fin-rows { display: grid; gap: 0.4rem; }
+        .ls-fin-row {
+            display: grid; grid-template-columns: 1fr auto;
+            padding: 0.5rem 0.7rem; background: var(--dark3); border: 1px solid var(--dark4);
+            border-radius: 8px; font-size: 0.85rem;
+        }
+        .ls-fin-row .lbl { color: var(--text-dim); }
+        .ls-fin-row .val { font-weight: 600; color: var(--text); }
+        .ls-fin-row.highlight { border-color: rgba(247,147,26,0.4); background: rgba(247,147,26,0.06); }
+        .ls-fin-row.highlight .val { color: var(--orange); }
+        .ls-fin-row.green-highlight { border-color: rgba(63,185,80,0.4); background: rgba(63,185,80,0.06); }
+        .ls-fin-row.green-highlight .val { color: var(--green); }
+        .ls-fin-row.red-highlight { border-color: rgba(248,81,73,0.3); background: rgba(248,81,73,0.04); }
+        .ls-fin-row.red-highlight .val { color: var(--red); }
+
+        .ls-btc-banner {
+            background: linear-gradient(135deg, rgba(247,147,26,0.12), rgba(247,147,26,0.04));
+            border: 1px solid rgba(247,147,26,0.35);
+            border-radius: 12px; padding: 1rem 1.2rem; margin-top: 1rem;
+        }
+        .ls-btc-banner h4 { color: var(--orange); margin-bottom: 0.4rem; font-size: 0.95rem; }
+        .ls-btc-banner p { font-size: 0.84rem; color: var(--text-dim); line-height: 1.5; }
+        .ls-btc-banner .opp { color: var(--green); font-weight: 700; }
+
+        .ls-mini-chart-wrap {
+            margin-top: 1rem; padding: 1rem;
+            background: var(--dark3); border: 1px solid var(--dark4); border-radius: 12px;
+        }
+        #lsAutoChart { width: 100%; height: 260px; display: block; }
+
+        /* Wohnen panel */
+        .ls-wohn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        @media (max-width: 720px) { .ls-wohn-grid { grid-template-columns: 1fr; } }
+        .ls-apt-card {
+            background: var(--dark2); border: 1px solid var(--dark4);
+            border-radius: 14px; padding: 1.3rem;
+        }
+        .ls-apt-card h4 { font-size: 1rem; display: flex; align-items: center; gap: 0.4rem; margin-bottom: 0.5rem; }
+        .ls-apt-row { display: grid; grid-template-columns: 1fr auto; padding: 0.4rem 0; border-bottom: 1px dashed rgba(255,255,255,0.06); font-size: 0.86rem; }
+        .ls-apt-row:last-child { border-bottom: none; }
+        .ls-apt-row .l { color: var(--text-dim); }
+        .ls-apt-row .v { font-weight: 600; color: var(--text); font-family: 'Space Grotesk', sans-serif; }
+
+        .ls-tooltip {
+            position: absolute; pointer-events: none;
+            background: rgba(13,17,23,0.95); border: 1px solid var(--orange);
+            backdrop-filter: blur(10px);
+            padding: 0.6rem 0.8rem; border-radius: 8px; font-size: 0.8rem;
+            opacity: 0; transition: opacity 0.15s; z-index: 100;
+            min-width: 160px;
+        }
+        .ls-tooltip.visible { opacity: 1; }
+        .ls-tooltip .tt-name { font-weight: 700; color: var(--text); }
+        .ls-tooltip .tt-val { color: var(--orange); font-family: 'Space Grotesk', sans-serif; font-weight: 700; margin-top: 0.2rem; }
+        .ls-tooltip .tt-sub { font-size: 0.72rem; color: var(--text-dim); margin-top: 0.15rem; }
     </style>
 </head>
 <body>
@@ -1824,6 +2106,7 @@
             <button class="tool-tab active" id="modeSimple" onclick="switchCalcMode('simple')">⚡ Schnell-Rechner</button>
             <button class="tool-tab" id="modeAdvanced" onclick="switchCalcMode('advanced')">🔧 Experten-Modus</button>
             <button class="tool-tab" id="modeCredit" onclick="switchCalcMode('credit')">🏦 Kredit-Strategie</button>
+            <button class="tool-tab" id="modeLebens" onclick="switchCalcMode('lebens')">🇩🇪 Lebensstandard</button>
         </div>
 
         <!-- ══════════════════════════════════════════ -->
@@ -2240,6 +2523,126 @@
                 </div>
             </div>
         </div><!-- /calcCredit -->
+
+        <!-- ══════════════════════════════════════════ -->
+        <!-- LEBENSSTANDARD — DEUTSCHLAND-MAP          -->
+        <!-- ══════════════════════════════════════════ -->
+        <div class="calc-wrapper" id="calcLebens" style="display:none;">
+            <div style="text-align:center; margin-bottom:1rem;">
+                <div style="font-size:1.15rem; font-weight:700; margin-bottom:0.3rem;">🇩🇪 Lebensstandard-Map — Wo & wie kannst du leben?</div>
+                <div style="color:var(--text-dim); font-size:0.9rem; max-width:760px; margin:0 auto; line-height:1.5;">
+                    Trage dein verfügbares Monats-Budget ein (oder importiere es aus dem Renten-Rechner). Wir zeigen dir, in welcher Stadt du wie leben kannst, welches Auto du dir leisten kannst, wie groß deine Wohnung wäre — und wie du <strong style="color:var(--orange);">Bitcoin als Hebel</strong> einsetzen kannst, statt zu verkaufen.
+                </div>
+            </div>
+
+            <!-- HERO: Budget-Eingabe + Tier-Anzeige -->
+            <div class="ls-hero">
+                <div class="ls-hero-grid">
+                    <div>
+                        <div class="ls-input-row">
+                            <div class="input-group">
+                                <label>💰 Verfügbares Budget pro Monat (€)</label>
+                                <input type="number" id="lsBudget" value="3000" min="500" max="50000" step="100" oninput="lsRenderAll()">
+                            </div>
+                            <div class="input-group">
+                                <label>👨‍👩‍👧 Haushalt</label>
+                                <select id="lsHousehold" onchange="lsRenderAll()" style="width:100%; background:var(--dark); border:1px solid var(--dark4); color:var(--text); padding:0.7rem 0.85rem; border-radius:10px; font-family:'Inter',sans-serif; font-size:0.95rem;">
+                                    <option value="single">Single</option>
+                                    <option value="couple">Paar (2 Personen)</option>
+                                    <option value="family3">Familie (3)</option>
+                                    <option value="family4">Familie (4)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="ls-prefill-row">
+                            <button class="ls-prefill-btn" onclick="lsPrefillFromCalculator()" title="Importiert das passive Monats-Einkommen aus dem Schnell-Rechner">📥 Aus Renten-Rechner importieren</button>
+                            <button class="ls-prefill-btn btc" onclick="lsPrefillFromStack()" title="Berechnet dein Budget aus dem aktuellen Stack mit 3,5% Entnahmerate">₿ Aus aktuellem Stack (3,5%)</button>
+                        </div>
+                        <div style="margin-top:0.8rem; font-size:0.78rem; color:var(--text-dim); line-height:1.5;">
+                            💡 Das Budget ist <strong style="color:var(--text);">netto verfügbar</strong> (nach Steuern). Dein BTC-Preis: <span id="lsLiveBtc" style="color:var(--orange); font-weight:600;">—</span>.
+                        </div>
+                    </div>
+                    <div class="ls-budget-display">
+                        <div class="ls-budget-val" id="lsBudgetDisplay">€3.000</div>
+                        <div class="ls-budget-lbl">Lifestyle-Klasse</div>
+                        <div class="ls-budget-tier" id="lsTierBadge">—</div>
+                        <div style="margin-top:0.6rem; font-size:0.78rem; color:var(--text-dim); text-align:center; line-height:1.4;" id="lsBtcEquivalent">—</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tier-Strip -->
+            <div class="ls-tier-strip" id="lsTierStrip"></div>
+
+            <!-- Sub-Navigation: Map / Auto / Wohnen / Tier-Detail -->
+            <div class="ls-subnav" role="tablist">
+                <button class="ls-subbtn active" data-ls="map" onclick="lsSwitchPanel('map')">🗺️ Deutschland-Karte</button>
+                <button class="ls-subbtn" data-ls="tier" onclick="lsSwitchPanel('tier')">🎯 Lifestyle-Klasse</button>
+                <button class="ls-subbtn" data-ls="auto" onclick="lsSwitchPanel('auto')">🚗 Auto-Vertiefung</button>
+                <button class="ls-subbtn" data-ls="wohn" onclick="lsSwitchPanel('wohn')">🏠 Wohnen-Vertiefung</button>
+                <button class="ls-subbtn" data-ls="rank" onclick="lsSwitchPanel('rank')">📊 Städte-Ranking</button>
+            </div>
+
+            <!-- ─── PANEL: MAP ─── -->
+            <div class="ls-panel active" id="lsPanelMap">
+                <div class="ls-map-wrap">
+                    <div class="ls-map-col">
+                        <svg id="lsMap" viewBox="0 0 600 700" preserveAspectRatio="xMidYMid meet" aria-label="Deutschland-Karte mit Lebensstandard-Indikator pro Stadt"></svg>
+                        <div class="ls-legend">
+                            <div style="font-weight:700; color:var(--text); margin-bottom:0.3rem; font-size:0.7rem; text-transform:uppercase; letter-spacing:1.5px;">Leistbarkeit</div>
+                            <div class="ls-legend-row"><span class="ls-legend-dot" style="background:#3fb950;"></span>komfortabel</div>
+                            <div class="ls-legend-row"><span class="ls-legend-dot" style="background:#e3b341;"></span>knapp</div>
+                            <div class="ls-legend-row"><span class="ls-legend-dot" style="background:#f85149;"></span>nicht machbar</div>
+                            <div class="ls-legend-row" style="margin-top:0.35rem; padding-top:0.35rem; border-top:1px dashed rgba(255,255,255,0.1);"><span style="color:var(--text-dim);">Größe = Einwohnerzahl</span></div>
+                        </div>
+                        <div class="ls-tooltip" id="lsTooltip"></div>
+                    </div>
+                    <div class="ls-map-col">
+                        <div class="ls-detail-card" id="lsDetailCard">
+                            <div style="text-align:center; color:var(--text-dim); padding:3rem 1rem;">
+                                <div style="font-size:2.5rem; margin-bottom:0.5rem;">📍</div>
+                                <div>Klick auf eine Stadt für Details</div>
+                                <div style="font-size:0.78rem; margin-top:0.4rem;">Wir zeigen dir Mietpreise, Auto-Tier, Wohnungsgrößen und ob das Budget reicht.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ─── PANEL: TIER DETAIL ─── -->
+            <div class="ls-panel" id="lsPanelTier">
+                <div class="ls-tier-detail" id="lsTierDetail"></div>
+            </div>
+
+            <!-- ─── PANEL: AUTO ─── -->
+            <div class="ls-panel" id="lsPanelAuto">
+                <div style="margin-bottom:1rem; padding:0.9rem 1.1rem; background:var(--dark2); border:1px solid var(--dark4); border-radius:12px; font-size:0.86rem; color:var(--text-dim); line-height:1.55;">
+                    <strong style="color:var(--text);">🚗 Auto-Vergleich:</strong> Wähle ein Modell aus deiner Lifestyle-Klasse — wir vergleichen <strong style="color:var(--text);">4 Wege es zu finanzieren</strong>: Barkauf, Leasing, klassische Bankfinanzierung und <strong style="color:var(--orange);">BTC-besicherten Kredit (Saylor-Strategie)</strong>. Plus: Was wäre der Bitcoin in 10 Jahren wert, wenn du nicht verkaufst?
+                </div>
+                <div class="ls-auto-grid">
+                    <div class="ls-auto-list" id="lsAutoList"></div>
+                    <div class="ls-auto-detail" id="lsAutoDetail">
+                        <div style="text-align:center; color:var(--text-dim); padding:2.5rem 1rem;">
+                            <div style="font-size:2.5rem; margin-bottom:0.5rem;">🚗</div>
+                            <div>Wähle links ein Auto-Modell</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ─── PANEL: WOHNEN ─── -->
+            <div class="ls-panel" id="lsPanelWohn">
+                <div style="margin-bottom:1rem; padding:0.9rem 1.1rem; background:var(--dark2); border:1px solid var(--dark4); border-radius:12px; font-size:0.86rem; color:var(--text-dim); line-height:1.55;">
+                    <strong style="color:var(--text);">🏠 Wohnen-Vertiefung:</strong> Was bekommst du für dein Mietbudget (30 % deines Netto-Budgets) in den Top-Städten? Plus: Kaufen oder Mieten — und wie funktioniert ein <strong style="color:var(--orange);">BTC-besicherter Hauskredit?</strong>
+                </div>
+                <div id="lsWohnContent"></div>
+            </div>
+
+            <!-- ─── PANEL: RANKING ─── -->
+            <div class="ls-panel" id="lsPanelRank">
+                <div class="ls-ranking" id="lsRanking"></div>
+            </div>
+        </div><!-- /calcLebens -->
     </div>
 </section>
 
@@ -3578,14 +3981,22 @@ function switchCalcMode(mode) {
     document.getElementById('calcSimple').style.display = mode === 'simple' ? 'block' : 'none';
     document.getElementById('calcAdvanced').style.display = mode === 'advanced' ? 'block' : 'none';
     document.getElementById('calcCredit').style.display = mode === 'credit' ? 'block' : 'none';
+    const lebensEl = document.getElementById('calcLebens');
+    if (lebensEl) lebensEl.style.display = mode === 'lebens' ? 'block' : 'none';
     document.getElementById('modeSimple').classList.toggle('active', mode === 'simple');
     document.getElementById('modeAdvanced').classList.toggle('active', mode === 'advanced');
     document.getElementById('modeCredit').classList.toggle('active', mode === 'credit');
+    const modeLeb = document.getElementById('modeLebens');
+    if (modeLeb) modeLeb.classList.toggle('active', mode === 'lebens');
     if (mode === 'credit') {
         // Default BTC price to live price if empty
         const credPriceEl = document.getElementById('credBtcPrice');
         if ((+credPriceEl.value || 0) <= 0 && liveBtcEur > 0) credPriceEl.value = Math.round(liveBtcEur);
         calcCreditStrategy();
+    }
+    if (mode === 'lebens') {
+        if (typeof lsInit === 'function' && !window._lsReady) { lsInit(); window._lsReady = true; }
+        if (typeof lsRenderAll === 'function') lsRenderAll();
     }
 }
 
@@ -5895,6 +6306,933 @@ document.addEventListener('keydown', e => {
         if (modal && modal.classList.contains('active')) closeSharePanel();
     }
 });
+
+// ═══════════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════════════
+// ███ LEBENSSTANDARD-MODUL — Deutschland-Map · Tier-Matching · Auto-Vergleich · Wohnen
+// ═══════════════════════════════════════════════════════════════════════
+// Datenstand 2026 · Quellen: Statista/Numbeo/Immowelt-Schnitt 2024-2025 mit
+// Inflation-Anpassung. Werte sind realistische Größenordnungen, keine Live-Daten.
+
+const LS_CITIES = [
+    // [name, state, lat, lng, pop(Mio), rentColdEurPerSqm, costIdx(MUC=100), restMid(€), groceriesIdxRel]
+    { n: 'München',       s: 'BY', lat: 48.135, lng: 11.582, pop: 1.51, rent: 22.5, ci: 100, rest: 70, gIdx: 1.10 },
+    { n: 'Frankfurt',     s: 'HE', lat: 50.110, lng: 8.682,  pop: 0.79, rent: 17.5, ci: 92,  rest: 65, gIdx: 1.05 },
+    { n: 'Hamburg',       s: 'HH', lat: 53.551, lng: 9.993,  pop: 1.90, rent: 16.0, ci: 88,  rest: 60, gIdx: 1.02 },
+    { n: 'Stuttgart',     s: 'BW', lat: 48.775, lng: 9.180,  pop: 0.63, rent: 16.5, ci: 88,  rest: 60, gIdx: 1.03 },
+    { n: 'Düsseldorf',    s: 'NW', lat: 51.227, lng: 6.773,  pop: 0.64, rent: 15.5, ci: 85,  rest: 60, gIdx: 1.02 },
+    { n: 'Berlin',        s: 'BE', lat: 52.520, lng: 13.405, pop: 3.85, rent: 15.0, ci: 82,  rest: 50, gIdx: 0.98 },
+    { n: 'Köln',          s: 'NW', lat: 50.937, lng: 6.960,  pop: 1.09, rent: 14.0, ci: 80,  rest: 55, gIdx: 1.00 },
+    { n: 'Bonn',          s: 'NW', lat: 50.737, lng: 7.098,  pop: 0.34, rent: 13.5, ci: 78,  rest: 50, gIdx: 0.99 },
+    { n: 'Heidelberg',    s: 'BW', lat: 49.398, lng: 8.673,  pop: 0.16, rent: 14.5, ci: 78,  rest: 55, gIdx: 1.00 },
+    { n: 'Freiburg',      s: 'BW', lat: 47.999, lng: 7.842,  pop: 0.23, rent: 16.0, ci: 78,  rest: 55, gIdx: 1.00 },
+    { n: 'Wiesbaden',     s: 'HE', lat: 50.082, lng: 8.241,  pop: 0.28, rent: 14.0, ci: 76,  rest: 55, gIdx: 1.00 },
+    { n: 'Mainz',         s: 'RP', lat: 49.992, lng: 8.247,  pop: 0.22, rent: 13.5, ci: 76,  rest: 50, gIdx: 0.98 },
+    { n: 'Karlsruhe',     s: 'BW', lat: 49.007, lng: 8.404,  pop: 0.31, rent: 13.0, ci: 75,  rest: 50, gIdx: 0.97 },
+    { n: 'Nürnberg',      s: 'BY', lat: 49.452, lng: 11.077, pop: 0.52, rent: 12.5, ci: 75,  rest: 48, gIdx: 0.97 },
+    { n: 'Mannheim',      s: 'BW', lat: 49.487, lng: 8.466,  pop: 0.32, rent: 12.5, ci: 73,  rest: 48, gIdx: 0.97 },
+    { n: 'Hannover',      s: 'NI', lat: 52.374, lng: 9.738,  pop: 0.55, rent: 11.5, ci: 74,  rest: 48, gIdx: 0.96 },
+    { n: 'Bremen',        s: 'HB', lat: 53.080, lng: 8.802,  pop: 0.57, rent: 11.0, ci: 72,  rest: 45, gIdx: 0.95 },
+    { n: 'Münster',       s: 'NW', lat: 51.961, lng: 7.626,  pop: 0.32, rent: 12.5, ci: 73,  rest: 48, gIdx: 0.97 },
+    { n: 'Augsburg',      s: 'BY', lat: 48.366, lng: 10.898, pop: 0.30, rent: 13.0, ci: 73,  rest: 48, gIdx: 0.97 },
+    { n: 'Regensburg',    s: 'BY', lat: 49.013, lng: 12.101, pop: 0.16, rent: 13.0, ci: 72,  rest: 48, gIdx: 0.97 },
+    { n: 'Dresden',       s: 'SN', lat: 51.050, lng: 13.738, pop: 0.56, rent: 10.0, ci: 70,  rest: 42, gIdx: 0.93 },
+    { n: 'Leipzig',       s: 'SN', lat: 51.339, lng: 12.374, pop: 0.62, rent: 10.5, ci: 68,  rest: 40, gIdx: 0.93 },
+    { n: 'Lübeck',        s: 'SH', lat: 53.866, lng: 10.687, pop: 0.22, rent: 10.0, ci: 68,  rest: 42, gIdx: 0.95 },
+    { n: 'Kiel',          s: 'SH', lat: 54.323, lng: 10.122, pop: 0.25, rent: 10.5, ci: 70,  rest: 45, gIdx: 0.96 },
+    { n: 'Rostock',       s: 'MV', lat: 54.092, lng: 12.099, pop: 0.21, rent: 10.5, ci: 67,  rest: 42, gIdx: 0.94 },
+    { n: 'Erfurt',        s: 'TH', lat: 50.984, lng: 11.029, pop: 0.21, rent: 9.0,  ci: 65,  rest: 40, gIdx: 0.92 },
+    { n: 'Magdeburg',     s: 'ST', lat: 52.120, lng: 11.628, pop: 0.24, rent: 8.5,  ci: 62,  rest: 38, gIdx: 0.91 },
+    { n: 'Halle',         s: 'ST', lat: 51.483, lng: 11.969, pop: 0.24, rent: 8.0,  ci: 60,  rest: 38, gIdx: 0.91 },
+    { n: 'Chemnitz',      s: 'SN', lat: 50.827, lng: 12.921, pop: 0.24, rent: 7.5,  ci: 58,  rest: 36, gIdx: 0.90 },
+    { n: 'Dortmund',      s: 'NW', lat: 51.514, lng: 7.466,  pop: 0.59, rent: 9.5,  ci: 68,  rest: 42, gIdx: 0.95 },
+    { n: 'Essen',         s: 'NW', lat: 51.451, lng: 7.013,  pop: 0.58, rent: 9.5,  ci: 68,  rest: 42, gIdx: 0.95 },
+    { n: 'Duisburg',      s: 'NW', lat: 51.434, lng: 6.762,  pop: 0.50, rent: 8.5,  ci: 64,  rest: 38, gIdx: 0.93 },
+    { n: 'Bielefeld',     s: 'NW', lat: 52.030, lng: 8.532,  pop: 0.34, rent: 9.5,  ci: 66,  rest: 40, gIdx: 0.94 },
+    { n: 'Bochum',        s: 'NW', lat: 51.482, lng: 7.216,  pop: 0.37, rent: 9.0,  ci: 66,  rest: 40, gIdx: 0.94 },
+    { n: 'Saarbrücken',   s: 'SL', lat: 49.234, lng: 6.997,  pop: 0.18, rent: 9.0,  ci: 64,  rest: 40, gIdx: 0.93 },
+    { n: 'Potsdam',       s: 'BB', lat: 52.391, lng: 13.064, pop: 0.18, rent: 12.0, ci: 75,  rest: 48, gIdx: 0.97 },
+    { n: 'Görlitz',       s: 'SN', lat: 51.156, lng: 14.989, pop: 0.06, rent: 6.0,  ci: 54,  rest: 32, gIdx: 0.88 },
+    { n: 'Konstanz',      s: 'BW', lat: 47.660, lng: 9.175,  pop: 0.09, rent: 14.5, ci: 78,  rest: 55, gIdx: 1.00 }
+];
+
+// 5 Lifestyle-Tiers · Budget-Schwellen sind das gesamte verfügbare Monatsbudget netto
+const LS_TIERS = [
+    {
+        id: 1, name: 'Sparflamme', em: '🍝', color: '#8b949e',
+        min: 0, max: 1500,
+        housing: { sqm: [18, 30], type: 'WG-Zimmer · Mikro-Apartment', share: 0.42 },
+        car: { className: 'Kein Auto', share: 0.05, budget: 80, examples: ['Deutschlandticket', 'Gebrauchtes Fahrrad', 'Carsharing gelegentlich'] },
+        food: { groceries: 'Discounter (Aldi/Lidl)', restaurant: '1× / Monat', share: 0.20 },
+        leisure: { share: 0.08 },
+        savings: { share: 0.05 },
+        keypoints: ['WG oder Mikro-Apt', 'ÖPNV/Fahrrad', 'Kochen daheim', 'Bibliothek statt Streaming'],
+        verdict: 'Minimalist — funktioniert in günstigen Städten, in München kaum machbar.'
+    },
+    {
+        id: 2, name: 'Solide', em: '🏠', color: '#58a6ff',
+        min: 1500, max: 2800,
+        housing: { sqm: [40, 60], type: '1-2 Zi-Wohnung', share: 0.35 },
+        car: { className: 'Kleinwagen', share: 0.12, budget: 320, examples: ['Dacia Sandero', 'VW Polo (gebraucht)', 'Hyundai i20'] },
+        food: { groceries: 'Discounter + Wochenmarkt', restaurant: '1× / Woche', share: 0.18 },
+        leisure: { share: 0.10 },
+        savings: { share: 0.10 },
+        keypoints: ['1-2 Zi-Wohnung', 'Kleinwagen oder ÖPNV', 'Restaurant 1×/Woche', '1× Urlaub/Jahr'],
+        verdict: 'Solider Lebensstandard — komfortabel in B/C-Städten, knapp in Top-Metropolen.'
+    },
+    {
+        id: 3, name: 'Komfortabel', em: '🛋️', color: '#3fb950',
+        min: 2800, max: 4500,
+        housing: { sqm: [60, 85], type: '2-3 Zi-Wohnung', share: 0.30 },
+        car: { className: 'Mittelklasse', share: 0.13, budget: 550, examples: ['VW Golf 8', 'Skoda Octavia', 'Tesla Model 3 SR (gebraucht)'] },
+        food: { groceries: 'Mix Discounter/Bio', restaurant: '2× / Woche', share: 0.15 },
+        leisure: { share: 0.12 },
+        savings: { share: 0.20 },
+        keypoints: ['2-3 Zi-Wohnung', 'Mittelklasse-Auto', 'Restaurant 2×/Woche', '2× Urlaub/Jahr', 'Sparrate möglich'],
+        verdict: 'Klassische Mittelschicht plus — komfortabel in den meisten Städten.'
+    },
+    {
+        id: 4, name: 'Gehoben', em: '✨', color: '#f7931a',
+        min: 4500, max: 8000,
+        housing: { sqm: [85, 130], type: '3-4 Zi-Wohnung · Reihenhaus', share: 0.28 },
+        car: { className: 'Premium', share: 0.13, budget: 950, examples: ['BMW 320i', 'Audi A4', 'Tesla Model Y LR', 'Mercedes C-Klasse'] },
+        food: { groceries: 'Bio + Wochenmarkt', restaurant: 'frei wählbar', share: 0.13 },
+        leisure: { share: 0.16 },
+        savings: { share: 0.30 },
+        keypoints: ['3-4 Zi oder Eigentum', 'Premium-Marke', 'Restaurants frei', 'Reisen mehrfach', 'Hohe Sparrate'],
+        verdict: 'Gehobener Mittelstand — überall in Deutschland sehr gut leistbar.'
+    },
+    {
+        id: 5, name: 'Luxus', em: '💎', color: '#bc8cff',
+        min: 8000, max: 1e9,
+        housing: { sqm: [130, 250], type: 'Penthouse · Haus mit Garten', share: 0.25 },
+        car: { className: 'Oberklasse / Sportwagen', share: 0.15, budget: 2200, examples: ['Porsche 911', 'BMW 7er / iX', 'Mercedes S-Klasse', 'Tesla Model S Plaid', 'Range Rover'] },
+        food: { groceries: 'Bio + Spezialisten', restaurant: 'gehoben, frei', share: 0.10 },
+        leisure: { share: 0.20 },
+        savings: { share: 0.40 },
+        keypoints: ['Penthouse oder Haus', 'Oberklasse / Sportwagen', 'Gehobene Restaurants', 'Premium-Reisen', 'Vermögensaufbau weiter'],
+        verdict: 'Wohlstand — Bitcoin als generationenübergreifender Asset.'
+    }
+];
+
+// Auto-Katalog mit Tier-Zuordnung. Preise = Neuwagen-Listenpreis 2026 in €.
+const LS_CARS = [
+    { tier: 2, model: 'Dacia Sandero',     price: 13500, segDe: 'Kleinwagen',    fuel: 'Benzin',    consDe: '5,5 L/100km' },
+    { tier: 2, model: 'VW Polo',           price: 22500, segDe: 'Kleinwagen',    fuel: 'Benzin',    consDe: '5,2 L/100km' },
+    { tier: 2, model: 'Hyundai i20',       price: 18900, segDe: 'Kleinwagen',    fuel: 'Benzin',    consDe: '5,3 L/100km' },
+    { tier: 2, model: 'Renault Clio',      price: 17500, segDe: 'Kleinwagen',    fuel: 'Hybrid',    consDe: '4,3 L/100km' },
+    { tier: 3, model: 'VW Golf 8',         price: 32500, segDe: 'Kompaktklasse', fuel: 'Benzin',    consDe: '5,8 L/100km' },
+    { tier: 3, model: 'Skoda Octavia',     price: 30900, segDe: 'Kompaktklasse', fuel: 'Diesel',    consDe: '4,8 L/100km' },
+    { tier: 3, model: 'Tesla Model 3 SR',  price: 42000, segDe: 'Mittelklasse',  fuel: 'Elektro',   consDe: '14,5 kWh/100km' },
+    { tier: 3, model: 'Hyundai Ioniq 5',   price: 45500, segDe: 'Mittelklasse',  fuel: 'Elektro',   consDe: '17,5 kWh/100km' },
+    { tier: 3, model: 'Toyota Corolla',    price: 28900, segDe: 'Kompaktklasse', fuel: 'Hybrid',    consDe: '4,2 L/100km' },
+    { tier: 4, model: 'BMW 320i',          price: 50500, segDe: 'Mittelklasse',  fuel: 'Benzin',    consDe: '6,4 L/100km' },
+    { tier: 4, model: 'Audi A4',           price: 51900, segDe: 'Mittelklasse',  fuel: 'Diesel',    consDe: '5,1 L/100km' },
+    { tier: 4, model: 'Mercedes C-Klasse', price: 53500, segDe: 'Mittelklasse',  fuel: 'Hybrid',    consDe: '5,8 L/100km' },
+    { tier: 4, model: 'Tesla Model Y LR',  price: 55000, segDe: 'SUV',           fuel: 'Elektro',   consDe: '16,9 kWh/100km' },
+    { tier: 4, model: 'BMW iX3',           price: 67000, segDe: 'SUV',           fuel: 'Elektro',   consDe: '18,5 kWh/100km' },
+    { tier: 5, model: 'Porsche 911 Carrera', price: 130000, segDe: 'Sportwagen', fuel: 'Benzin',    consDe: '10,7 L/100km' },
+    { tier: 5, model: 'BMW 7er / i7',      price: 135000, segDe: 'Oberklasse',   fuel: 'Elektro',   consDe: '19,5 kWh/100km' },
+    { tier: 5, model: 'Mercedes S-Klasse', price: 142000, segDe: 'Oberklasse',   fuel: 'Hybrid',    consDe: '7,2 L/100km' },
+    { tier: 5, model: 'Tesla Model S Plaid', price: 122000, segDe: 'Oberklasse', fuel: 'Elektro',   consDe: '18,9 kWh/100km' },
+    { tier: 5, model: 'Porsche Taycan',    price: 118000, segDe: 'Sportwagen',   fuel: 'Elektro',   consDe: '21,4 kWh/100km' },
+    { tier: 5, model: 'Range Rover',       price: 128000, segDe: 'SUV',          fuel: 'Hybrid',    consDe: '11,5 L/100km' }
+];
+
+// Vereinfachte Deutschland-Outline (Bundes-Außengrenze, ~80 Punkte, in lat/lng).
+// Stilisiert, nicht geographisch exakt — reicht als Hintergrund für die Punkt-Karte.
+const LS_DE_OUTLINE = [
+    [55.05, 8.40], [54.95, 9.45], [54.85, 9.95], [54.50, 11.20], [54.42, 13.65],
+    [54.10, 13.95], [53.92, 14.20], [53.50, 14.30], [53.05, 14.40], [52.70, 14.55],
+    [52.35, 14.65], [52.05, 14.70], [51.55, 15.05], [51.05, 15.05], [50.75, 14.85],
+    [50.55, 14.30], [50.40, 13.20], [50.25, 12.50], [50.05, 12.10], [49.65, 12.45],
+    [49.30, 12.80], [49.00, 13.20], [48.75, 13.50], [48.55, 13.45], [48.25, 13.00],
+    [47.95, 12.90], [47.70, 12.95], [47.55, 12.20], [47.55, 11.45], [47.40, 10.95],
+    [47.45, 10.45], [47.55, 9.95], [47.65, 9.45], [47.80, 8.95], [47.95, 8.55],
+    [47.95, 7.85], [48.20, 7.65], [48.55, 7.80], [48.95, 8.10], [49.15, 7.05],
+    [49.40, 6.65], [49.45, 6.10], [49.80, 6.20], [50.10, 6.10], [50.35, 6.30],
+    [50.55, 6.05], [50.75, 6.10], [50.85, 6.10], [51.05, 5.95], [51.55, 6.05],
+    [51.75, 6.20], [51.95, 6.30], [52.20, 6.85], [52.45, 7.05], [52.65, 7.05],
+    [52.95, 7.15], [53.15, 7.20], [53.35, 7.30], [53.55, 8.35], [53.85, 8.55],
+    [53.85, 8.95], [54.05, 8.85], [54.45, 8.65], [54.70, 8.95], [54.85, 9.10],
+    [55.05, 8.40]
+];
+
+// Bounds für Projektion
+const LS_BOUNDS = { latMin: 47.30, latMax: 55.10, lngMin: 5.85, lngMax: 15.05 };
+const LS_MAP_W = 600, LS_MAP_H = 700, LS_MAP_PAD = 30;
+
+function lsProject(lat, lng) {
+    const x = ((lng - LS_BOUNDS.lngMin) / (LS_BOUNDS.lngMax - LS_BOUNDS.lngMin)) * (LS_MAP_W - 2*LS_MAP_PAD) + LS_MAP_PAD;
+    // Mercator-Korrektur: Höhere Latituden nehmen mehr Platz ein. Vereinfacht linear, mit slight aspect-correction.
+    const yRel = (LS_BOUNDS.latMax - lat) / (LS_BOUNDS.latMax - LS_BOUNDS.latMin);
+    const y = yRel * (LS_MAP_H - 2*LS_MAP_PAD) + LS_MAP_PAD;
+    return [x, y];
+}
+
+// Lifestyle-Tier aus Budget bestimmen
+function lsTierForBudget(eurMonth) {
+    return LS_TIERS.find(t => eurMonth >= t.min && eurMonth < t.max) || LS_TIERS[LS_TIERS.length - 1];
+}
+
+// Haushalts-Faktor: Wieviel mehr Budget braucht ein 4-Personen-HH für gleichen Lebensstandard?
+const LS_HH_FACTOR = { single: 1.0, couple: 1.55, family3: 1.95, family4: 2.30 };
+
+// Bewertet Stadt für gegebenes Budget+Haushalt → { verdict, rentSqm, rentTotal, monthsRent, ratio }
+function lsEvaluateCity(city, budget, hhKey) {
+    const hh = LS_HH_FACTOR[hhKey] || 1;
+    const tier = lsTierForBudget(budget);
+    // Gewünschte Wohnungsgröße aus Tier (Mittelwert), skaliert mit Haushalt
+    const sqmTarget = ((tier.housing.sqm[0] + tier.housing.sqm[1]) / 2) * (0.7 + 0.3 * hh);
+    const rentCold = sqmTarget * city.rent;
+    const rentWarm = rentCold * 1.30; // Nebenkosten ca. +30%
+    const rentBudget = budget * tier.housing.share;
+    const ratio = rentWarm / rentBudget;
+
+    // Restliche Lebenskosten skaliert mit costIndex und Haushalt
+    const baseCost = budget * (1 - tier.housing.share - tier.car.share - tier.savings.share);
+    const cityCost = baseCost * (city.ci / 75) * (0.6 + 0.4 * hh); // 75 ist mittlerer Index
+    const totalNeeded = rentWarm + cityCost + tier.car.budget;
+
+    let verdict, color;
+    if (totalNeeded < budget * 0.92) { verdict = 'komfortabel'; color = '#3fb950'; }
+    else if (totalNeeded < budget * 1.05) { verdict = 'knapp'; color = '#e3b341'; }
+    else { verdict = 'nicht machbar'; color = '#f85149'; }
+
+    return { verdict, color, rentCold, rentWarm, sqmTarget, rentBudget, ratio, totalNeeded, cityCost, tier };
+}
+
+let lsState = { selectedCityIdx: 0, selectedCarIdx: 0, finMode: 'kauf', panel: 'map', tooltipEl: null };
+
+function lsInit() {
+    lsRenderTierStrip();
+    lsRenderMap();
+    lsState.tooltipEl = document.getElementById('lsTooltip');
+}
+
+function lsRenderAll() {
+    if (!document.getElementById('calcLebens')) return;
+    const budget = +document.getElementById('lsBudget').value || 0;
+    const hh = document.getElementById('lsHousehold').value;
+    document.getElementById('lsBudgetDisplay').textContent = '€' + budget.toLocaleString('de');
+    const tier = lsTierForBudget(budget);
+    const tierEl = document.getElementById('lsTierBadge');
+    tierEl.innerHTML = `<span style="font-size:1.2rem;">${tier.em}</span> ${tier.name}`;
+    tierEl.style.color = tier.color;
+
+    // BTC-Equivalent: wie viel BTC-Stack braucht es bei 3,5% Entnahmerate?
+    const annual = budget * 12;
+    const stackNeeded = annual / 0.035;
+    const btcPrice = liveBtcEur || 95000;
+    const btcNeeded = stackNeeded / btcPrice;
+    document.getElementById('lsBtcEquivalent').innerHTML =
+        `entspricht <strong style="color:var(--orange);">₿${btcNeeded.toFixed(2)}</strong> Stack <span style="opacity:0.7;">(€${Math.round(stackNeeded).toLocaleString('de')} · 3,5% Entnahme)</span>`;
+    const liveEl = document.getElementById('lsLiveBtc');
+    if (liveEl) liveEl.textContent = '€' + Math.round(btcPrice).toLocaleString('de');
+
+    // Tier strip selection
+    document.querySelectorAll('#lsTierStrip .ls-tier-card').forEach(c => {
+        c.classList.toggle('active', +c.dataset.tier === tier.id);
+    });
+
+    lsRenderMap();
+    lsRenderTierDetail();
+    lsRenderAutoList();
+    lsRenderAutoDetail();
+    lsRenderWohnen();
+    lsRenderRanking();
+    if (lsState.selectedCityIdx >= 0) lsRenderCityDetail(lsState.selectedCityIdx);
+}
+
+function lsRenderTierStrip() {
+    const el = document.getElementById('lsTierStrip');
+    if (!el) return;
+    el.innerHTML = LS_TIERS.map(t => {
+        const rng = t.max >= 1e8 ? `€${t.min.toLocaleString('de')}+` :
+                    `€${t.min.toLocaleString('de')}–${t.max.toLocaleString('de')}`;
+        return `<div class="ls-tier-card" data-tier="${t.id}" onclick="lsSelectTier(${t.id})">
+            <div class="em">${t.em}</div>
+            <div class="nm" style="color:${t.color};">${t.name}</div>
+            <div class="rng">${rng}/Mon</div>
+        </div>`;
+    }).join('');
+}
+
+function lsSelectTier(id) {
+    const t = LS_TIERS.find(x => x.id === id);
+    if (!t) return;
+    // Setze Budget auf die Mitte des Tiers
+    const target = t.max >= 1e8 ? t.min + 2000 : Math.round((t.min + t.max) / 2);
+    document.getElementById('lsBudget').value = target;
+    lsRenderAll();
+    lsSwitchPanel('tier');
+}
+
+function lsSwitchPanel(p) {
+    lsState.panel = p;
+    document.querySelectorAll('.ls-subbtn').forEach(b => b.classList.toggle('active', b.dataset.ls === p));
+    ['map','tier','auto','wohn','rank'].forEach(name => {
+        const el = document.getElementById('lsPanel' + name.charAt(0).toUpperCase() + name.slice(1));
+        if (el) el.classList.toggle('active', name === p);
+    });
+    if (p === 'map') setTimeout(lsRenderMap, 50);
+}
+
+// ─── MAP ───────────────────────────────────────────
+function lsRenderMap() {
+    const svg = document.getElementById('lsMap');
+    if (!svg) return;
+    const budget = +document.getElementById('lsBudget').value || 0;
+    const hh = document.getElementById('lsHousehold').value;
+
+    // Outline
+    const outlinePath = LS_DE_OUTLINE.map((p, i) => {
+        const [x, y] = lsProject(p[0], p[1]);
+        return (i === 0 ? 'M' : 'L') + x.toFixed(1) + ' ' + y.toFixed(1);
+    }).join(' ') + ' Z';
+
+    // City circles
+    const cityNodes = LS_CITIES.map((c, i) => {
+        const [x, y] = lsProject(c.lat, c.lng);
+        const ev = lsEvaluateCity(c, budget, hh);
+        const r = Math.max(4, Math.min(16, 4 + Math.sqrt(c.pop) * 8));
+        const labelClass = c.pop > 0.5 ? 'major' : '';
+        const showLabel = c.pop > 0.30 || i === lsState.selectedCityIdx;
+        const isSelected = i === lsState.selectedCityIdx;
+        return `
+            <circle class="ls-city-dot ${isSelected ? 'selected' : ''}" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r}"
+                fill="${ev.color}" data-idx="${i}"
+                onclick="lsSelectCity(${i})"
+                onmouseenter="lsShowTooltip(event, ${i})"
+                onmousemove="lsShowTooltip(event, ${i})"
+                onmouseleave="lsHideTooltip()" />
+            ${showLabel ? `<text class="ls-city-label ${labelClass}" x="${(x + r + 3).toFixed(1)}" y="${(y + 3).toFixed(1)}">${c.n}</text>` : ''}
+        `;
+    }).join('');
+
+    svg.innerHTML = `
+        <path class="ls-de-outline" d="${outlinePath}" />
+        ${cityNodes}
+    `;
+}
+
+function lsShowTooltip(ev, idx) {
+    const tt = lsState.tooltipEl;
+    if (!tt) return;
+    const c = LS_CITIES[idx];
+    const budget = +document.getElementById('lsBudget').value || 0;
+    const hh = document.getElementById('lsHousehold').value;
+    const evx = lsEvaluateCity(c, budget, hh);
+    tt.innerHTML = `
+        <div class="tt-name">${c.n} <span style="color:var(--text-dim); font-weight:400; font-size:0.72rem;">· ${c.s}</span></div>
+        <div class="tt-val" style="color:${evx.color};">${evx.verdict}</div>
+        <div class="tt-sub">${c.rent.toFixed(1)} €/m² · ${Math.round(evx.rentWarm)}€ Warm-Miete für ${Math.round(evx.sqmTarget)}m²</div>
+    `;
+    const wrap = ev.target.closest('.ls-map-col');
+    if (!wrap) return;
+    const wrapRect = wrap.getBoundingClientRect();
+    tt.style.left = (ev.clientX - wrapRect.left + 14) + 'px';
+    tt.style.top = (ev.clientY - wrapRect.top + 14) + 'px';
+    tt.classList.add('visible');
+}
+
+function lsHideTooltip() {
+    if (lsState.tooltipEl) lsState.tooltipEl.classList.remove('visible');
+}
+
+function lsSelectCity(idx) {
+    lsState.selectedCityIdx = idx;
+    lsRenderMap();
+    lsRenderCityDetail(idx);
+    lsRenderWohnen();
+}
+
+function lsRenderCityDetail(idx) {
+    const card = document.getElementById('lsDetailCard');
+    if (!card) return;
+    const c = LS_CITIES[idx];
+    if (!c) return;
+    const budget = +document.getElementById('lsBudget').value || 0;
+    const hh = document.getElementById('lsHousehold').value;
+    const ev = lsEvaluateCity(c, budget, hh);
+    const t = ev.tier;
+
+    // Wohnungsgrößen-Vergleich: was ist mit dem Mietbudget möglich?
+    const rentBudget = ev.rentBudget;
+    const possibleSqmCold = rentBudget / c.rent;
+    const possibleSqmWarm = rentBudget / (c.rent * 1.30);
+
+    // Auto in der Stadt: Tier-budget muss reichen
+    const carExamples = t.car.examples.slice(0, 3).join(' · ');
+
+    // BTC-Hebel: wie viel BTC bräuchte man als Sicherheit für 1 Jahr Miete via 25%-LTV-Kredit?
+    const btcPrice = liveBtcEur || 95000;
+    const yearRent = ev.rentWarm * 12;
+    const btcCollateral = (yearRent / 0.25) / btcPrice; // 25% LTV
+
+    const verdictClass = ev.verdict === 'komfortabel' ? 'green' : (ev.verdict === 'knapp' ? 'yellow' : 'red');
+    const verdictEm = ev.verdict === 'komfortabel' ? '✓' : (ev.verdict === 'knapp' ? '⚠' : '✗');
+
+    card.innerHTML = `
+        <div class="ls-detail-header">
+            <div>
+                <div class="ls-city-name">${c.n}</div>
+                <div class="ls-city-sub">${c.s} · ${(c.pop * 1000).toFixed(0)} Tsd. Einw. · Kostenindex ${c.ci}/100</div>
+            </div>
+            <div class="ls-verdict-pill ${verdictClass}">${verdictEm} ${ev.verdict}</div>
+        </div>
+
+        <div style="margin-top:0.3rem; font-size:0.85rem; color:var(--text-dim); line-height:1.5;">
+            Mit <strong style="color:var(--text);">€${budget.toLocaleString('de')}/Mon</strong> ${hh === 'single' ? 'als Single' : 'für ' + (hh === 'couple' ? 'ein Paar' : (hh === 'family3' ? '3 Personen' : '4 Personen'))}
+            in der Klasse <strong style="color:${t.color};">${t.em} ${t.name}</strong>:
+        </div>
+
+        <div class="ls-detail-grid">
+            <div class="ls-detail-item">
+                <div class="v">€${Math.round(ev.rentWarm).toLocaleString('de')}</div>
+                <div class="l">Warm-Miete (Ziel ${Math.round(ev.sqmTarget)} m²)</div>
+            </div>
+            <div class="ls-detail-item">
+                <div class="v">€${Math.round(ev.rentBudget).toLocaleString('de')}</div>
+                <div class="l">Dein Miet-Budget (${Math.round(t.housing.share*100)}%)</div>
+            </div>
+            <div class="ls-detail-item">
+                <div class="v">${possibleSqmCold.toFixed(0)} m²</div>
+                <div class="l">Möglich kalt (zum Listenpreis)</div>
+            </div>
+            <div class="ls-detail-item">
+                <div class="v">${possibleSqmWarm.toFixed(0)} m²</div>
+                <div class="l">Möglich warm (mit NK)</div>
+            </div>
+        </div>
+
+        <div class="ls-rent-section">
+            <div style="font-size:0.75rem; text-transform:uppercase; letter-spacing:1.5px; color:var(--text-dim); font-weight:700; margin-bottom:0.5rem;">📋 Was bekommst du in ${c.n}?</div>
+            <div class="ls-rent-row"><span>WG-Zimmer 18 m²</span><strong class="${budget > c.rent * 18 * 1.30 + 800 ? 'ok' : 'nok'}">€${Math.round(c.rent * 18 * 1.30).toLocaleString('de')}/Mon</strong></div>
+            <div class="ls-rent-row"><span>1-Zi-Apt 35 m²</span><strong class="${budget * 0.32 > c.rent * 35 * 1.30 ? 'ok' : 'nok'}">€${Math.round(c.rent * 35 * 1.30).toLocaleString('de')}/Mon</strong></div>
+            <div class="ls-rent-row"><span>2-Zi 60 m²</span><strong class="${budget * 0.32 > c.rent * 60 * 1.30 ? 'ok' : 'nok'}">€${Math.round(c.rent * 60 * 1.30).toLocaleString('de')}/Mon</strong></div>
+            <div class="ls-rent-row"><span>3-Zi 85 m²</span><strong class="${budget * 0.32 > c.rent * 85 * 1.30 ? 'ok' : 'nok'}">€${Math.round(c.rent * 85 * 1.30).toLocaleString('de')}/Mon</strong></div>
+            <div class="ls-rent-row"><span>4-Zi 110 m² (Familie)</span><strong class="${budget * 0.32 > c.rent * 110 * 1.30 ? 'ok' : 'nok'}">€${Math.round(c.rent * 110 * 1.30).toLocaleString('de')}/Mon</strong></div>
+            <div class="ls-rent-row"><span>Penthouse / Haus 150 m²</span><strong class="${budget * 0.30 > c.rent * 150 * 1.30 ? 'ok' : 'nok'}">€${Math.round(c.rent * 150 * 1.30).toLocaleString('de')}/Mon</strong></div>
+            <div class="ls-rent-row"><span>Restaurant Mittelklasse (2P)</span><strong>~€${c.rest}</strong></div>
+            <div class="ls-rent-row"><span>Cappuccino</span><strong>€${(c.gIdx * 3.8).toFixed(2)}</strong></div>
+        </div>
+
+        <div style="margin-top:1rem; padding:0.9rem 1.1rem; background:linear-gradient(135deg, rgba(247,147,26,0.10), rgba(247,147,26,0.03)); border:1px solid rgba(247,147,26,0.3); border-radius:10px;">
+            <div style="font-size:0.78rem; text-transform:uppercase; letter-spacing:1.5px; color:var(--orange); font-weight:700;">${t.em} ${t.name}-Klasse in ${c.n}</div>
+            <div style="margin-top:0.4rem; font-size:0.85rem; color:var(--text); line-height:1.5;">
+                <strong>🚗 Auto:</strong> ${t.car.className} (~€${t.car.budget}/Mon) → ${carExamples}<br>
+                <strong>🍽️ Essen:</strong> ${t.food.restaurant}, ${t.food.groceries}<br>
+                <strong>💸 Lebenskosten gesamt:</strong> ~€${Math.round(ev.totalNeeded).toLocaleString('de')}/Mon
+            </div>
+        </div>
+
+        <div style="margin-top:0.8rem; padding:0.85rem 1rem; background:rgba(247,147,26,0.06); border:1px dashed rgba(247,147,26,0.3); border-radius:10px; font-size:0.82rem; color:var(--text-dim); line-height:1.5;">
+            ₿ <strong style="color:var(--orange);">Saylor-Hack:</strong> Statt zu verkaufen → ein Jahr Miete (€${Math.round(yearRent).toLocaleString('de')}) gegen <strong style="color:var(--text);">₿${btcCollateral.toFixed(3)}</strong> als Sicherheit (25% LTV). Stack wächst weiter, du lebst von Liquidität.
+        </div>
+    `;
+}
+
+// ─── TIER DETAIL ───────────────────────────────────
+function lsRenderTierDetail() {
+    const el = document.getElementById('lsTierDetail');
+    if (!el) return;
+    const budget = +document.getElementById('lsBudget').value || 0;
+    const hh = document.getElementById('lsHousehold').value;
+    const t = lsTierForBudget(budget);
+
+    const housingEur = budget * t.housing.share;
+    const carEur = budget * t.car.share;
+    const foodEur = budget * t.food.share;
+    const leisureEur = budget * t.leisure.share;
+    const savingsEur = budget * t.savings.share;
+    const otherEur = budget - housingEur - carEur - foodEur - leisureEur - savingsEur;
+
+    // Beispiel-Städte: 3 grüne Städte für dieses Budget
+    const greenCities = LS_CITIES
+        .map((c, i) => ({ c, i, ev: lsEvaluateCity(c, budget, hh) }))
+        .filter(x => x.ev.verdict === 'komfortabel')
+        .sort((a, b) => b.c.ci - a.c.ci) // teuerste komfortable zuerst
+        .slice(0, 6);
+
+    const btcPrice = liveBtcEur || 95000;
+    const stackForTier = (budget * 12) / 0.035 / btcPrice;
+
+    el.innerHTML = `
+        <div style="display:flex; align-items:center; gap:1rem; flex-wrap:wrap; margin-bottom:0.8rem;">
+            <div style="font-size:3rem; line-height:1;">${t.em}</div>
+            <div>
+                <div style="font-family:'Space Grotesk',sans-serif; font-weight:800; font-size:1.8rem; color:${t.color};">${t.name}</div>
+                <div style="font-size:0.85rem; color:var(--text-dim);">${t.verdict}</div>
+            </div>
+            <div style="margin-left:auto; text-align:right;">
+                <div style="font-family:'Space Grotesk',sans-serif; font-weight:800; font-size:1.4rem; color:var(--orange);">₿${stackForTier.toFixed(2)}</div>
+                <div style="font-size:0.72rem; color:var(--text-dim); text-transform:uppercase; letter-spacing:1.2px;">Stack für ${t.name}</div>
+            </div>
+        </div>
+
+        <div class="ls-tier-grid">
+            <div class="ls-tier-block">
+                <h4>🏠 Wohnen <span style="margin-left:auto; color:var(--text-dim); font-size:0.78rem; font-weight:500;">${Math.round(t.housing.share*100)}%</span></h4>
+                <div class="big">€${Math.round(housingEur).toLocaleString('de')}/Mon</div>
+                <ul>
+                    <li>${t.housing.type}</li>
+                    <li>${t.housing.sqm[0]}–${t.housing.sqm[1]} m² Wohnfläche</li>
+                </ul>
+            </div>
+            <div class="ls-tier-block">
+                <h4>🚗 Mobilität <span style="margin-left:auto; color:var(--text-dim); font-size:0.78rem; font-weight:500;">${Math.round(t.car.share*100)}%</span></h4>
+                <div class="big">€${Math.round(carEur).toLocaleString('de')}/Mon</div>
+                <ul>
+                    <li>${t.car.className}</li>
+                    ${t.car.examples.map(e => `<li>${e}</li>`).join('')}
+                </ul>
+            </div>
+            <div class="ls-tier-block">
+                <h4>🍽️ Essen <span style="margin-left:auto; color:var(--text-dim); font-size:0.78rem; font-weight:500;">${Math.round(t.food.share*100)}%</span></h4>
+                <div class="big">€${Math.round(foodEur).toLocaleString('de')}/Mon</div>
+                <ul>
+                    <li>${t.food.groceries}</li>
+                    <li>Restaurant: ${t.food.restaurant}</li>
+                </ul>
+            </div>
+            <div class="ls-tier-block">
+                <h4>🎭 Freizeit <span style="margin-left:auto; color:var(--text-dim); font-size:0.78rem; font-weight:500;">${Math.round(t.leisure.share*100)}%</span></h4>
+                <div class="big">€${Math.round(leisureEur).toLocaleString('de')}/Mon</div>
+                <ul>${t.keypoints.slice(2).map(k => `<li>${k}</li>`).join('')}</ul>
+            </div>
+            <div class="ls-tier-block">
+                <h4>💎 Sparrate <span style="margin-left:auto; color:var(--text-dim); font-size:0.78rem; font-weight:500;">${Math.round(t.savings.share*100)}%</span></h4>
+                <div class="big">€${Math.round(savingsEur).toLocaleString('de')}/Mon</div>
+                <ul>
+                    <li>Bei ₿-Sparplan, in 10 Jahren mit 16% CAGR</li>
+                    <li><strong style="color:var(--green);">€${Math.round(savingsEur * 12 * ((Math.pow(1.16,10)-1)/0.16)).toLocaleString('de')}</strong></li>
+                </ul>
+            </div>
+            <div class="ls-tier-block">
+                <h4>🌍 Wo es passt</h4>
+                <div class="big">${greenCities.length} Städte</div>
+                <ul>${greenCities.slice(0, 4).map(g => `<li>${g.c.n}</li>`).join('')}</ul>
+            </div>
+        </div>
+    `;
+}
+
+// ─── AUTO ────────────────────────────────────────
+function lsRenderAutoList() {
+    const el = document.getElementById('lsAutoList');
+    if (!el) return;
+    const budget = +document.getElementById('lsBudget').value || 0;
+    const tier = lsTierForBudget(budget);
+    // Zeige Autos sortiert: aktuelles Tier zuerst hervorgehoben, dann andere
+    const sorted = [...LS_CARS].sort((a, b) => {
+        const da = Math.abs(a.tier - tier.id);
+        const db = Math.abs(b.tier - tier.id);
+        if (da !== db) return da - db;
+        return a.price - b.price;
+    });
+    el.innerHTML = sorted.map((car, idx) => {
+        const realIdx = LS_CARS.indexOf(car);
+        const isSel = realIdx === lsState.selectedCarIdx;
+        const tierObj = LS_TIERS.find(t => t.id === car.tier);
+        const matchHint = car.tier === tier.id ? `<span style="color:${tierObj.color}; font-size:0.7rem;">● dein Tier</span>` : '';
+        return `<div class="ls-auto-pick ${isSel ? 'selected' : ''}" onclick="lsSelectCar(${realIdx})">
+            <div>
+                <div class="mn">${car.model}</div>
+                <div class="mt">${car.segDe} · ${car.fuel} · ${tierObj.em} ${tierObj.name} ${matchHint}</div>
+            </div>
+            <div class="pr">€${(car.price/1000).toFixed(0)}k</div>
+        </div>`;
+    }).join('');
+}
+
+function lsSelectCar(idx) {
+    lsState.selectedCarIdx = idx;
+    lsRenderAutoList();
+    lsRenderAutoDetail();
+}
+
+function lsCalcFinancing(price, mode, btcPrice) {
+    // Annahmen:
+    const TERM_YEARS = 5;
+    const RESIDUAL = 0.40; // Restwert nach 5 Jahren
+    const FIN_RATE = 0.065; // 6,5% klassischer Auto-Kredit
+    const LEASE_RATE = 0.012; // 1,2% Leasing-Faktor monatlich auf Listenpreis
+    const BTC_LOAN_RATE = 0.085; // 8,5% BTC-besicherter Kredit
+    const BTC_LTV = 0.25; // 25% konservativ
+    const BTC_CAGR = 0.16; // angenommenes BTC-Wachstum
+    const MAINT_PER_MO = 80; // Wartung/Reparatur
+
+    if (mode === 'kauf') {
+        return {
+            label: 'Barkauf',
+            monthly: 0,
+            upfront: price,
+            total5y: price - price * RESIDUAL + MAINT_PER_MO * 60,
+            ownership: 'sofort dein',
+            note: 'Komplett bezahlen, 100% Eigentum. Kein Zins, aber viel Liquidität blockiert.',
+            opportunity: price // was als Bitcoin liegen könnte
+        };
+    }
+    if (mode === 'leasing') {
+        const monthly = price * LEASE_RATE;
+        return {
+            label: 'Leasing',
+            monthly,
+            upfront: 0,
+            total5y: monthly * 60 + MAINT_PER_MO * 60,
+            ownership: 'nicht dein — Rückgabe',
+            note: '3-5 Jahre fahren, dann zurück. Kein Restwert-Risiko, aber Kilometer-Limit.',
+            opportunity: 0
+        };
+    }
+    if (mode === 'finanzierung') {
+        // Annuität für 5 Jahre, 65% finanziert (35% Anzahlung)
+        const down = price * 0.20;
+        const loan = price - down;
+        const r = FIN_RATE / 12;
+        const n = TERM_YEARS * 12;
+        const monthly = loan * (r * Math.pow(1+r, n)) / (Math.pow(1+r, n) - 1);
+        const totalInterest = monthly * n - loan;
+        return {
+            label: 'Klassische Finanzierung',
+            monthly,
+            upfront: down,
+            total5y: down + monthly * n - price * RESIDUAL + MAINT_PER_MO * 60,
+            ownership: 'nach Tilgung dein',
+            note: `${(FIN_RATE*100).toFixed(1)}% Bank-Kredit, 20% Anzahlung. €${Math.round(totalInterest).toLocaleString('de')} Zinsen über ${TERM_YEARS} Jahre.`,
+            opportunity: down
+        };
+    }
+    if (mode === 'btc') {
+        // BTC-besicherter Kredit: Stack als Sicherheit, Auto-Wert wird als Kredit gegeben
+        const collateralEur = price / BTC_LTV;
+        const collateralBtc = collateralEur / btcPrice;
+        const r = BTC_LOAN_RATE / 12;
+        const n = TERM_YEARS * 12;
+        // Tilgung über 5 Jahre — Annuität
+        const monthly = price * (r * Math.pow(1+r, n)) / (Math.pow(1+r, n) - 1);
+        const totalInterest = monthly * n - price;
+        // Stack-Wert nach 5 Jahren bei 16% CAGR
+        const stackAfter5y = collateralEur * Math.pow(1 + BTC_CAGR, 5);
+        const stackGain = stackAfter5y - collateralEur;
+        return {
+            label: 'BTC-besichert (Saylor)',
+            monthly,
+            upfront: 0,
+            total5y: monthly * n - price * RESIDUAL + MAINT_PER_MO * 60,
+            ownership: 'dein, Stack bleibt erhalten',
+            note: `₿${collateralBtc.toFixed(3)} (€${Math.round(collateralEur).toLocaleString('de')}) als Sicherheit bei 25% LTV. Stack wächst weiter.`,
+            opportunity: 0,
+            collateralBtc,
+            collateralEur,
+            stackGain,
+            stackAfter5y
+        };
+    }
+}
+
+function lsRenderAutoDetail() {
+    const el = document.getElementById('lsAutoDetail');
+    if (!el) return;
+    const car = LS_CARS[lsState.selectedCarIdx];
+    if (!car) return;
+    const btcPrice = liveBtcEur || 95000;
+    const tier = LS_TIERS.find(t => t.id === car.tier);
+
+    const variants = ['kauf','leasing','finanzierung','btc'].map(m => ({ m, ...lsCalcFinancing(car.price, m, btcPrice) }));
+    // Find lowest 5y total cost = winner
+    const minTotal = Math.min(...variants.map(v => v.total5y));
+
+    const carBtc = car.price / btcPrice;
+    const carBtcIn10y = (car.price / btcPrice) * Math.pow(1.16, -10) * Math.pow(1.16, 0); // not strictly correct
+    // Better: how much would today's BTC-equivalent be worth in 10 years?
+    const btcEquivalentToday = car.price / btcPrice;
+    const valueIn10y = btcEquivalentToday * btcPrice * Math.pow(1.16, 10);
+
+    el.innerHTML = `
+        <div style="display:flex; align-items:baseline; justify-content:space-between; flex-wrap:wrap; gap:0.5rem; margin-bottom:0.4rem;">
+            <div>
+                <div style="font-family:'Space Grotesk',sans-serif; font-weight:800; font-size:1.5rem;">${car.model}</div>
+                <div style="font-size:0.82rem; color:var(--text-dim);">${car.segDe} · ${car.fuel} · ${car.consDe} · <span style="color:${tier.color};">${tier.em} ${tier.name}-Klasse</span></div>
+            </div>
+            <div style="text-align:right;">
+                <div style="font-family:'Space Grotesk',sans-serif; font-weight:800; font-size:1.5rem; color:var(--orange);">€${car.price.toLocaleString('de')}</div>
+                <div style="font-size:0.78rem; color:var(--text-dim);">≙ ₿${carBtc.toFixed(3)} heute</div>
+            </div>
+        </div>
+
+        <div class="ls-fin-tabs">
+            ${variants.map(v => `<div class="ls-fin-tab ${v.m === lsState.finMode ? 'active' : ''}" onclick="lsSetFinMode('${v.m}')">${v.label}</div>`).join('')}
+            <div class="ls-fin-tab" onclick="lsSetFinMode('compare')" ${lsState.finMode === 'compare' ? 'style="background:rgba(247,147,26,0.15); color:var(--orange); border-color:var(--orange);"' : ''}>📊 Alle vergleichen</div>
+        </div>
+
+        ${lsState.finMode === 'compare' ? `
+            <div class="ls-fin-compare-grid">
+                ${variants.map(v => `
+                    <div class="ls-fin-card ${v.total5y === minTotal ? 'winner' : ''}">
+                        <div class="ttl">${v.label}</div>
+                        <div class="vl">${v.monthly > 0 ? '€' + Math.round(v.monthly).toLocaleString('de') : '—'}</div>
+                        <div class="sub">/Monat ${v.upfront > 0 ? '· €' + Math.round(v.upfront/1000) + 'k Anzahlung' : ''}</div>
+                        <div style="margin-top:0.5rem; font-size:0.75rem; color:var(--text-dim);">5-J-Total:</div>
+                        <div style="font-weight:700; font-size:0.95rem;">€${Math.round(v.total5y).toLocaleString('de')}</div>
+                    </div>
+                `).join('')}
+            </div>
+            <div style="font-size:0.82rem; color:var(--text-dim); padding:0.6rem 0.8rem; background:rgba(63,185,80,0.06); border:1px dashed rgba(63,185,80,0.3); border-radius:8px;">
+                💡 <strong style="color:var(--green);">Sieger</strong> nach 5-Jahres-Gesamtkosten ist hervorgehoben. BTC-Strategie schlägt Bank-Finanzierung, weil dein Stack parallel weiter wächst.
+            </div>
+        ` : (() => {
+            const v = variants.find(x => x.m === lsState.finMode);
+            const monthlyShare = v.monthly / (+document.getElementById('lsBudget').value || 1) * 100;
+            const isAffordable = monthlyShare < tier.car.share * 100 + 5;
+            return `
+                <div class="ls-fin-rows">
+                    <div class="ls-fin-row highlight">
+                        <span class="lbl">Monatliche Belastung</span>
+                        <span class="val">${v.monthly > 0 ? '€' + Math.round(v.monthly).toLocaleString('de') + '/Mon' : 'Einmalig'}</span>
+                    </div>
+                    <div class="ls-fin-row ${isAffordable ? 'green-highlight' : 'red-highlight'}">
+                        <span class="lbl">Anteil an deinem Budget (€${(+document.getElementById('lsBudget').value || 0).toLocaleString('de')})</span>
+                        <span class="val">${monthlyShare.toFixed(1)}% ${isAffordable ? '✓' : '⚠ über Tier-Norm'}</span>
+                    </div>
+                    <div class="ls-fin-row">
+                        <span class="lbl">Anzahlung / Sofort fällig</span>
+                        <span class="val">${v.upfront > 0 ? '€' + Math.round(v.upfront).toLocaleString('de') : '€0'}</span>
+                    </div>
+                    <div class="ls-fin-row">
+                        <span class="lbl">Gesamtkosten 5 Jahre (incl. Wartung, abzgl. Restwert)</span>
+                        <span class="val">€${Math.round(v.total5y).toLocaleString('de')}</span>
+                    </div>
+                    <div class="ls-fin-row">
+                        <span class="lbl">Eigentum</span>
+                        <span class="val">${v.ownership}</span>
+                    </div>
+                    ${v.collateralBtc ? `
+                        <div class="ls-fin-row green-highlight">
+                            <span class="lbl">₿-Sicherheit (LTV 25%)</span>
+                            <span class="val">₿${v.collateralBtc.toFixed(3)} · €${Math.round(v.collateralEur).toLocaleString('de')}</span>
+                        </div>
+                        <div class="ls-fin-row green-highlight">
+                            <span class="lbl">Stack-Wertzuwachs in 5 J. (16% p.a.)</span>
+                            <span class="val">+€${Math.round(v.stackGain).toLocaleString('de')}</span>
+                        </div>
+                    ` : ''}
+                </div>
+                <div style="margin-top:0.8rem; padding:0.85rem 1rem; background:var(--dark3); border:1px solid var(--dark4); border-radius:10px; font-size:0.85rem; line-height:1.55; color:var(--text-dim);">
+                    ℹ️ ${v.note}
+                </div>
+            `;
+        })()}
+
+        <div class="ls-btc-banner">
+            <h4>₿ Bitcoin-Perspektive</h4>
+            <p>
+                Heute kostet dieses Auto <strong style="color:var(--orange);">₿${carBtc.toFixed(3)}</strong> bei einem BTC-Preis von €${Math.round(btcPrice).toLocaleString('de')}.<br>
+                <strong style="color:var(--text);">Wenn Bitcoin in den nächsten 10 Jahren mit 16% p.a. wächst</strong>, wären diese ₿${carBtc.toFixed(3)} dann <span class="opp">€${Math.round(valueIn10y).toLocaleString('de')}</span> wert.
+                <br><span style="font-size:0.78rem;">→ Opportunitätskosten beim Barkauf. Die BTC-besicherte Variante umgeht das.</span>
+            </p>
+        </div>
+
+        <div class="ls-mini-chart-wrap">
+            <div style="font-size:0.75rem; text-transform:uppercase; letter-spacing:1.5px; color:var(--text-dim); font-weight:700; margin-bottom:0.5rem;">5-Jahres-Kostenvergleich</div>
+            <canvas id="lsAutoChart"></canvas>
+        </div>
+    `;
+
+    // Chart
+    setTimeout(() => lsDrawAutoChart(variants, minTotal), 30);
+}
+
+function lsSetFinMode(m) {
+    lsState.finMode = m;
+    lsRenderAutoDetail();
+}
+
+function lsDrawAutoChart(variants, minTotal) {
+    const cv = document.getElementById('lsAutoChart');
+    if (!cv) return;
+    const dpr = window.devicePixelRatio || 1;
+    const W = cv.clientWidth, H = cv.clientHeight;
+    cv.width = W * dpr; cv.height = H * dpr;
+    const ctx = cv.getContext('2d');
+    ctx.scale(dpr, dpr);
+    ctx.clearRect(0, 0, W, H);
+
+    const max = Math.max(...variants.map(v => v.total5y)) * 1.15;
+    const barW = (W - 80) / variants.length / 1.5;
+    const colors = ['#3fb950','#58a6ff','#bc8cff','#f7931a'];
+
+    variants.forEach((v, i) => {
+        const x = 60 + i * ((W - 80) / variants.length) + 10;
+        const h = (v.total5y / max) * (H - 60);
+        const y = H - 30 - h;
+        ctx.fillStyle = v.total5y === minTotal ? '#3fb950' : colors[i];
+        ctx.fillRect(x, y, barW, h);
+        // Label
+        ctx.fillStyle = '#e6edf3';
+        ctx.font = "600 11px 'Inter', sans-serif";
+        ctx.textAlign = 'center';
+        ctx.fillText(v.label.split(' ')[0], x + barW/2, H - 10);
+        ctx.fillStyle = '#8b949e';
+        ctx.font = "700 11px 'Space Grotesk', sans-serif";
+        ctx.fillText('€' + Math.round(v.total5y/1000) + 'k', x + barW/2, y - 6);
+    });
+
+    // Y-Achsen-Hinweis
+    ctx.fillStyle = '#8b949e';
+    ctx.font = "10px 'Inter', sans-serif";
+    ctx.textAlign = 'left';
+    ctx.fillText('5-Jahres-Total (€)', 8, 14);
+}
+
+// ─── WOHNEN ──────────────────────────────────────
+function lsRenderWohnen() {
+    const el = document.getElementById('lsWohnContent');
+    if (!el) return;
+    const c = LS_CITIES[lsState.selectedCityIdx] || LS_CITIES[0];
+    const budget = +document.getElementById('lsBudget').value || 0;
+    const hh = document.getElementById('lsHousehold').value;
+    const ev = lsEvaluateCity(c, budget, hh);
+    const t = ev.tier;
+    const btcPrice = liveBtcEur || 95000;
+    const rentBudget = budget * t.housing.share;
+
+    // Mietkostenvergleich Top-10 für gewünschte Wohnung
+    const sqmTarget = Math.round(ev.sqmTarget);
+    const top = [...LS_CITIES].sort((a,b) => b.pop - a.pop).slice(0, 10);
+
+    // Hauskauf: angenommen 4000€/m² in München, skaliert mit rent (München=22.5)
+    const purchasePrice = sqmTarget * (c.rent / 22.5) * 11000; // grober Faktor
+    const downPayment = purchasePrice * 0.20;
+    const loanAmount = purchasePrice * 0.80;
+    const mortgageRate = 0.038;
+    const r = mortgageRate / 12;
+    const nMortgage = 30 * 12;
+    const mortgageMonthly = loanAmount * (r * Math.pow(1+r, nMortgage)) / (Math.pow(1+r, nMortgage) - 1);
+    // BTC-besicherte Hypothek: Vergleich
+    const btcCollateralForHouse = (purchasePrice / 0.30) / btcPrice; // 30% LTV für Haus
+    const btcLoanRate = 0.085;
+    const rBtc = btcLoanRate / 12;
+    const btcMortgageMonthly = purchasePrice * (rBtc * Math.pow(1+rBtc, nMortgage)) / (Math.pow(1+rBtc, nMortgage) - 1);
+
+    el.innerHTML = `
+        <div class="ls-wohn-grid">
+            <div class="ls-apt-card">
+                <h4>🏙️ Mietvergleich Top-10 Städte (${sqmTarget} m² warm)</h4>
+                <div style="font-size:0.82rem; color:var(--text-dim); margin-bottom:0.5rem;">Dein Mietbudget: <strong style="color:var(--text);">€${Math.round(rentBudget).toLocaleString('de')}/Mon</strong> (${Math.round(t.housing.share*100)}% von €${budget.toLocaleString('de')})</div>
+                ${top.map(city => {
+                    const warmRent = city.rent * sqmTarget * 1.30;
+                    const ok = warmRent <= rentBudget;
+                    const pct = warmRent / rentBudget;
+                    return `
+                        <div style="margin:0.5rem 0;">
+                            <div class="ls-apt-row">
+                                <span class="l">${city.n}</span>
+                                <span class="v" style="color:${ok ? 'var(--green)' : (pct < 1.3 ? 'var(--yellow)' : 'var(--red)')};">€${Math.round(warmRent).toLocaleString('de')}</span>
+                            </div>
+                            <div class="ls-bar"><div class="ls-bar-fill" style="width:${Math.min(100, pct * 60).toFixed(0)}%; background:${ok ? 'var(--green)' : (pct < 1.3 ? 'var(--yellow)' : 'var(--red)')};"></div></div>
+                        </div>
+                    `;
+                }).join('')}
+            </div>
+
+            <div class="ls-apt-card">
+                <h4>🏡 Mieten vs. Kaufen in ${c.n}</h4>
+                <div style="font-size:0.85rem; color:var(--text-dim); margin-bottom:0.6rem;">${sqmTarget} m² · Kaufpreis ~€${Math.round(purchasePrice/1000).toLocaleString('de')}k</div>
+                <div style="background:var(--dark3); border:1px solid var(--dark4); border-radius:10px; padding:0.85rem; margin-bottom:0.7rem;">
+                    <div style="font-size:0.78rem; color:var(--text-dim); text-transform:uppercase; letter-spacing:1px; margin-bottom:0.3rem;">📋 Mieten</div>
+                    <div class="ls-apt-row"><span class="l">Warm-Miete/Mon</span><span class="v">€${Math.round(c.rent * sqmTarget * 1.30).toLocaleString('de')}</span></div>
+                    <div class="ls-apt-row"><span class="l">10 Jahre Total</span><span class="v">€${Math.round(c.rent * sqmTarget * 1.30 * 120).toLocaleString('de')}</span></div>
+                    <div class="ls-apt-row"><span class="l">Eigentum am Ende</span><span class="v" style="color:var(--red);">nichts</span></div>
+                </div>
+                <div style="background:var(--dark3); border:1px solid var(--dark4); border-radius:10px; padding:0.85rem; margin-bottom:0.7rem;">
+                    <div style="font-size:0.78rem; color:var(--text-dim); text-transform:uppercase; letter-spacing:1px; margin-bottom:0.3rem;">🏦 Klassische Hypothek (30 J., 3,8%, 20% EK)</div>
+                    <div class="ls-apt-row"><span class="l">Anzahlung</span><span class="v">€${Math.round(downPayment).toLocaleString('de')}</span></div>
+                    <div class="ls-apt-row"><span class="l">Annuität/Mon</span><span class="v">€${Math.round(mortgageMonthly).toLocaleString('de')}</span></div>
+                    <div class="ls-apt-row"><span class="l">Total nach 30 Jahren</span><span class="v">€${Math.round(mortgageMonthly * 360 + downPayment).toLocaleString('de')}</span></div>
+                </div>
+                <div style="background:linear-gradient(135deg, rgba(247,147,26,0.1), rgba(247,147,26,0.03)); border:1px solid rgba(247,147,26,0.35); border-radius:10px; padding:0.85rem;">
+                    <div style="font-size:0.78rem; color:var(--orange); text-transform:uppercase; letter-spacing:1px; margin-bottom:0.3rem;">₿ BTC-besicherte Hypothek (30% LTV, 8,5%)</div>
+                    <div class="ls-apt-row"><span class="l">₿-Sicherheit</span><span class="v" style="color:var(--orange);">₿${btcCollateralForHouse.toFixed(2)}</span></div>
+                    <div class="ls-apt-row"><span class="l">Annuität/Mon (volle Summe finanziert)</span><span class="v">€${Math.round(btcMortgageMonthly).toLocaleString('de')}</span></div>
+                    <div class="ls-apt-row"><span class="l">Stack-Wert in 30 J. (16% p.a.)</span><span class="v" style="color:var(--green);">€${Math.round(btcCollateralForHouse * btcPrice * Math.pow(1.16, 30)/1e6).toFixed(1)} Mio</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div style="margin-top:1rem; padding:1rem 1.2rem; background:var(--dark2); border:1px solid var(--dark4); border-radius:12px; font-size:0.85rem; color:var(--text-dim); line-height:1.6;">
+            <strong style="color:var(--text);">💡 Strategie-Vergleich:</strong>
+            Mit einem klassischen Kredit zahlst du das Haus, aber dein Vermögen ist im Stein gebunden — illiquide.
+            Mit BTC-besicherter Hypothek bleibt dein Stack erhalten und wächst weiter (historisch ~16% p.a.). Bei Bitcoin-Crash kann es zu Margin Calls kommen — daher konservativer LTV (≤30%) und Cashreserve nötig. <strong style="color:var(--orange);">Risiko vs. Rendite</strong> — beides legitim.
+        </div>
+    `;
+}
+
+// ─── RANKING ────────────────────────────────────
+function lsRenderRanking() {
+    const el = document.getElementById('lsRanking');
+    if (!el) return;
+    const budget = +document.getElementById('lsBudget').value || 0;
+    const hh = document.getElementById('lsHousehold').value;
+    const ranked = LS_CITIES
+        .map((c, i) => ({ c, i, ev: lsEvaluateCity(c, budget, hh) }))
+        .sort((a, b) => {
+            // Primary: verdict order (green > yellow > red)
+            const ord = { 'komfortabel': 0, 'knapp': 1, 'nicht machbar': 2 };
+            if (ord[a.ev.verdict] !== ord[b.ev.verdict]) return ord[a.ev.verdict] - ord[b.ev.verdict];
+            // Secondary: highest cost-index city that is still affordable wins
+            return b.c.ci - a.c.ci;
+        });
+
+    el.innerHTML = `
+        <div style="font-size:0.78rem; text-transform:uppercase; letter-spacing:1.5px; color:var(--text-dim); font-weight:700; margin-bottom:0.8rem;">📊 Ranking aller ${LS_CITIES.length} Städte für €${budget.toLocaleString('de')}/Mon</div>
+        ${ranked.map((r, idx) => {
+            const verdictClass = r.ev.verdict === 'komfortabel' ? 'green' : (r.ev.verdict === 'knapp' ? 'yellow' : 'red');
+            const verdictEm = r.ev.verdict === 'komfortabel' ? '✓' : (r.ev.verdict === 'knapp' ? '⚠' : '✗');
+            return `<div class="ls-ranking-row" onclick="lsSelectCity(${r.i}); lsSwitchPanel('map');">
+                <div class="rk">${idx + 1}</div>
+                <div>
+                    <div class="nm">${r.c.n}</div>
+                    <div class="rt">${r.c.s} · ${r.c.rent.toFixed(1)} €/m² · Kostenidx ${r.c.ci}</div>
+                </div>
+                <div style="text-align:right; font-size:0.82rem; color:var(--text-dim);">€${Math.round(r.ev.totalNeeded).toLocaleString('de')}/Mon</div>
+                <div class="ls-verdict-pill ${verdictClass}" style="font-size:0.72rem; padding:0.25rem 0.6rem;">${verdictEm} ${r.ev.verdict}</div>
+            </div>`;
+        }).join('')}
+    `;
+}
+
+// ─── PREFILL ────────────────────────────────────
+function lsPrefillFromCalculator() {
+    // Versuche aus simpleExpense (Schnell-Rechner) zu importieren
+    const exp = +document.getElementById('simpleExpense').value || 0;
+    if (exp > 0) {
+        document.getElementById('lsBudget').value = exp;
+        lsRenderAll();
+        return;
+    }
+    // Fallback: aus advanced
+    const exp2 = +document.getElementById('monthlyExpense')?.value || 0;
+    if (exp2 > 0) {
+        document.getElementById('lsBudget').value = exp2;
+        lsRenderAll();
+    }
+}
+
+function lsPrefillFromStack() {
+    // Stack aus existingBtc oder simpleExistingBtc
+    const stackBtc = +document.getElementById('existingBtc')?.value || +document.getElementById('simpleExistingBtc')?.value || 0;
+    if (stackBtc <= 0) {
+        alert('Trage erst deinen aktuellen BTC-Stack im Renten-Rechner ein.');
+        return;
+    }
+    const btcPrice = liveBtcEur || 95000;
+    const stackEur = stackBtc * btcPrice;
+    const monthlyIncome = stackEur * 0.035 / 12; // 3,5% Entnahmerate
+    document.getElementById('lsBudget').value = Math.max(500, Math.round(monthlyIncome));
+    lsRenderAll();
+}
 
 // ═══════════════════════════════════════════════════════════════════════
 // ███ DEEP-LINKING — read ?start=YYYY-MM&amount=N and pre-fill Zeitmaschine

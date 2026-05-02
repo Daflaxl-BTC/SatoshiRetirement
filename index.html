@@ -738,15 +738,38 @@
 
         /* ═══════ WHY BITCOIN GRID ═══════ */
         .why-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            display: grid; grid-template-columns: repeat(3, 1fr);
             gap: 1.5rem; margin-top: 2rem;
         }
-        .why-card {
-            background: var(--dark2); border: 1px solid var(--dark4);
-            border-radius: 14px; padding: 1.8rem; transition: all 0.3s;
+        @media (max-width: 900px) {
+            .why-grid { grid-template-columns: repeat(2, 1fr); }
         }
-        .why-card:hover { border-color: rgba(247,147,26,0.4); }
-        .why-card .emoji { font-size: 2rem; margin-bottom: 0.8rem; }
+        @media (max-width: 600px) {
+            .why-grid { grid-template-columns: 1fr; }
+        }
+        .why-card {
+            position: relative; background: var(--dark2); border: 1px solid var(--dark4);
+            border-radius: 14px; padding: 1.8rem; transition: all 0.3s;
+            overflow: hidden;
+        }
+        .why-card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--orange), transparent);
+            opacity: 0; transition: opacity 0.3s;
+        }
+        .why-card:hover {
+            border-color: rgba(247,147,26,0.4);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(247,147,26,0.08);
+        }
+        .why-card:hover::before { opacity: 1; }
+        .why-card .emoji {
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 48px; height: 48px; border-radius: 12px;
+            background: linear-gradient(135deg, rgba(247,147,26,0.15), rgba(247,147,26,0.04));
+            border: 1px solid rgba(247,147,26,0.2);
+            font-size: 1.5rem; margin-bottom: 1rem;
+        }
         .why-card h4 { margin-bottom: 0.4rem; }
         .why-card p { color: var(--text-dim); font-size: 0.88rem; line-height: 1.7; }
 

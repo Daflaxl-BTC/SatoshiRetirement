@@ -32,6 +32,7 @@
     <link rel="stylesheet" href="/fonts/fonts.css">
     <script src="/vendor/d3.min.js"></script>
     <script src="/js/finanzplan-schema.js"></script>
+    <script src="/js/lebensstandard-data.js"></script>
     <style>
         :root {
             --orange: #f7931a;
@@ -102,6 +103,53 @@
             border-color: var(--orange);
             color: var(--orange);
             background: rgba(247,147,26,0.08);
+        }
+
+        /* ═══ PHASE TOGGLE (Ansparphase ↔ Entnahmephase) ═══ */
+        .phase-toggle {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            background: rgba(247,147,26,0.05);
+            border: 1px solid rgba(247,147,26,0.28);
+            border-radius: 999px;
+            padding: 4px;
+            box-shadow: inset 0 1px 4px rgba(0,0,0,0.25);
+        }
+        .phase-opt {
+            position: relative;
+            z-index: 2;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.45rem 1rem;
+            border-radius: 999px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--text-dim);
+            text-decoration: none;
+            transition: color 0.25s ease;
+            white-space: nowrap;
+            line-height: 1;
+            font-family: 'Inter', sans-serif;
+        }
+        .phase-opt:hover { color: var(--text); text-decoration: none; }
+        .phase-opt.active { color: #fff; }
+        .phase-opt.active:hover { color: #fff; }
+        .phase-thumb {
+            position: absolute;
+            top: 4px; bottom: 4px;
+            left: 4px; width: 0;
+            border-radius: 999px;
+            background: linear-gradient(135deg, var(--orange), var(--orange-dark));
+            box-shadow: 0 4px 16px rgba(247,147,26,0.4);
+            transition: left 0.35s cubic-bezier(.34,1.4,.5,1), width 0.35s cubic-bezier(.34,1.4,.5,1);
+            z-index: 1;
+            pointer-events: none;
+        }
+        @media (max-width: 700px) {
+            .phase-text { display: none; }
+            .phase-opt { padding: 0.45rem 0.7rem; font-size: 1rem; }
         }
 
         /* ═══ HERO ═══ */
@@ -430,6 +478,119 @@
             transform: translateY(0);
         }
 
+        /* ═══ LEBENSSTANDARD-KARTE (Ansparphase) ═══ */
+        .ls-card {
+            background: linear-gradient(135deg, rgba(247,147,26,0.06), rgba(247,147,26,0.01));
+            border: 1px solid rgba(247,147,26,0.25);
+        }
+        .ls-budget-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 0.9rem;
+            margin-bottom: 1rem;
+        }
+        @media (max-width: 700px) { .ls-budget-row { grid-template-columns: 1fr; } }
+        .ls-eff-display {
+            background: var(--dark3);
+            border: 1px solid rgba(247,147,26,0.3);
+            border-radius: 12px;
+            padding: 1rem;
+            text-align: center;
+        }
+        .ls-eff-val {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.8rem; font-weight: 800;
+            color: var(--orange);
+            line-height: 1;
+        }
+        .ls-eff-lbl {
+            font-size: 0.72rem; color: var(--text-dim);
+            text-transform: uppercase; letter-spacing: 1.5px;
+            margin-top: 0.3rem;
+        }
+        .ls-eff-formula {
+            font-size: 0.72rem; color: var(--text-dim);
+            margin-top: 0.4rem;
+        }
+        .ls-tier-banner {
+            display: flex; align-items: center; gap: 0.8rem;
+            padding: 0.9rem 1.1rem;
+            background: var(--dark3);
+            border-radius: 12px;
+            border: 1px solid var(--dark4);
+            margin-bottom: 1rem;
+        }
+        .ls-tier-em { font-size: 2rem; line-height: 1; }
+        .ls-tier-info { flex: 1; }
+        .ls-tier-name { font-weight: 800; font-size: 1.05rem; }
+        .ls-tier-verdict { font-size: 0.82rem; color: var(--text-dim); margin-top: 0.2rem; line-height: 1.4; }
+        .ls-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.9rem;
+            margin-bottom: 1rem;
+        }
+        @media (max-width: 760px) { .ls-grid { grid-template-columns: 1fr; } }
+        .ls-tile {
+            background: var(--dark3);
+            border: 1px solid var(--dark4);
+            border-radius: 12px;
+            padding: 1rem;
+        }
+        .ls-tile h4 {
+            font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px;
+            color: var(--text-dim); margin-bottom: 0.6rem; font-weight: 700;
+            font-family: 'Inter', sans-serif;
+        }
+        .ls-auto-name { font-weight: 800; font-size: 1.05rem; color: var(--orange); }
+        .ls-auto-meta { font-size: 0.82rem; color: var(--text-dim); margin-top: 0.2rem; line-height: 1.5; }
+        .ls-auto-rate { font-size: 0.78rem; color: var(--text); margin-top: 0.4rem; }
+        .ls-auto-rate strong { color: var(--green); }
+        .ls-city-list { display: flex; flex-direction: column; gap: 0.4rem; }
+        .ls-city-row {
+            display: flex; justify-content: space-between; align-items: center;
+            font-size: 0.85rem;
+            padding: 0.4rem 0.6rem;
+            border-radius: 7px;
+            background: var(--dark);
+        }
+        .ls-city-row .nm { font-weight: 600; }
+        .ls-city-row .vd { font-size: 0.75rem; padding: 0.15rem 0.5rem; border-radius: 5px; font-weight: 600; }
+        .ls-housing-line {
+            font-size: 0.88rem; line-height: 1.6;
+        }
+        .ls-housing-line strong { color: var(--orange); }
+        .ls-warn {
+            background: rgba(248,81,73,0.08);
+            border: 1px solid rgba(248,81,73,0.3);
+            color: var(--red);
+            padding: 0.7rem 0.9rem;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            margin-top: 0.8rem;
+        }
+        .ls-link-out {
+            display: inline-block;
+            margin-top: 0.8rem;
+            font-size: 0.82rem;
+            color: var(--orange);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .ls-link-out:hover { text-decoration: underline; }
+        .ls-prefill-btn-fp {
+            background: rgba(247,147,26,0.08);
+            border: 1px dashed rgba(247,147,26,0.4);
+            color: var(--orange);
+            padding: 0.5rem 0.9rem;
+            border-radius: 8px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+        }
+        .ls-prefill-btn-fp:hover { background: rgba(247,147,26,0.15); }
+
         .legend-row {
             display: flex; flex-wrap: wrap;
             gap: 0.6rem 1.2rem;
@@ -484,8 +645,16 @@
 <nav class="top">
     <div class="inner">
         <a class="logo" href="/">₿ Satoshi<span>Retirement</span> · Finanzplan</a>
+        <div class="phase-toggle" role="tablist" aria-label="Lebensphase wechseln">
+            <a href="/finanzplan" class="phase-opt active" data-phase="ansparen" role="tab" aria-selected="true" title="Ansparphase: ganz normales Leben mit Job, Cashflow & Sparen">
+                <span aria-hidden="true">💰</span><span class="phase-text">Ansparphase</span>
+            </a>
+            <a href="/" class="phase-opt" data-phase="entnahme" role="tab" aria-selected="false" title="Entnahmephase: vom Bitcoin-Stack leben">
+                <span aria-hidden="true">🏖️</span><span class="phase-text">Entnahmephase</span>
+            </a>
+            <span class="phase-thumb" aria-hidden="true"></span>
+        </div>
         <div class="nav-actions">
-            <a class="nav-btn" href="/#calculator">← Renten-Rechner</a>
             <button class="nav-btn" onclick="document.getElementById('importFile').click()">📥 JSON Import</button>
             <button class="nav-btn primary" onclick="exportPlanFile()">💾 JSON Export</button>
             <input type="file" id="importFile" accept="application/json,.json" style="display:none;" onchange="onImportFile(event)">
@@ -669,6 +838,72 @@
         </aside>
 
     </div><!-- /layout -->
+
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <!-- LEBENSSTANDARD (Ansparphase) — Was kann ich mir mit meinem Cashflow leisten? -->
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <div class="card ls-card" id="lsFpCard">
+        <span class="section-label">Deutschland-Plan · Ansparphase</span>
+        <h2>🇩🇪 Wie kannst du jetzt schon in Deutschland leben?</h2>
+        <p class="card-sub">Basierend auf deinem aktuellen Einkommen und der gewünschten Sparrate. Stadt, Auto und Wohnung passen sich live an, wenn du die Sparrate änderst.</p>
+
+        <div class="ls-budget-row">
+            <div class="input-group">
+                <label>💰 Verfügbar pro Monat (€)</label>
+                <input type="number" id="lsFpBudget" min="500" max="50000" step="100" value="3000" oninput="lsFpRender()">
+                <div style="font-size:0.72rem; color:var(--text-dim); margin-top:0.3rem;">
+                    <button type="button" class="ls-prefill-btn-fp" onclick="lsFpPrefillFromPlan()" title="Übernimmt Einkommen & DCA aus dem Finanzplan oben">📥 Aus Finanzplan übernehmen</button>
+                </div>
+            </div>
+            <div class="input-group">
+                <label>₿ Davon stacken pro Monat (€)</label>
+                <input type="number" id="lsFpSaving" min="0" max="49500" step="50" value="0" oninput="lsFpRender()">
+                <div style="font-size:0.72rem; color:var(--text-dim); margin-top:0.3rem;">Wird vom Lebens-Budget abgezogen.</div>
+            </div>
+            <div class="input-group">
+                <label>👨‍👩‍👧 Haushalt</label>
+                <select id="lsFpHousehold" onchange="lsFpRender()">
+                    <option value="single">Single</option>
+                    <option value="couple">Paar (2 Personen)</option>
+                    <option value="family3">Familie (3)</option>
+                    <option value="family4">Familie (4)</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="ls-eff-display" id="lsFpEffWrap">
+            <div class="ls-eff-val" id="lsFpEffVal">€3.000</div>
+            <div class="ls-eff-lbl">Effektiv für dein Leben in DE</div>
+            <div class="ls-eff-formula" id="lsFpEffFormula">€3.000 verfügbar · keine Sparrate</div>
+        </div>
+
+        <div class="ls-tier-banner" style="margin-top:1rem;" id="lsFpTierBanner">
+            <div class="ls-tier-em" id="lsFpTierEm">—</div>
+            <div class="ls-tier-info">
+                <div class="ls-tier-name" id="lsFpTierName">—</div>
+                <div class="ls-tier-verdict" id="lsFpTierVerdict">—</div>
+            </div>
+        </div>
+
+        <div class="ls-grid">
+            <div class="ls-tile">
+                <h4>🚗 Passendes Auto</h4>
+                <div id="lsFpAuto">—</div>
+            </div>
+            <div class="ls-tile">
+                <h4>🏠 Wohnung in deiner Stadt</h4>
+                <div id="lsFpHousing">—</div>
+            </div>
+        </div>
+
+        <div class="ls-tile">
+            <h4>🌍 Top 5 Städte für dein Budget</h4>
+            <div class="ls-city-list" id="lsFpCities">—</div>
+            <a class="ls-link-out" href="/#tools">→ Vollständige Deutschland-Karte mit allen Städten ansehen</a>
+        </div>
+
+        <div id="lsFpWarn"></div>
+    </div>
 
     <div class="disclaimer">
         <strong>⚠️ Disclaimer:</strong> Diese Seite ist keine Finanzberatung. Tipps sind Heuristiken zur Selbst-Reflexion, keine individuellen Empfehlungen. Bitcoin ist hochvolatil. Kredit-Strategien können Verluste verstärken. Sprich mit einem unabhängigen Finanzberater bevor du wesentliche Entscheidungen triffst. Alle Daten bleiben in deinem Browser (localStorage) — du kannst sie über JSON-Export selbst sichern.
@@ -1692,6 +1927,128 @@ if (Number.isFinite(plan.assumptions.btcPriceEur) && plan.assumptions.btcPriceEu
 }
 // Live-Preis nicht-blockierend nachladen — Plan-Recompute folgt automatisch.
 fetchLiveBtcEur();
+
+// ═══════════════════════════════════════════════════════════════════════
+// LEBENSSTANDARD-KARTE (Ansparphase) — Tier · Auto · Top-Städte · Wohnung
+// Daten aus /js/lebensstandard-data.js (geteilt mit Renten-Rechner).
+// ═══════════════════════════════════════════════════════════════════════
+function lsFpEffective() {
+    const gross = +document.getElementById('lsFpBudget')?.value || 0;
+    const save  = +document.getElementById('lsFpSaving')?.value || 0;
+    return { gross, save, eff: Math.max(0, gross - save) };
+}
+
+function lsFpRender() {
+    if (!document.getElementById('lsFpCard')) return;
+    const { gross, save, eff } = lsFpEffective();
+    const hh = document.getElementById('lsFpHousehold').value;
+    const tier = lsTierForBudget(eff);
+
+    // Effektiv-Display
+    document.getElementById('lsFpEffVal').textContent = '€' + eff.toLocaleString('de');
+    document.getElementById('lsFpEffFormula').innerHTML = save > 0
+        ? `€${gross.toLocaleString('de')} verfügbar − <span style="color:var(--orange);">€${save.toLocaleString('de')} Sparrate</span> = effektiv €${eff.toLocaleString('de')}`
+        : `€${gross.toLocaleString('de')} verfügbar · keine Sparrate definiert`;
+
+    // Tier-Banner
+    document.getElementById('lsFpTierEm').textContent = tier.em;
+    document.getElementById('lsFpTierName').textContent = tier.name;
+    document.getElementById('lsFpTierName').style.color = tier.color;
+    document.getElementById('lsFpTierVerdict').textContent = tier.verdict;
+    document.getElementById('lsFpTierBanner').style.borderColor = tier.color + '55';
+
+    // Auto-Vorschlag: günstigstes Auto im aktuellen Tier (das er sich tatsächlich leisten kann)
+    const carsInTier = LS_CARS.filter(c => c.tier === tier.id).sort((a, b) => a.price - b.price);
+    const carEl = document.getElementById('lsFpAuto');
+    if (carsInTier.length === 0) {
+        // Tier 1 (Sparflamme) hat keine Autos im Katalog → Hinweis
+        carEl.innerHTML = `<div class="ls-auto-name">Kein Auto empfehlenswert</div>
+            <div class="ls-auto-meta">Bei effektiv €${eff.toLocaleString('de')}/Mon ist ein Auto wirtschaftlich nicht tragbar. Empfehlung: <strong>Deutschlandticket (€58/Mon)</strong>, Fahrrad oder Carsharing.</div>`;
+    } else {
+        const car = carsInTier[0];
+        // Faustregel: Leasing-Rate ≈ 1,2% des Preises
+        const leasing = Math.round(car.price * 0.012);
+        // Faustregel: Kaufrate über 60 Monate, 5% Anzahlung
+        const fin = Math.round(car.price * 0.95 / 60);
+        carEl.innerHTML = `<div class="ls-auto-name">${car.model}</div>
+            <div class="ls-auto-meta">${car.segDe} · ${car.fuel} · ${car.consDe} · Listenpreis €${(car.price/1000).toFixed(0)}k</div>
+            <div class="ls-auto-rate">≈ <strong>€${leasing}</strong>/Mon Leasing oder €${fin}/Mon Kredit (60 Mon, 5 % Anz.) · Tier-Budget €${tier.car.budget}/Mon</div>`;
+    }
+
+    // Top 5 Städte: nach „komfortabel" sortiert, dann nach Größe
+    const ranked = LS_CITIES.map((c, idx) => ({ c, idx, ev: lsEvaluateCity(c, eff, hh) }))
+        .sort((a, b) => {
+            const order = { 'komfortabel': 0, 'knapp': 1, 'nicht machbar': 2 };
+            const d = order[a.ev.verdict] - order[b.ev.verdict];
+            if (d !== 0) return d;
+            return b.c.pop - a.c.pop;
+        })
+        .slice(0, 5);
+    document.getElementById('lsFpCities').innerHTML = ranked.map(r => `
+        <div class="ls-city-row">
+            <span class="nm">${r.c.n} <span style="color:var(--text-dim); font-weight:400; font-size:0.78rem;">· ${r.c.s}</span></span>
+            <span class="vd" style="background:${r.ev.color}22; color:${r.ev.color};">${r.ev.verdict} · €${Math.round(r.ev.rentWarm).toLocaleString('de')} Miete</span>
+        </div>`).join('');
+
+    // Wohnung: passende qm + Beispielmiete in Median-Stadt (z.B. Leipzig/Dresden)
+    const medianCity = LS_CITIES.find(c => c.n === 'Leipzig') || LS_CITIES[0];
+    const ev = lsEvaluateCity(medianCity, eff, hh);
+    const sqmMin = Math.round(tier.housing.sqm[0] * (hh === 'single' ? 1 : 1.3));
+    const sqmMax = Math.round(tier.housing.sqm[1] * (hh === 'single' ? 1 : 1.3));
+    document.getElementById('lsFpHousing').innerHTML = `
+        <div class="ls-housing-line">
+            <strong>${tier.housing.type}</strong><br>
+            ${sqmMin}–${sqmMax} m² · ca. <strong>€${Math.round(ev.rentWarm).toLocaleString('de')}/Mon warm</strong> in einer mittleren Stadt (z.B. Leipzig).<br>
+            <span style="color:var(--text-dim); font-size:0.8rem;">In München (€${Math.round(lsEvaluateCity(LS_CITIES[0], eff, hh).rentWarm).toLocaleString('de')}) deutlich teurer.</span>
+        </div>`;
+
+    // Warnung wenn effektives Budget zu niedrig wird
+    const warnEl = document.getElementById('lsFpWarn');
+    if (eff < 800) {
+        warnEl.innerHTML = `<div class="ls-warn">⚠️ <strong>Effektives Budget unter €800/Mon</strong> — die Sparrate ist zu hoch für das verfügbare Einkommen. Reduziere die Sparrate oder erhöhe dein Einkommen, sonst ist ein Lebensstandard in DE rechnerisch nicht tragbar.</div>`;
+    } else if (save > gross * 0.6) {
+        warnEl.innerHTML = `<div class="ls-warn" style="background:rgba(227,179,65,0.08); border-color:rgba(227,179,65,0.3); color:#e3b341;">⚠️ Du sparst ${Math.round(save/gross*100)} % deines Einkommens — sehr ambitioniert. Sicher dass dein Lebensstandard das hergibt?</div>`;
+    } else {
+        warnEl.innerHTML = '';
+    }
+}
+
+function lsFpPrefillFromPlan() {
+    if (typeof aggregate !== 'function') return;
+    const a = aggregate();
+    document.getElementById('lsFpBudget').value = Math.round(a.incomeTotal) || 3000;
+    document.getElementById('lsFpSaving').value = Math.round(a.btcDcaTotal) || 0;
+    // Haushalt aus plan.profile.householdSize, falls verfügbar
+    const hh = plan?.profile?.householdSize;
+    const sel = document.getElementById('lsFpHousehold');
+    if (hh === 1) sel.value = 'single';
+    else if (hh === 2) sel.value = 'couple';
+    else if (hh === 3) sel.value = 'family3';
+    else if (hh >= 4) sel.value = 'family4';
+    lsFpRender();
+}
+
+// Initial render — und nach jedem recompute auch updaten (falls Plan-Daten Auswirkungen haben)
+lsFpRender();
+const _origRecompute = recompute;
+recompute = function() {
+    _origRecompute();
+    // Auto-update wenn Pre-Fill aktiv ist? Wir lassen es manuell, damit User-Eingaben nicht überschrieben werden.
+};
+
+// ═══════ PHASE TOGGLE — slide thumb to active option ═══════
+function positionPhaseThumb() {
+    const wrap = document.querySelector('.phase-toggle');
+    if (!wrap) return;
+    const active = wrap.querySelector('.phase-opt.active');
+    const thumb = wrap.querySelector('.phase-thumb');
+    if (!active || !thumb) return;
+    thumb.style.left = active.offsetLeft + 'px';
+    thumb.style.width = active.offsetWidth + 'px';
+}
+window.addEventListener('load', positionPhaseThumb);
+window.addEventListener('resize', positionPhaseThumb);
+document.fonts && document.fonts.ready && document.fonts.ready.then(positionPhaseThumb);
 </script>
 
 </body>

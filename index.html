@@ -168,32 +168,56 @@
         h1, h2, h3, h4 { font-family: 'Space Grotesk', sans-serif; }
 
         /* ═══════ NAV ═══════ */
-        nav {
+        body > nav {
             position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
             background: rgba(13,17,23,0.85);
             backdrop-filter: blur(20px);
             border-bottom: 1px solid rgba(247,147,26,0.15);
             padding: 0 2rem;
         }
-        nav .inner {
+        body > nav .inner {
             max-width: 1400px; margin: 0 auto;
             display: flex; align-items: center; justify-content: space-between;
             height: 64px;
         }
-        nav .logo {
+        body > nav .logo {
             font-family: 'Space Grotesk', sans-serif;
             font-weight: 800; font-size: 1.3rem;
             background: linear-gradient(135deg, var(--orange), var(--orange-light));
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
-        nav .logo span { -webkit-text-fill-color: var(--text); }
-        nav ul { list-style: none; display: flex; gap: 2rem; }
-        nav a {
+        body > nav .logo span { -webkit-text-fill-color: var(--text); }
+        body > nav ul { list-style: none; display: flex; gap: 2rem; }
+        body > nav a {
             color: var(--text-dim); text-decoration: none; font-size: 0.9rem;
             font-weight: 500; transition: color 0.2s;
         }
-        nav a:hover { color: var(--orange); }
+        body > nav a:hover { color: var(--orange); }
         .mobile-menu { display: none; background: none; border: none; color: var(--text); font-size: 1.5rem; cursor: pointer; }
+
+        /* ═══════ PHASE BAR — eigene sticky Bar unterhalb der Nav ═══════ */
+        .phase-bar {
+            position: fixed;
+            top: 64px; left: 0; right: 0;
+            z-index: 999;
+            background: linear-gradient(180deg, rgba(13,17,23,0.95), rgba(13,17,23,0.88));
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(247,147,26,0.2);
+            padding: 0.6rem 1rem;
+        }
+        .phase-bar-inner {
+            max-width: 1400px; margin: 0 auto;
+            display: flex; align-items: center; justify-content: center;
+            gap: 1rem; flex-wrap: wrap;
+        }
+        .phase-bar-label {
+            font-size: 0.78rem; color: var(--text-dim);
+            font-weight: 600; letter-spacing: 0.5px;
+        }
+        @media (max-width: 600px) {
+            .phase-bar { padding: 0.5rem 0.6rem; }
+            .phase-bar-label { display: none; }
+        }
 
         /* ═══════ PHASE TOGGLE (Ansparphase ↔ Entnahmephase) ═══════ */
         .phase-toggle {
@@ -250,9 +274,10 @@
         /* ═══════ HERO ═══════ */
         .hero {
             min-height: 100vh; display: flex; align-items: center; justify-content: center;
-            text-align: center; padding: 8rem 2rem 4rem;
+            text-align: center; padding: 10rem 2rem 4rem;
             position: relative; overflow: hidden;
         }
+        html { scroll-padding-top: 130px; } /* Anchors nicht unter fixed Nav+PhaseBar verstecken */
         .hero::before {
             content: ''; position: absolute; top: -50%; left: -50%;
             width: 200%; height: 200%;
@@ -746,7 +771,7 @@
 
         /* ═══════ RESPONSIVE ═══════ */
         @media (max-width: 900px) {
-            nav ul { display: none; }
+            body > nav ul { display: none; }
             .mobile-menu { display: block; }
             .comparison-grid { grid-template-columns: 1fr; }
             .calc-grid { grid-template-columns: 1fr; }
@@ -1923,15 +1948,6 @@
 <nav>
     <div class="inner">
         <div class="logo">₿ Satoshi<span>Retirement</span></div>
-        <div class="phase-toggle" role="tablist" aria-label="Lebensphase wechseln">
-            <a href="/finanzplan" class="phase-opt" data-phase="ansparen" role="tab" aria-selected="false" title="Ansparphase: ganz normales Leben mit Job, Cashflow & Sparen">
-                <span aria-hidden="true">💰</span><span class="phase-text">Ansparphase</span>
-            </a>
-            <a href="/" class="phase-opt active" data-phase="entnahme" role="tab" aria-selected="true" title="Entnahmephase: vom Bitcoin-Stack leben">
-                <span aria-hidden="true">🏖️</span><span class="phase-text">Entnahmephase</span>
-            </a>
-            <span class="phase-thumb" aria-hidden="true"></span>
-        </div>
         <ul>
             <li><a href="#vitals">Vitals</a></li>
             <li><a href="#compare">Vergleich</a></li>
@@ -1946,6 +1962,22 @@
         <button class="mobile-menu" onclick="document.querySelector('nav ul').style.display = document.querySelector('nav ul').style.display === 'flex' ? 'none' : 'flex'">☰</button>
     </div>
 </nav>
+
+<!-- ═══════ PHASE BAR — Anspar/Entnahme-Slider, sichtbar auf jeder Bildschirmgröße ═══════ -->
+<div class="phase-bar">
+    <div class="phase-bar-inner">
+        <span class="phase-bar-label">Welche Lebensphase planst du?</span>
+        <div class="phase-toggle" role="tablist" aria-label="Lebensphase wechseln">
+            <a href="/finanzplan" class="phase-opt" data-phase="ansparen" role="tab" aria-selected="false" title="Ansparphase: ganz normales Leben mit Job, Cashflow & Sparen">
+                <span aria-hidden="true">💰</span><span class="phase-text">Ansparphase</span>
+            </a>
+            <a href="/" class="phase-opt active" data-phase="entnahme" role="tab" aria-selected="true" title="Entnahmephase: vom Bitcoin-Stack leben">
+                <span aria-hidden="true">🏖️</span><span class="phase-text">Entnahmephase</span>
+            </a>
+            <span class="phase-thumb" aria-hidden="true"></span>
+        </div>
+    </div>
+</div>
 
 <!-- ═══════ STARFIELD (fixed background) ═══════ -->
 <canvas id="starfield"></canvas>

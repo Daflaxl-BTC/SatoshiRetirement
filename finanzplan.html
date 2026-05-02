@@ -105,6 +105,30 @@
             background: rgba(247,147,26,0.08);
         }
 
+        /* ═══ PHASE BAR — eigene sticky Bar unterhalb der Nav ═══ */
+        .phase-bar {
+            position: sticky;
+            top: 64px;
+            z-index: 999;
+            background: linear-gradient(180deg, rgba(13,17,23,0.95), rgba(13,17,23,0.88));
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(247,147,26,0.2);
+            padding: 0.6rem 1rem;
+        }
+        .phase-bar-inner {
+            max-width: 1400px; margin: 0 auto;
+            display: flex; align-items: center; justify-content: center;
+            gap: 1rem; flex-wrap: wrap;
+        }
+        .phase-bar-label {
+            font-size: 0.78rem; color: var(--text-dim);
+            font-weight: 600; letter-spacing: 0.5px;
+        }
+        @media (max-width: 600px) {
+            .phase-bar { padding: 0.5rem 0.6rem; }
+            .phase-bar-label { display: none; }
+        }
+
         /* ═══ PHASE TOGGLE (Ansparphase ↔ Entnahmephase) ═══ */
         .phase-toggle {
             position: relative;
@@ -645,6 +669,18 @@
 <nav class="top">
     <div class="inner">
         <a class="logo" href="/">₿ Satoshi<span>Retirement</span> · Finanzplan</a>
+        <div class="nav-actions">
+            <button class="nav-btn" onclick="document.getElementById('importFile').click()">📥 JSON Import</button>
+            <button class="nav-btn primary" onclick="exportPlanFile()">💾 JSON Export</button>
+            <input type="file" id="importFile" accept="application/json,.json" style="display:none;" onchange="onImportFile(event)">
+        </div>
+    </div>
+</nav>
+
+<!-- ═══════ PHASE BAR — Anspar/Entnahme-Slider, sichtbar auf jeder Bildschirmgröße ═══════ -->
+<div class="phase-bar">
+    <div class="phase-bar-inner">
+        <span class="phase-bar-label">Welche Lebensphase planst du?</span>
         <div class="phase-toggle" role="tablist" aria-label="Lebensphase wechseln">
             <a href="/finanzplan" class="phase-opt active" data-phase="ansparen" role="tab" aria-selected="true" title="Ansparphase: ganz normales Leben mit Job, Cashflow & Sparen">
                 <span aria-hidden="true">💰</span><span class="phase-text">Ansparphase</span>
@@ -654,13 +690,8 @@
             </a>
             <span class="phase-thumb" aria-hidden="true"></span>
         </div>
-        <div class="nav-actions">
-            <button class="nav-btn" onclick="document.getElementById('importFile').click()">📥 JSON Import</button>
-            <button class="nav-btn primary" onclick="exportPlanFile()">💾 JSON Export</button>
-            <input type="file" id="importFile" accept="application/json,.json" style="display:none;" onchange="onImportFile(event)">
-        </div>
     </div>
-</nav>
+</div>
 
 <section class="hero">
     <div class="hero-badge">Bitcoin Lebens-Cockpit</div>

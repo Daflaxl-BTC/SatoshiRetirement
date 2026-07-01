@@ -13,6 +13,30 @@
     <priority>0.9</priority>
   </url>
   <url>
+    <loc>https://satoshi-retirement.de/wissen</loc>
+    <lastmod>2026-07-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://satoshi-retirement.de/wissen/ansparphase</loc>
+    <lastmod>2026-07-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://satoshi-retirement.de/wissen/entnahmephase</loc>
+    <lastmod>2026-07-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://satoshi-retirement.de/wissen/finanzplan</loc>
+    <lastmod>2026-07-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://satoshi-retirement.de/impressum</loc>
     <lastmod>2026-04-25</lastmod>
     <changefreq>yearly</changefreq>

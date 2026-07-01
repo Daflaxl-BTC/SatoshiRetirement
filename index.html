@@ -168,7 +168,7 @@
         h1, h2, h3, h4 { font-family: 'Space Grotesk', sans-serif; }
 
         /* ═══════ NAV ═══════ */
-        nav {
+        body > nav {
             position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
             background: rgba(13,17,23,0.85);
             backdrop-filter: blur(20px);
@@ -183,14 +183,15 @@
         nav .logo {
             font-family: 'Space Grotesk', sans-serif;
             font-weight: 800; font-size: 1.3rem;
+            white-space: nowrap; flex-shrink: 0;
             background: linear-gradient(135deg, var(--orange), var(--orange-light));
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
         nav .logo span { -webkit-text-fill-color: var(--text); }
-        nav ul { list-style: none; display: flex; gap: 2rem; }
+        nav ul { list-style: none; display: flex; align-items: center; gap: 1.1rem; margin: 0; padding: 0; }
         nav a {
-            color: var(--text-dim); text-decoration: none; font-size: 0.9rem;
-            font-weight: 500; transition: color 0.2s;
+            color: var(--text-dim); text-decoration: none; font-size: 0.85rem;
+            font-weight: 500; transition: color 0.2s; white-space: nowrap;
         }
         nav a:hover { color: var(--orange); }
         .mobile-menu { display: none; background: none; border: none; color: var(--text); font-size: 1.5rem; cursor: pointer; }
@@ -745,9 +746,23 @@
         footer .legal .sep { color: var(--dark4); user-select: none; }
 
         /* ═══════ RESPONSIVE ═══════ */
-        @media (max-width: 900px) {
-            nav ul { display: none; }
+        @media (max-width: 1200px) {
+            nav ul {
+                display: none;
+                position: absolute; top: 64px; left: 0; right: 0;
+                flex-direction: column; align-items: stretch; gap: 0;
+                background: rgba(13,17,23,0.97);
+                backdrop-filter: blur(20px);
+                border-bottom: 1px solid rgba(247,147,26,0.15);
+                box-shadow: 0 12px 32px rgba(0,0,0,0.4);
+                padding: 0.4rem 0;
+            }
+            nav ul li { width: 100%; }
+            nav ul a { display: block; padding: 0.85rem 2rem; font-size: 0.95rem; }
+            nav ul a:hover { background: rgba(247,147,26,0.08); }
             .mobile-menu { display: block; }
+        }
+        @media (max-width: 900px) {
             .comparison-grid { grid-template-columns: 1fr; }
             .calc-grid { grid-template-columns: 1fr; }
             .map-container { grid-template-columns: 1fr; }
@@ -1121,8 +1136,8 @@
             box-shadow: 0 0 10px rgba(255,255,255,0.4);
         }
         /* Fear & Greed gauge */
-        .fg-gauge { width: 100%; height: 56px; position: relative; margin-top: 0.3rem; }
-        .fg-gauge svg { width: 100%; height: 100%; overflow: visible; }
+        .fg-gauge { width: 100%; aspect-ratio: 2 / 1; position: relative; margin-top: 0.6rem; }
+        .fg-gauge svg { width: 100%; height: 100%; display: block; }
 
         /* ═══════════════════════════════════════════════════
            FREIHEITS-ZEITMASCHINE
@@ -1956,9 +1971,10 @@
             <span class="phase-thumb" aria-hidden="true"></span>
         </div>
         <ul>
+            <li><a href="/wissen">Wissen</a></li>
             <li><a href="#vitals">Vitals</a></li>
             <li><a href="#compare">Vergleich</a></li>
-            <li><a href="#calculator">Renten-Rechner</a></li>
+            <li><a href="#calculator">Rechner</a></li>
             <li><a href="#zeitmaschine">Zeitmaschine</a></li>
             <li><a href="#tools">Tools</a></li>
             <li><a href="#map">Weltkarte</a></li>
@@ -2068,7 +2084,7 @@
                 <div class="vital-value" id="vFGValue">—</div>
                 <div class="vital-sub" id="vFGSub">Markt-Sentiment</div>
                 <div class="fg-gauge">
-                    <svg viewBox="0 0 200 70" preserveAspectRatio="xMidYMax meet">
+                    <svg viewBox="0 -30 200 100" preserveAspectRatio="xMidYMax meet">
                         <defs>
                             <linearGradient id="fgGradient" x1="0" y1="0" x2="1" y2="0">
                                 <stop offset="0" stop-color="#f85149"/>
@@ -2077,8 +2093,8 @@
                                 <stop offset="1" stop-color="#3fb950"/>
                             </linearGradient>
                         </defs>
-                        <path d="M 15,60 A 85,85 0 0,1 185,60" fill="none" stroke="rgba(139,148,158,0.15)" stroke-width="10" stroke-linecap="round"/>
-                        <path d="M 15,60 A 85,85 0 0,1 185,60" fill="none" stroke="url(#fgGradient)" stroke-width="10" stroke-linecap="round" opacity="0.75"/>
+                        <path d="M 15,60 A 85,85 0 0,1 185,60" fill="none" stroke="rgba(139,148,158,0.15)" stroke-width="10" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
+                        <path d="M 15,60 A 85,85 0 0,1 185,60" fill="none" stroke="url(#fgGradient)" stroke-width="10" stroke-linecap="round" opacity="0.85" vector-effect="non-scaling-stroke"/>
                         <line id="vFGNeedle" x1="100" y1="60" x2="100" y2="15" stroke="#fff" stroke-width="2.5" stroke-linecap="round" transform="rotate(-90 100 60)" style="transition: transform 1s cubic-bezier(0.22,1,0.36,1);"/>
                         <circle cx="100" cy="60" r="5" fill="var(--orange)"/>
                     </svg>
@@ -3510,7 +3526,7 @@
     <div class="container">
         <span class="section-label">Der Plan</span>
         <h2 class="section-title">Dein Businessplan zur finanziellen Freiheit</h2>
-        <p class="section-desc">In 6 Schritten vom Gehalt-zu-Gehalt-Leben zur vollständigen Unabhängigkeit. Kein Glück nötig — nur Disziplin und Bitcoin.</p>
+        <p class="section-desc">In 6 Schritten vom Gehalt-zu-Gehalt-Leben zur vollständigen Unabhängigkeit. Kein Glück nötig — nur Disziplin und Bitcoin. <a href="/wissen/finanzplan" style="color:var(--orange); font-weight:700; text-decoration:none;">Der Finanzplan Schritt für Schritt →</a></p>
 
         <div class="biz-plan">
             <div class="biz-step">
@@ -3524,7 +3540,7 @@
                 <div class="biz-step-num">2</div>
                 <div>
                     <h4>DCA starten — Dollar Cost Averaging (ab Monat 4)</h4>
-                    <p>Kaufe regelmäßig Bitcoin — wöchentlich oder monatlich, egal ob der Kurs hoch oder niedrig steht. Nutze Plattformen wie Relai, Pocket Bitcoin oder eine Bitcoin-Only Exchange. Automatisiere den Sparplan. Kein Trading, kein Timing. Stacking Sats ist die Strategie.</p>
+                    <p>Kaufe regelmäßig Bitcoin — wöchentlich oder monatlich, egal ob der Kurs hoch oder niedrig steht. Nutze Plattformen wie Relai, Pocket Bitcoin oder eine Bitcoin-Only Exchange. Automatisiere den Sparplan. Kein Trading, kein Timing. Stacking Sats ist die Strategie. <a href="/wissen/ansparphase" style="color:var(--orange); font-weight:700; text-decoration:none;">Ansparphase erklärt →</a></p>
                 </div>
             </div>
             <div class="biz-step">
@@ -3552,7 +3568,7 @@
                 <div class="biz-step-num">6</div>
                 <div>
                     <h4>Retirement — Lebe von deinem Stack</h4>
-                    <p>Wenn dein Stack den Zielwert erreicht hat, beginne kontrolliert Satoshis zu entnehmen (max. 3–4% pro Jahr). Nutze Bitcoin-gesicherte Kredite, um steuerfrei Liquidität zu schaffen, ohne zu verkaufen. Genieße dein Leben — du hast es verdient. Willkommen in der Satoshi-Rente.</p>
+                    <p>Wenn dein Stack den Zielwert erreicht hat, beginne kontrolliert Satoshis zu entnehmen (max. 3–4% pro Jahr). Nutze Bitcoin-gesicherte Kredite, um steuerfrei Liquidität zu schaffen, ohne zu verkaufen. Genieße dein Leben — du hast es verdient. Willkommen in der Satoshi-Rente. <a href="/wissen/entnahmephase" style="color:var(--orange); font-weight:700; text-decoration:none;">Entnahmephase erklärt →</a></p>
                 </div>
             </div>
         </div>
@@ -5673,7 +5689,6 @@ async function fetchFearGreed() {
         if (!res.ok) throw new Error('fg');
         const data = await res.json();
         const v = parseInt(data.data[0].value, 10);
-        const cls = data.data[0].value_classification;
         const valEl = document.getElementById('vFGValue');
         const subEl = document.getElementById('vFGSub');
         const needle = document.getElementById('vFGNeedle');
@@ -5686,7 +5701,7 @@ async function fetchFearGreed() {
         else if (v < 75) { label = 'Gier';            color = 'var(--green)'; }
         else              { label = 'Extreme Gier';   color = 'var(--green)'; }
         valEl.style.color = color;
-        subEl.textContent = label + ' · ' + cls;
+        subEl.textContent = label;
         // Needle: 0→-90°, 100→+90°
         const deg = -90 + (v / 100) * 180;
         needle.setAttribute('transform', `rotate(${deg} 100 60)`);
